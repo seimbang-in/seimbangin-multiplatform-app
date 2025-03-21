@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
 
@@ -14,5 +15,10 @@ final routes = GoRouter(routes: [
     path: '/onboarding',
     name: RouteNames.onboarding,
     builder: (context, state) => const OnBoardingPage(),
+  ),
+  GoRoute(
+    path: '/login',
+    name: RouteNames.login,
+    builder: (context, state) => const LoginPage(),
   ),
 ]);
