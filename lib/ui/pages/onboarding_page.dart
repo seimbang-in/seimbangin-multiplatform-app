@@ -14,7 +14,8 @@ class OnBoardingPage extends StatefulWidget {
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
   int currentIndex = 0;
-  CarouselSliderController _carouselController = CarouselSliderController();
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   List<String> titles = [
     'Take Control of Your Money\nMake Your Future',
