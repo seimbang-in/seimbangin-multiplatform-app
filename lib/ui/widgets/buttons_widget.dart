@@ -63,12 +63,16 @@ class RoundedButton extends StatelessWidget {
   final double width;
   final double height;
   final bool isEnable;
+  final Widget widget;
+  final Color backgroundColor;
   final VoidCallback? onPressed;
   const RoundedButton({
     super.key,
     this.width = 60,
     this.height = 60,
     this.isEnable = true,
+    required this.widget,
+    required this.backgroundColor,
     this.onPressed,
   });
 
@@ -81,7 +85,7 @@ class RoundedButton extends StatelessWidget {
           ? TextButton(
               onPressed: onPressed,
               style: TextButton.styleFrom(
-                backgroundColor: backgroundWhiteColor,
+                backgroundColor: backgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -90,15 +94,12 @@ class RoundedButton extends StatelessWidget {
                   width: 2,
                 ),
               ),
-              child: Icon(
-                Icons.chevron_left,
-                size: 32,
-              ),
+              child: widget,
             )
           : TextButton(
               onPressed: null,
               style: TextButton.styleFrom(
-                backgroundColor: backgroundWhiteColor,
+                backgroundColor: backgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),

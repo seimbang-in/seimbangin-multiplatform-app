@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
@@ -31,16 +31,21 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 RoundedButton(
                   onPressed: () {},
+                  widget: Icon(
+                    Icons.chevron_left,
+                    size: 32,
+                  ),
+                  backgroundColor: backgroundWhiteColor,
                 ),
                 Image.asset(
                   'assets/ic_seimbangin-logo-logreg.png',
                 ),
               ],
             ),
-            Image.asset('assets/img_mascot-login.png'),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Image.asset('assets/img_mascot-login.png'),
                 Text(
                   'Welcome',
                   style: blackTextStyle.copyWith(
@@ -70,19 +75,28 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: backgroundGreyColor,
                 prefixIcon: Icon(
                   Icons.phone,
-                  size: 14,
+                  size: 18,
                 ),
                 hintText: 'Phone Number',
                 hintStyle: greyTextStyle.copyWith(
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(
+                    color: textBlueColor,
+                  ),
                 ),
+              ),
+              keyboardType: TextInputType.phone,
+              style: blackTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(
@@ -96,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: backgroundGreyColor,
                 prefixIcon: Icon(
                   Icons.lock_outline_rounded,
-                  size: 14,
+                  size: 18,
                 ),
                 hintText: 'Password',
                 suffixIcon: IconButton(
@@ -108,24 +122,31 @@ class _LoginPageState extends State<LoginPage> {
                   icon: isObscure == true
                       ? const Icon(
                           Icons.remove_red_eye_outlined,
-                          size: 14,
+                          size: 18,
                         )
                       : const Icon(
                           Icons.remove_red_eye_rounded,
-                          size: 14,
+                          size: 18,
                         ),
                 ),
                 suffixIconColor: textPrimaryColor,
                 hintStyle: greyTextStyle.copyWith(
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(
+                    color: textBlueColor,
+                  ),
                 ),
+              ),
+              style: blackTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
             Row(
@@ -137,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Recovery Password',
                     style: blueTextStyle.copyWith(
                       fontWeight: FontWeight.w500,
-                      fontSize: 10,
+                      fontSize: 12,
                       decoration: TextDecoration.underline,
                       decorationColor: textBlueColor,
                     ),
@@ -146,12 +167,66 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             const SizedBox(
-              height: 63,
+              height: 42,
             ),
             PrimaryFilledButton(
               title: 'Login',
               onPressed: () {},
-            )
+            ),
+            const SizedBox(
+              height: 22,
+            ),
+            Center(
+              child: Text(
+                'Or Sign Up With',
+                style: greyTextStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Center(
+              child: RoundedButton(
+                onPressed: () {},
+                widget: Image.asset('assets/ic_google.png'),
+                backgroundColor: backgroundGreyColor,
+              ),
+            ),
+            const SizedBox(
+              height: 31,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don't have an account?",
+                  style: blackTextStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    routes.pushNamed(RouteNames.register);
+                  },
+                  child: Text(
+                    'Register',
+                    style: blueTextStyle.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                      decorationColor: textBlueColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 42,
+            ),
           ],
         ),
       ),
