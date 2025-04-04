@@ -9,6 +9,7 @@ Color sliderOnboardingColor = const Color(0xFF9AB7FF);
 Color backgroundWhiteColor = const Color(0xFFFFFFFF);
 Color backgroundGreyColor = const Color(0xFFECECEC);
 Color backgroundWarningColor = const Color(0xFFFFCBDE);
+Color backgroundGreenColor = const Color(0xFF20E828);
 
 // Text Color
 Color textPrimaryColor = const Color(0xFF000000);
@@ -17,6 +18,7 @@ Color textWhiteColor = const Color(0xFFFFFFFF);
 Color textBlueColor = const Color(0xFF2885FF);
 Color textButtonColor = const Color(0xFF0048FF);
 Color textWarningColor = const Color(0xFFEA1763);
+Color textGreenColor = const Color(0xFF20E828);
 
 // Text Themes
 TextStyle blackTextStyle = GoogleFonts.plusJakartaSans(
@@ -33,4 +35,16 @@ TextStyle whiteTextStyle = GoogleFonts.plusJakartaSans(
 
 TextStyle greyTextStyle = GoogleFonts.plusJakartaSans(
   color: textSecondaryColor,
+);
+
+TextStyle greenTextStyle = GoogleFonts.plusJakartaSans(
+  color: textGreenColor,
+);
+
+TextStyle warningTextStyle = GoogleFonts.plusJakartaSans(
+  color: textWarningColor,
+);
+
+TextStyle buttonTextStyle = GoogleFonts.plusJakartaSans(
+  color: textButtonColor,
 );

@@ -171,7 +171,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             PrimaryFilledButton(
               title: 'Login',
-              onPressed: () {},
+              onPressed: () {
+                routes.pushNamed(RouteNames.home);
+              },
             ),
             const SizedBox(
               height: 22,
