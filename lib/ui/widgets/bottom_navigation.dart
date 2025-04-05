@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart%20%20';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -20,11 +21,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home, "Home", 0),
-              _buildNavItem(Icons.analytics, "Analytic", 1),
+              _buildNavItem(Icons.home, "Home", 0, () {}),
+              _buildNavItem(Icons.analytics, "Analytic", 1, () {
+                routes.pushNamed(RouteNames.analytics);
+              }),
               SizedBox(width: 40), // Ruang untuk FAB
-              _buildNavItem(Icons.chat_bubble, "Advisor", 2),
-              _buildNavItem(Icons.dashboard, "More", 3),
+              _buildNavItem(Icons.chat_bubble, "Advisor", 2, () {}),
+              _buildNavItem(Icons.dashboard, "More", 3, () {}),
             ],
           ),
         ),
@@ -32,9 +35,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(
+      IconData icon, String label, int index, GestureTapCallback? onTap) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

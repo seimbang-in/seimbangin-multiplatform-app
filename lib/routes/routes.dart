@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:seimbangin_app/ui/pages/analytics_page.dart';
 import 'package:seimbangin_app/ui/pages/home_page.dart';
 import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
@@ -31,6 +32,11 @@ final routes = GoRouter(routes: [
   GoRoute(
     path: '/home',
     name: RouteNames.home,
-    builder: (context,state) => const HomePage(),
+    builder: (context, state) => const HomePage(),
+  ),
+  GoRoute(
+    path: '/analytics',
+    name: RouteNames.analytics,
+    builder: (context, state) => AnalyticsPage(),
   ),
 ]);
