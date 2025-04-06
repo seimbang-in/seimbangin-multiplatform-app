@@ -1,5 +1,5 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/models/donut_chart_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
@@ -9,32 +9,6 @@ import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
 
-BarChartGroupData makeGroupData(int x, double income, double outcome) {
-  return BarChartGroupData(
-    x: x,
-    barRods: [
-      BarChartRodData(
-        toY: income,
-        color: backgroundGreenColor,
-        width: 15,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(6),
-          topRight: Radius.circular(6),
-        ),
-      ),
-      BarChartRodData(
-        toY: outcome,
-        color: backgroundWarningColor,
-        width: 15,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(6),
-          topRight: Radius.circular(6),
-        ),
-      ),
-    ],
-  );
-}
-
 class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({super.key});
   @override
@@ -43,15 +17,42 @@ class AnalyticsPage extends StatefulWidget {
 
 class _AnalyticsPageState extends State<AnalyticsPage>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  int selectedTab = 0;
+  late TabController _mainTabController;
+  late TabController _secondaryTabController;
+  int selectedMainTab = 0;
+  int selectedSecondaryTab = 0;
   String selectedDropdown = "Monthly";
-  String selectedType = "All";
+  final List<String> mainTabTitles = ["All", "Income", "Outcome"];
+  final List<String> secondaryTabTitles = ["Day", "Week", "1 Month", "6 Month"];
+  final incomeData = [
+    ChartSection(title: 'Parent', value: 68, color: Colors.amber),
+    ChartSection(title: 'Freelance', value: 20, color: Colors.blue),
+    ChartSection(title: 'Bonus', value: 12, color: Colors.red),
+    ChartSection(title: "kocak", value: 70, color: Colors.greenAccent),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _mainTabController =
+        TabController(length: mainTabTitles.length, vsync: this);
+    _secondaryTabController =
+        TabController(length: secondaryTabTitles.length, vsync: this);
+
+    _mainTabController.addListener(() {
+      if (!_mainTabController.indexIsChanging) {
+        setState(() {
+          selectedMainTab = _mainTabController.index;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _mainTabController.dispose();
+    _secondaryTabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,26 +97,40 @@ class _AnalyticsPageState extends State<AnalyticsPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AnalyticsTabBar(tabController: _tabController),
-                CurrentBalanceSection(
-                  balance: "Rp 2.500.000",
+                AnalyticsTabBar(
+                  tabController: _mainTabController,
+                  tabTitles: mainTabTitles,
                 ),
-                SizedBox(
-                  height: 10,
+                Visibility(
+                  visible: selectedMainTab == 1 || selectedMainTab == 2,
+                  child: AnalyticsTabBar(
+                    tabController: _secondaryTabController,
+                    tabTitles: secondaryTabTitles,
+                  ),
                 ),
-                DateAndPeriodSelector(
-                    month: "agustus",
-                    day: "17",
-                    selectedDropdown: selectedDropdown,
-                    onDropdownChanged: (value) => {
-                          setState(() {
-                            selectedDropdown = value!;
-                          })
-                        }),
-                SizedBox(
-                  height: 30,
-                ),
-                AnalyticsBarChart(),
+                if (selectedMainTab == 0) ...[
+                  CurrentBalanceSection(
+                    balance: "Rp 2.500.000",
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  DateAndPeriodSelector(
+                      month: "agustus",
+                      day: "17",
+                      selectedDropdown: selectedDropdown,
+                      onDropdownChanged: (value) => {
+                            setState(() {
+                              selectedDropdown = value!;
+                            })
+                          }),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  AnalyticsBarChart(),
+                ],
+                if (selectedMainTab == 1 || selectedMainTab == 2)
+                  AnalyticsDonutChart(sections: incomeData),
                 SizedBox(
                   height: 30,
                 ),

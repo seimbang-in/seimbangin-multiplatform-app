@@ -3,10 +3,12 @@ import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class AnalyticsTabBar extends StatelessWidget {
   final TabController tabController;
+  final List<String> tabTitles;
 
   const AnalyticsTabBar({
     super.key,
     required this.tabController,
+    required this.tabTitles,
   });
 
   @override
@@ -31,18 +33,10 @@ class AnalyticsTabBar extends StatelessWidget {
         unselectedLabelStyle:
             blackTextStyle.copyWith(fontWeight: FontWeight.w500),
         dividerColor: Colors.transparent,
-        tabs: [
-          Tab(
-            text: "All",
-          ),
-          Tab(
-            text: "Income",
-          ),
-          Tab(
-            text: "Outcome",
-          ),
-        ],
+        tabs: tabTitles.map((title) => Tab(text: title)).toList(),
       ),
     );
   }
 }
+
+

@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/models/donut_chart_model.dart';
 import 'package:seimbangin_app/services/chart_service.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
@@ -79,5 +80,70 @@ class AnalyticsBarChart extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AnalyticsDonutChart extends StatefulWidget {
+  final List<ChartSection> sections;
+  const AnalyticsDonutChart({super.key, required this.sections});
+
+  @override
+  State<AnalyticsDonutChart> createState() => _AnalyticsDonutChartState();
+}
+
+class _AnalyticsDonutChartState extends State<AnalyticsDonutChart> {
+  int touchedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final chartSize = constraints.maxWidth * 0.8; // 80% dari parent width
+
+        return Center(
+          child: SizedBox(
+            width: chartSize,
+            height: chartSize,
+            child: PieChart(
+              PieChartData(
+                pieTouchData: PieTouchData(
+                  touchCallback: (event, response) {
+                    setState(() {
+                      touchedIndex =
+                          response?.touchedSection?.touchedSectionIndex ?? -1;
+                    });
+                  },
+                ),
+                sectionsSpace: 0,
+                centerSpaceRadius: chartSize * 0.2, // auto size tengah
+                sections: _buildSections(chartSize),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<PieChartSectionData> _buildSections(double chartSize) {
+    return List.generate(widget.sections.length, (i) {
+      final isTouched = i == touchedIndex;
+      final fontSize = isTouched ? chartSize * 0.05 : chartSize * 0.03;
+      final radius = isTouched ? chartSize * 0.35 : chartSize * 0.3;
+
+      return PieChartSectionData(
+        color: widget.sections[i].color,
+        value: widget.sections[i].value,
+        radius: radius,
+        title:
+            "${widget.sections[i].title} ${widget.sections[i].value.toStringAsFixed(0)}%",
+        showTitle: true,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+    });
   }
 }
