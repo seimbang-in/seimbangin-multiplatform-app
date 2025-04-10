@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                RoundedButton(
+                CustomRoundedButton(
                   onPressed: () {
                     routes.replaceNamed(RouteNames.login);
                   },
@@ -232,7 +232,9 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             PrimaryFilledButton(
               title: 'Create Account',
-              onPressed: () {},
+              onPressed: () {
+                routes.pushNamed(RouteNames.registerWait);
+              },
             ),
             const SizedBox(
               height: 22,

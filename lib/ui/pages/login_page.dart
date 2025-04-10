@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                RoundedButton(
+                CustomRoundedButton(
                   onPressed: () {},
                   widget: Icon(
                     Icons.chevron_left,
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
             PrimaryFilledButton(
               title: 'Login',
               onPressed: () {
-                routes.pushNamed(RouteNames.home);
+                routes.pushReplacementNamed(RouteNames.home);
               },
             ),
             const SizedBox(
@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
               height: 16,
             ),
             Center(
-              child: RoundedButton(
+              child: CustomRoundedButton(
                 onPressed: () {},
                 widget: Image.asset('assets/ic_google.png'),
                 backgroundColor: backgroundGreyColor,

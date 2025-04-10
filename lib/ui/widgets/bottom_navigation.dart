@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:seimbangin_app/shared/theme/theme.dart%20%20';
+import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(

@@ -59,14 +59,14 @@ class PrimaryFilledButton extends StatelessWidget {
   }
 }
 
-class RoundedButton extends StatelessWidget {
+class CustomRoundedButton extends StatelessWidget {
   final double width;
   final double height;
   final bool isEnable;
   final Widget widget;
   final Color backgroundColor;
   final VoidCallback? onPressed;
-  const RoundedButton({
+  const CustomRoundedButton({
     super.key,
     this.width = 60,
     this.height = 60,

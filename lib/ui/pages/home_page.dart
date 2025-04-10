@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
@@ -138,7 +139,9 @@ class HomePage extends StatelessWidget {
               offset: Offset(0, 4)),
         ]),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            routes.pushNamed(RouteNames.ocr);
+          },
           backgroundColor: Colors.white,
           elevation: 4,
           shape: CircleBorder(),
