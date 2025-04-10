@@ -107,3 +107,59 @@ class HeaderSection extends StatelessWidget {
     );
   }
 }
+
+class CurrentBalanceSection extends StatelessWidget {
+  final String balance;
+  const CurrentBalanceSection({super.key, this.balance = "Rp 2.500.000"});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      width: double.infinity,
+      child: Column(
+        children: [
+          Text(
+            "Current Balance",
+            style: blackTextStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            balance,
+            style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RecentTransactionSection extends StatelessWidget {
+  final String subtitle;
+
+  const RecentTransactionSection({
+    super.key,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Recent Transaction",
+          style: blackTextStyle.copyWith(
+              fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          subtitle,
+          style: blueTextStyle.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+}
