@@ -113,3 +113,30 @@ class CustomRoundedButton extends StatelessWidget {
     );
   }
 }
+
+class ScanButton extends StatelessWidget {
+
+  const ScanButton({
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: buttonColor.withOpacity(0.5),
+            blurRadius: 20,
+            spreadRadius: 2,
+            offset: Offset(0, 4)),
+      ]),
+      child: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.white,
+        elevation: 4,
+        shape: CircleBorder(),
+        child: Icon(Icons.qr_code_scanner, color: Colors.blue, size: 30),
+      ),
+    );
+  }
+}

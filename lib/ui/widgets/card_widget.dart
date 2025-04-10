@@ -164,12 +164,11 @@ class IncomeOutcomeCard extends StatelessWidget {
   final Color backgroundColor;
   final TextStyle colorTextStyle;
 
-  const IncomeOutcomeCard({
-    super.key,
-    required this.amount,
-    required this.backgroundColor,
-    required this.colorTextStyle
-  });
+  const IncomeOutcomeCard(
+      {super.key,
+      required this.amount,
+      required this.backgroundColor,
+      required this.colorTextStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -212,8 +211,81 @@ class IncomeOutcomeCard extends StatelessWidget {
             children: [
               Text("Total Income",
                   style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
-              Text("Rp $amount",
-                  style: colorTextStyle),
+              Text("Rp $amount", style: colorTextStyle),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class DateAndPeriodSelector extends StatelessWidget {
+  final String month;
+  final String day;
+  final String selectedDropdown;
+  final Function(String?) onDropdownChanged;
+
+  const DateAndPeriodSelector({
+    super.key,
+    required this.month,
+    required this.day,
+    required this.selectedDropdown,
+    required this.onDropdownChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              month,
+              style: blackTextStyle.copyWith(fontWeight: FontWeight.w500),
+            ),
+            Text(
+              day,
+              style: blackTextStyle.copyWith(fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: backgroundGreyColor,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 5),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: backgroundGreyColor,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<String>(
+                  style: blackTextStyle.copyWith(fontSize: 14),
+                  dropdownColor: backgroundGreyColor,
+                  underline: SizedBox(),
+                  iconSize: 16,
+                  isDense: true,
+                  value: selectedDropdown,
+                  items: ["Monthly", "Weekly", "Daily"]
+                      .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: blackTextStyle.copyWith(fontSize: 14),
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: onDropdownChanged,
+                ),
+              )
             ],
           ),
         )
