@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/routes/routes.dart';
-import 'package:seimbangin_app/shared/theme/theme.dart%20%20';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});

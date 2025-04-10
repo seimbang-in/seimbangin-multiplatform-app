@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
@@ -130,7 +130,24 @@ class HomePage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(),
-      floatingActionButton: ScanButton(),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: buttonColor.withOpacity(0.5),
+              blurRadius: 20,
+              spreadRadius: 2,
+              offset: Offset(0, 4)),
+        ]),
+        child: FloatingActionButton(
+          onPressed: () {
+            routes.pushNamed(RouteNames.ocr);
+          },
+          backgroundColor: Colors.white,
+          elevation: 4,
+          shape: CircleBorder(),
+          child: Icon(Icons.qr_code_scanner, color: Colors.blue, size: 30),
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
