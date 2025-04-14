@@ -5,16 +5,18 @@ class PrimaryFilledButton extends StatelessWidget {
   final String title;
   final double width;
   final double height;
-  final bool isEnable;
   final VoidCallback? onPressed;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const PrimaryFilledButton({
     super.key,
     required this.title,
     this.width = double.infinity,
     this.height = 60,
-    this.isEnable = true,
     this.onPressed,
+    this.backgroundColor,
+    this.textColor,
   });
 
   @override
@@ -22,39 +24,21 @@ class PrimaryFilledButton extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: (isEnable == true)
-          ? TextButton(
-              onPressed: onPressed,
-              style: TextButton.styleFrom(
-                backgroundColor: buttonColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: Text(
-                title,
-                style: whiteTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            )
-          : TextButton(
-              onPressed: null,
-              style: TextButton.styleFrom(
-                backgroundColor: backgroundGreyColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: Text(
-                title,
-                style: whiteTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          backgroundColor: backgroundColor ?? buttonColor, // Default color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+        child: Text(title,
+            style: whiteTextStyle.copyWith(
+              color: textColor ?? textWhiteColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            )),
+      ),
     );
   }
 }
@@ -115,10 +99,7 @@ class CustomRoundedButton extends StatelessWidget {
 }
 
 class ScanButton extends StatelessWidget {
-
-  const ScanButton({
-    super.key
-  });
+  const ScanButton({super.key});
 
   @override
   Widget build(BuildContext context) {
