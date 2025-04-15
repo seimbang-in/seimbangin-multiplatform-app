@@ -115,10 +115,7 @@ class CustomRoundedButton extends StatelessWidget {
 }
 
 class ScanButton extends StatelessWidget {
-
-  const ScanButton({
-    super.key
-  });
+  const ScanButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +133,29 @@ class ScanButton extends StatelessWidget {
         elevation: 4,
         shape: CircleBorder(),
         child: Icon(Icons.qr_code_scanner, color: Colors.blue, size: 30),
+      ),
+    );
+  }
+}
+
+class AdvisorButton extends StatelessWidget {
+  final dynamic onPressedEvent;
+  const AdvisorButton({super.key, required this.onPressedEvent});
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {},
+      style: OutlinedButton.styleFrom(
+          side: BorderSide(color: backgroundWhiteColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14),
+          backgroundColor: Colors.transparent),
+      child: Text(
+        "Chat Advisor",
+        style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
