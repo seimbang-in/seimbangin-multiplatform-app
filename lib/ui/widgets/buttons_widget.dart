@@ -121,3 +121,66 @@ class ScanButton extends StatelessWidget {
     );
   }
 }
+
+class AddItemTransactButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final double width;
+  final double height;
+  final String title;
+
+  const AddItemTransactButton({
+    super.key,
+    required this.onPressed,
+    this.width = double.infinity,
+    this.height = 60,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: backgroundGreyColor,
+          borderRadius: BorderRadius.circular(
+            24,
+          ),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: buttonColor,
+                borderRadius: BorderRadius.circular(
+                  18,
+                ),
+              ),
+              child: Icon(
+                Icons.add_box_outlined,
+                color: textWhiteColor,
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Text(
+              title,
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
