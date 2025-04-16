@@ -9,25 +9,29 @@ part 'homepage_state.dart';
 
 class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
   final UserService userService;
+
   HomepageBloc({required this.userService}) : super(HomepageInitial()) {
-    on<HomepageEvent>((event, emit) {
-      // TODO: implement event handler
-    });
-    on<HomepageStarted>(getUserData);
+    on<HomepageStarted>(_handleHomepageStarted);
   }
 
-  Future<void> getUserData(
-      HomepageStarted event, Emitter<HomepageState> emit) async {
-    emit(HomePageLoading('Sedang memuat data user...'));
+  Future<void> _handleHomepageStarted(
+    HomepageStarted event,
+    Emitter<HomepageState> emit,
+  ) async {
     try {
-      final userData = await userService.getUserProfile();
-      final adviceData = await userService.getUserAdvice();
-      emit(HomePageSuccess(
-          message: 'Berhasil mendapatkan data user',
+      // Cek jika data sudah ada
+      if (state is! HomePageSuccess) {
+        emit(HomePageLoading('Memuat data...'));
+        final userData = await userService.getUserProfile();
+        final adviceData = await userService.getUserAdvice();
+        emit(HomePageSuccess(
+          message: 'Data berhasil dimuat',
           user: userData,
-          advice: adviceData));
+          advice: adviceData,
+        ));
+      }
     } catch (e) {
-      emit(HomePageFailure('Gagal mendapatkan data user'));
+      emit(HomePageFailure('Gagal memuat data: ${e.toString()}'));
     }
   }
 }

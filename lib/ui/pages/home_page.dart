@@ -16,25 +16,28 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
-    context.read<HomepageBloc>().add(HomepageStarted());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (context.read<HomepageBloc>().state is! HomePageSuccess) {
+      context.read<HomepageBloc>().add(HomepageStarted());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomepageBloc, HomepageState>(
-      listener: (context, state) {
-        if (state is HomePageSuccess) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
-        } else if (state is HomePageFailure) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.error)));
-        }
-      },
+    super.build(context);
+    return BlocBuilder<HomepageBloc, HomepageState>(
       builder: (context, state) {
         if (state is HomePageSuccess) {
           final user = state.user;
@@ -167,9 +170,12 @@ class _HomePageState extends State<HomePage> {
                   ]),
                 ),
                 if (state is HomePageLoading)
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                        strokeWidth: 4,
+                      ),
                     ),
                   )
               ],
@@ -202,8 +208,11 @@ class _HomePageState extends State<HomePage> {
         }
         return Scaffold(
           backgroundColor: backgroundWhiteColor,
-          body: const Center(
-            child: CircularProgressIndicator(),
+          body: Center(
+            child: CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
           ),
         );
       },

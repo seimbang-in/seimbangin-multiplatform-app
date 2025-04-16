@@ -7,7 +7,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final String advisorLogoPath = 'assets/logo-advisor-btn.png';
   final String analyticLogoPath = 'assets/logo-analytic-btn.png';
   final String homeLogoPath = 'assets/logo-home-btn.png';
-  final String moreLogoPath = 'assets/logo-more-btn.png';
+  final String profileLogoPath = 'assets/logo-profile-btn.png';
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
               }),
               SizedBox(width: 40), // Ruang untuk FAB
               _buildNavItem(advisorLogoPath, "Advisor", 2, () {}),
-              _buildNavItem(moreLogoPath, "More", 3, () {}),
+              _buildNavItem(
+                profileLogoPath,
+                "Profile",
+                3,
+                () => routes.pushNamed(RouteNames.profile),
+              ),
             ],
           ),
         ),

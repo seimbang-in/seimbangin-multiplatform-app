@@ -20,27 +20,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => LoginBloc(authService: AuthService()),
-            child: const LoginPage(),
-          ),
-          BlocProvider(
-            create: (context) => RegisterBloc(authService: AuthService()),
-            child: const RegisterPage(),
-          ),
-          BlocProvider(
-            create: (context) {
-              final bloc = HomepageBloc(userService: UserService());
-              // bloc.add(HomepageStarted());
-              return bloc;
-            },
-            child: HomePage(),
-          )
-        ],
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerConfig: routes,
-        ));
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(authService: AuthService()),
+          child: const LoginPage(),
+        ),
+        BlocProvider(
+          create: (context) => RegisterBloc(authService: AuthService()),
+          child: const RegisterPage(),
+        ),
+        BlocProvider(
+          create: (context) {
+            final bloc = HomepageBloc(userService: UserService());
+            // bloc.add(HomepageStarted());
+            return bloc;
+          },
+          child: HomePage(),
+        )
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: routes,
+      ),
+    );
   }
 }

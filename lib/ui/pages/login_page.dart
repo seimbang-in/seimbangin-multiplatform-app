@@ -21,25 +21,29 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: backgroundWhiteColor,
-        body: BlocConsumer<LoginBloc, LoginState>(
-          listener: (context, state) {
-            print('State received in listener: $state');
-            if (state is LoginSuccess) {
-              print('Login Success');
-              routes.pushNamed(RouteNames.home);
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text("Login Successfull")));
-            } else if (state is LoginFailure) {
-              print('Login Failed: ${state.error}');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  backgroundColor: backgroundWarningColor,
-                ),
-              );
-            }
-          },
+      backgroundColor: backgroundWhiteColor,
+      body: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is LoginLoading) {
+            _showLoadingDialog(context);
+          } else if (state is LoginSuccess || state is LoginFailure) {
+            _dismissLoadingDialog(context);
+          }
+          print('State received in listener: $state');
+          if (state is LoginSuccess) {
+            print('Login Success');
+            routes.pushNamed(RouteNames.home);
+          } else if (state is LoginFailure) {
+            print('Login Failed: ${state.error}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: backgroundWarningColor,
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<LoginBloc, LoginState>(
           builder: (context, state) {
             print('State received in builder: $state');
             return SafeArea(
@@ -193,20 +197,17 @@ class _LoginPageState extends State<LoginPage> {
                     height: 42,
                   ),
                   PrimaryFilledButton(
-                      title: 'Login',
-                      onPressed: () {
-                        try {
-                          context.read<LoginBloc>().add(LoginButtonPressed(
-                              identifier: phoneNumController.text,
-                              password: passwordController.text));
-                        } catch (e) {
-                          print('Error: $e');
-                        }
-                      }),
-                  if (state is LoginLoading)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    title: 'Login',
+                    onPressed: () {
+                      try {
+                        context.read<LoginBloc>().add(LoginButtonPressed(
+                            identifier: phoneNumController.text,
+                            password: passwordController.text));
+                      } catch (e) {
+                        print('Error: $e');
+                      }
+                    },
+                  ),
                   const SizedBox(
                     height: 22,
                   ),
@@ -265,6 +266,45 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           },
-        ));
+        ),
+      ),
+    );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Logging In...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
