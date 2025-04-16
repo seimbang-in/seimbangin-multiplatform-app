@@ -11,4 +11,5 @@ abstract class RouteNames {
   static const registerWelcome = 'registerWelcome';
   static const ocr = 'ocr';
   static const ocrPreview = 'ocr-preview';
+  static const transaction = 'transaction';
 }
