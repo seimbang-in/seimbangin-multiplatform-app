@@ -122,6 +122,29 @@ class ScanButton extends StatelessWidget {
   }
 }
 
+class AdvisorButton extends StatelessWidget {
+  final dynamic onPressedEvent;
+  const AdvisorButton({super.key, required this.onPressedEvent});
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {},
+      style: OutlinedButton.styleFrom(
+          side: BorderSide(color: backgroundWhiteColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14),
+          backgroundColor: Colors.transparent),
+      child: Text(
+        "Chat Advisor",
+        style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
 class AddItemTransactButton extends StatelessWidget {
   final VoidCallback onPressed;
   final double width;
@@ -184,3 +207,4 @@ class AddItemTransactButton extends StatelessWidget {
     );
   }
 }
+

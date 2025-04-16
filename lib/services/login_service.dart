@@ -19,15 +19,11 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final Map<String,dynamic> data = json.decode(response.body);
-        print('data : ${data}');
-        print('token : ${json.decode(response.body)['data']['token']}');
         return LoginModel.fromJson(data);
       } else {
-        print(response.statusCode);
         throw Exception('Failed to login');
       }
     } catch (e) {
-      print('Error: $e');
       throw Exception('$e');
     }
   }
@@ -41,10 +37,8 @@ class AuthService {
         'password': password,
         'phone': phone,
       });
-      print("response body: ${response.body}");
       return Register.fromJson(json.decode(response.body));
     } catch (e) {
-      print('Error: $e');
       throw Exception('$e');     
     }
   }

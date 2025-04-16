@@ -1,5 +1,6 @@
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HeaderSection extends StatelessWidget {
   final String name;
@@ -51,17 +52,23 @@ class HeaderSection extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: backgroundWhiteColor,
                         borderRadius: BorderRadius.circular(25)),
-                    child: Icon(
-                      Icons.person,
-                      color: primaryColor,
-                      size: 36,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          Icons.person, // Ikon fallback
+                          color: primaryColor,
+                          size: 36,
+                        );
+                      },
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Welcome 👋", style: whiteTextStyle),
-                      Text("Fawwaz Humam",
+                      Text(name,
                           style: whiteTextStyle.copyWith(
                               fontWeight: FontWeight.bold)),
                     ],
@@ -86,7 +93,10 @@ class HeaderSection extends StatelessWidget {
             Stack(
               alignment: Alignment.center,
               children: [
-                Text("Rp 2.500.000",
+                Text(
+                    NumberFormat.currency(
+                            locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                        .format(double.parse(money)),
                     style: whiteTextStyle.copyWith(
                         fontWeight: FontWeight.bold, fontSize: 18)),
               ],
@@ -94,15 +104,15 @@ class HeaderSection extends StatelessWidget {
           ],
         ),
         Positioned(
-          right: 90,
-          bottom: 57,
+          right: MediaQuery.of(context).size.width * 0.25,
+          bottom: MediaQuery.of(context).size.height * 0.062,
           child: IconButton(
             icon: Icon(Icons.visibility_outlined),
             iconSize: 20,
             color: backgroundWhiteColor,
             onPressed: () {},
           ),
-        )
+        ),
       ],
     );
   }

@@ -4,6 +4,10 @@ import 'package:seimbangin_app/routes/routes.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   const CustomBottomNavigationBar({super.key});
+  final String advisorLogoPath = 'assets/logo-advisor-btn.png';
+  final String analyticLogoPath = 'assets/logo-analytic-btn.png';
+  final String homeLogoPath = 'assets/logo-home-btn.png';
+  final String moreLogoPath = 'assets/logo-more-btn.png';
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +25,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home, "Home", 0, () {}),
-              _buildNavItem(Icons.analytics, "Analytic", 1, () {
+              _buildNavItem(homeLogoPath, "Home", 0, () {
+                routes.pushNamed(RouteNames.home);
+              }),
+              _buildNavItem(analyticLogoPath, "Analytic", 1, () {
                 routes.pushNamed(RouteNames.analytics);
               }),
               SizedBox(width: 40), // Ruang untuk FAB
-              _buildNavItem(Icons.chat_bubble, "Advisor", 2, () {}),
-              _buildNavItem(Icons.dashboard, "More", 3, () {}),
+              _buildNavItem(advisorLogoPath, "Advisor", 2, () {}),
+              _buildNavItem(moreLogoPath, "More", 3, () {}),
             ],
           ),
         ),
@@ -36,13 +42,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
   }
 
   Widget _buildNavItem(
-      IconData icon, String label, int index, GestureTapCallback? onTap) {
+      String iconPath, String label, int index, GestureTapCallback? onTap) {
     return InkWell(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Colors.white),
+          Image.asset(
+            iconPath, // Path ke file PNG
+            width: 24, // Ukuran lebar ikon
+            height: 24, // Ukuran tinggi ikon
+          ),
           SizedBox(
             height: 4,
           ),

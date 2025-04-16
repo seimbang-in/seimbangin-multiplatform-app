@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:seimbangin_app/models/advice_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
+import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class AiAdvisorSection extends StatelessWidget {
-  const AiAdvisorSection({super.key});
+  final Advice advice;
+  final bool isAdviceExist;
+  const AiAdvisorSection(
+      {super.key, required this.advice, required this.isAdviceExist});
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +27,37 @@ class AiAdvisorSection extends StatelessWidget {
             child: Row(
               children: [
                 Flexible(
-                  child: Text(
-                    "Please fill in your financial profile data here first to get Financial AI Advice",
-                    style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
-                    softWrap: true,
-                  ),
-                ),
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      isAdviceExist
+                          ? advice.data
+                          : "Please fill in your financial profile data here first to get Financial AI Advice",
+                      style:
+                          whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                      softWrap: true,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    AdvisorButton(onPressedEvent: (){})
+                  ],
+                )),
                 SizedBox(
                   width: 10,
                 ),
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: backgroundWhiteColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child:
-                      Icon(Icons.error_outline, color: primaryColor, size: 30),
-                )
+                if (!isAdviceExist)
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: backgroundWhiteColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Icon(Icons.error_outline,
+                        color: primaryColor, size: 30),
+                  )
               ],
             ),
           )

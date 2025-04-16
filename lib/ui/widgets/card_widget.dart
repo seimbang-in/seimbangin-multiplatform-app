@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class ArticleCard extends StatelessWidget {
@@ -160,15 +161,17 @@ class RecentTransactionCard extends StatelessWidget {
 }
 
 class IncomeOutcomeCard extends StatelessWidget {
-  final int amount;
+  final String amount;
   final Color backgroundColor;
   final TextStyle colorTextStyle;
+  final String incomeOrOutcome;
 
   const IncomeOutcomeCard(
       {super.key,
       required this.amount,
       required this.backgroundColor,
-      required this.colorTextStyle});
+      required this.colorTextStyle,
+      required this.incomeOrOutcome});
 
   @override
   Widget build(BuildContext context) {
@@ -209,9 +212,13 @@ class IncomeOutcomeCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Total Income",
+              Text("Total $incomeOrOutcome",
                   style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
-              Text("Rp $amount", style: colorTextStyle),
+              Text(
+                  NumberFormat.currency(
+                          locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                      .format(double.parse(amount)),
+                  style: colorTextStyle),
             ],
           ),
         )
