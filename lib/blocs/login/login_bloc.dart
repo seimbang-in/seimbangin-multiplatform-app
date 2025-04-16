@@ -17,20 +17,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginButtonPressed event,
     Emitter<LoginState> emit,
   ) async {
-    print('Event received: LoginButtonPressed');
-    // emit(LoginLoading());
+    emit(LoginLoading());
     try {
       final result = await authService.login(
         event.identifier,
         event.password,
       );
-      print('Result dari AuthService.login(): $result');
       await Token.saveToken(result.data.token);
       emit(LoginSuccess(result));
-    } catch (e, stackTrace) {
-      print('Login failed: $e');
-      print('StackTrace: $stackTrace'); // Dapatkan lebih detail errornya
+      // Reset state setelah 1 detik
+      await Future.delayed(Duration(seconds: 1));
+      emit(LoginInitial());
+    } catch (e) {
       emit(LoginFailure(e.toString()));
+      // Reset state setelah error
+      await Future.delayed(Duration(seconds: 2));
+      emit(LoginInitial());
     }
   }
 }

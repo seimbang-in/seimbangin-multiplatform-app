@@ -52,6 +52,74 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _showLogoutDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap button to close
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 66,
+              ),
+              Text(
+                'Log Out\nYour Account?',
+                style: blueTextStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 28,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'See you again another time!, friend✋🏻',
+                style: blackTextStyle.copyWith(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 60),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: PrimaryFilledButton(
+                      title: 'Cancel',
+                      onPressed: () => routes.pop(),
+                      backgroundColor: backgroundGreyColor,
+                      textColor: textPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: PrimaryFilledButton(
+                      title: 'Log Out',
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        // Tambahkan logika logout di sini
+                        routes.replaceNamed(RouteNames.login);
+                      },
+                      backgroundColor: backgroundWarningColor,
+                      textColor: textWhiteColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -289,7 +357,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 PrimaryFilledButton(
                   title: 'Log Out',
-                  onPressed: () {},
+                  onPressed: _showLogoutDialog,
                   backgroundColor: backgroundWarningColor,
                 ),
               ],
