@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seimbangin_app/blocs/login/login_bloc.dart';
+import 'package:seimbangin_app/blocs/register/register_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
+import 'package:seimbangin_app/services/login_service.dart';
+import 'package:seimbangin_app/ui/pages/login_page.dart';
+import 'package:seimbangin_app/ui/pages/register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,9 +16,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: routes,
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => LoginBloc(authService: AuthService()),
+            child: const LoginPage(),
+          ),
+          BlocProvider(
+            create: (context) => RegisterBloc(authService: AuthService()),
+            child: const RegisterPage(),
+          ),
+        ],
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routerConfig: routes,
+        ));
   }
 }
