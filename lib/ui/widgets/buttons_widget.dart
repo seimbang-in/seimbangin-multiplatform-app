@@ -5,16 +5,18 @@ class PrimaryFilledButton extends StatelessWidget {
   final String title;
   final double width;
   final double height;
-  final bool isEnable;
   final VoidCallback? onPressed;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const PrimaryFilledButton({
     super.key,
     required this.title,
     this.width = double.infinity,
     this.height = 60,
-    this.isEnable = true,
     this.onPressed,
+    this.backgroundColor,
+    this.textColor,
   });
 
   @override
@@ -22,39 +24,21 @@ class PrimaryFilledButton extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: (isEnable == true)
-          ? TextButton(
-              onPressed: onPressed,
-              style: TextButton.styleFrom(
-                backgroundColor: buttonColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: Text(
-                title,
-                style: whiteTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            )
-          : TextButton(
-              onPressed: null,
-              style: TextButton.styleFrom(
-                backgroundColor: backgroundGreyColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: Text(
-                title,
-                style: whiteTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          backgroundColor: backgroundColor ?? buttonColor, // Default color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+        child: Text(title,
+            style: whiteTextStyle.copyWith(
+              color: textColor ?? textWhiteColor,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            )),
+      ),
     );
   }
 }
@@ -115,10 +99,7 @@ class CustomRoundedButton extends StatelessWidget {
 }
 
 class ScanButton extends StatelessWidget {
-
-  const ScanButton({
-    super.key
-  });
+  const ScanButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +117,69 @@ class ScanButton extends StatelessWidget {
         elevation: 4,
         shape: CircleBorder(),
         child: Icon(Icons.qr_code_scanner, color: Colors.blue, size: 30),
+      ),
+    );
+  }
+}
+
+class AddItemTransactButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final double width;
+  final double height;
+  final String title;
+
+  const AddItemTransactButton({
+    super.key,
+    required this.onPressed,
+    this.width = double.infinity,
+    this.height = 60,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: backgroundGreyColor,
+          borderRadius: BorderRadius.circular(
+            24,
+          ),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 8,
+            ),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: buttonColor,
+                borderRadius: BorderRadius.circular(
+                  18,
+                ),
+              ),
+              child: Icon(
+                Icons.add_box_outlined,
+                color: textWhiteColor,
+              ),
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Text(
+              title,
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

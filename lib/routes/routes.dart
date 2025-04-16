@@ -7,6 +7,7 @@ import 'package:seimbangin_app/ui/pages/ocr_preview_page.dart';
 import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
 import 'package:seimbangin_app/ui/pages/register_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
+import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 
 part 'name_route.dart';
 
@@ -54,6 +55,11 @@ final routes = GoRouter(routes: [
               final path = state.extra as String;
               return OcrPreviewPage(path: path);
             },
+          ),
+          GoRoute(
+            path: 'transaction',
+            name: RouteNames.transaction,
+            builder: (context, state) => const TransactionsPage(),
           ),
         ],
       ),

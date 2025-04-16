@@ -181,7 +181,7 @@ class _OcrPageState extends State<OcrPage> {
             left: 20,
             right: 20,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
               decoration: BoxDecoration(
                 color: textWhiteColor,
                 borderRadius: BorderRadius.circular(24),
@@ -198,7 +198,11 @@ class _OcrPageState extends State<OcrPage> {
                   const SizedBox(height: 12),
                   PrimaryFilledButton(
                     title: 'Add Manual',
-                    onPressed: () {},
+                    backgroundColor: backgroundGreyColor,
+                    textColor: textPrimaryColor,
+                    onPressed: () {
+                      routes.pushNamed(RouteNames.transaction);
+                    },
                   ),
                 ],
               ),
