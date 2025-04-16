@@ -8,7 +8,7 @@ Color buttonColor = const Color(0xFF2885FF);
 Color sliderOnboardingColor = const Color(0xFF9AB7FF);
 Color backgroundWhiteColor = const Color(0xFFFFFFFF);
 Color backgroundGreyColor = const Color(0xFFECECEC);
-Color backgroundWarningColor = const Color(0xFFFFCBDE);
+Color backgroundWarningColor = const Color(0xFFEA1763);
 Color backgroundGreenColor = const Color(0xFF20E828);
 
 // Text Color
