@@ -5,11 +5,13 @@ class AddTransactionIncomeSection extends StatelessWidget {
   late TextEditingController transactNameController = TextEditingController();
   late TextEditingController transactPriceController = TextEditingController();
   late TextEditingController transactAmountController = TextEditingController();
+  final ValueChanged onChangePressed;
   AddTransactionIncomeSection({
     super.key,
     required this.transactNameController,
     required this.transactPriceController,
     required this.transactAmountController,
+    required this.onChangePressed
   });
 
   @override
@@ -47,6 +49,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
         ),
         TextField(
           controller: transactPriceController,
+          onChanged: onChangePressed,
           decoration: InputDecoration(
             filled: true,
             fillColor: backgroundGreyColor,
@@ -77,6 +80,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
         ),
         TextField(
           controller: transactAmountController,
+          onChanged: onChangePressed,
           decoration: InputDecoration(
             filled: true,
             fillColor: backgroundGreyColor,
