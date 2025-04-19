@@ -9,6 +9,8 @@ import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
 import 'package:seimbangin_app/ui/pages/register_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
+import 'package:seimbangin_app/ui/pages/transaction_struct_page.dart';
+import 'package:seimbangin_app/ui/pages/transaction_success.dart';
 import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 
 part 'name_route.dart';
@@ -67,6 +69,16 @@ final routes = GoRouter(routes: [
             path: 'transaction',
             name: RouteNames.transaction,
             builder: (context, state) => const TransactionsPage(),
+          ),
+          GoRoute(
+            path: 'transactionStruct',
+            name: RouteNames.transactionStruct,
+            builder: (context, state) => TransactionStructPage(),
+          ),
+          GoRoute(
+            path: 'transactionSuccess',
+            name: RouteNames.transactionSuccess,
+            builder: (context, state) => TransactionSuccessPage(),
           ),
         ],
       ),
