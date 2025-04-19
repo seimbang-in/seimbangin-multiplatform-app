@@ -258,7 +258,9 @@ class _TransactionsPageState extends State<TransactionsPage>
                     ),
                     PrimaryFilledButton(
                       title: 'Add Transaction',
-                      onPressed: () {},
+                      onPressed: () {
+                        routes.pushNamed(RouteNames.transactionStruct);
+                      },
                       backgroundColor: textWhiteColor,
                       textColor: primaryColor,
                     ),
