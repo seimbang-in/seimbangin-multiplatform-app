@@ -129,7 +129,7 @@ class AdvisorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: onPressedEvent,
       style: OutlinedButton.styleFrom(
           side: BorderSide(color: backgroundWhiteColor),
           shape: RoundedRectangleBorder(
@@ -207,4 +207,3 @@ class AddItemTransactButton extends StatelessWidget {
     );
   }
 }
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
@@ -41,7 +42,9 @@ class AiAdvisorSection extends StatelessWidget {
                     SizedBox(
                       height: 30,
                     ),
-                    AdvisorButton(onPressedEvent: (){})
+                    AdvisorButton(onPressedEvent: () {
+                      routes.pushNamed(RouteNames.chatAdvisor);
+                    })
                   ],
                 )),
                 SizedBox(
