@@ -44,7 +44,11 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               TransactionBloc(transactionService: TransactionService()),
           child: const TransactionsPage(),
-        )
+        ),
+        BlocProvider(
+            create: (context) => ChatbotBloc(chatbotService: ChatbotService()),
+            child: ChatAdvisorPage(),
+          )
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
