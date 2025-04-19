@@ -49,6 +49,11 @@ class _OcrPageState extends State<OcrPage> {
     super.dispose();
   }
 
+  // Future<void> _sendToOcr() async {
+  //   final service = OcrService();
+  //   final result = await service.getOcrItem(File(widget.imagePath))
+  // }
+
 // init camera function
   Future initCamera(CameraDescription cameraDescription) async {
     if (cameraController != null) {

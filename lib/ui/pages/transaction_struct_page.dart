@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:seimbangin_app/models/ocr_item_models.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -15,6 +17,21 @@ class TransactionStructPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final OcrItem ocrItem =
+        ModalRoute.of(context)!.settings.arguments as OcrItem;
+
+    List<Map<String, dynamic>> getParsedTransactions() {
+      return ocrItem.data.items.map((item) {
+        return {
+          'name': item.itemName,
+          'qty': item.quantity,
+          'price': item.price,
+        };
+      }).toList();
+    }
+
+    final transaction = getParsedTransactions();
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -86,7 +103,7 @@ class TransactionStructPage extends StatelessWidget {
                       ),
                       Center(
                         child: Text(
-                          'Alfamidi',
+                          ocrItem.data.store,
                           style: blackTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
@@ -99,7 +116,7 @@ class TransactionStructPage extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '01 April 2025',
+                            ocrItem.data.date.toString().substring(0, 10),
                             style: blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 8,
@@ -184,7 +201,11 @@ class TransactionStructPage extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Rp37.000',
+                                NumberFormat.currency(
+                                  locale: 'id_ID',
+                                  decimalDigits: 0,
+                                  symbol: 'Rp ',
+                                ).format(ocrItem.data.total),
                                 style: whiteTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
@@ -212,10 +233,10 @@ class TransactionStructPage extends StatelessWidget {
                         child: ListView.separated(
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
-                          itemCount: transactions.length,
+                          itemCount: transaction.length,
                           separatorBuilder: (context, index) => Divider(),
                           itemBuilder: (context, index) {
-                            final item = transactions[index];
+                            final item = transaction[index];
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(
@@ -236,7 +257,11 @@ class TransactionStructPage extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    'Rp ${item['price'].toStringAsFixed(0)}',
+                                    NumberFormat.currency(
+                                      locale: 'id_ID',
+                                      decimalDigits: 0,
+                                      symbol: 'Rp ',
+                                    ).format(item['price']),
                                     style: blackTextStyle.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 10,
