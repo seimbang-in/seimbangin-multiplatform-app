@@ -6,6 +6,7 @@ import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_preview_page.dart';
 import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
+import 'package:seimbangin_app/ui/pages/profile_page.dart';
 import 'package:seimbangin_app/ui/pages/register_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
 import 'package:seimbangin_app/ui/pages/transactions_page.dart';
@@ -38,6 +39,11 @@ final routes = GoRouter(routes: [
     path: '/analytics',
     name: RouteNames.analytics,
     builder: (context, state) => AnalyticsPage(),
+  ),
+  GoRoute(
+    path: '/profile',
+    name: RouteNames.profile,
+    builder: (context, state) => ProfilePage(),
   ),
   GoRoute(
     path: '/home',

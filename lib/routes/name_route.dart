@@ -12,5 +12,6 @@ abstract class RouteNames {
   static const ocr = 'ocr';
   static const ocrPreview = 'ocr-preview';
   static const transaction = 'transaction';
+  static const profile = 'profile';
   static const chatAdvisor = 'chat-advisor';
 }
