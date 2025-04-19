@@ -3,8 +3,10 @@ import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 
 class IncomeOutcomeSection extends StatelessWidget {
-  final String amount;
-  const IncomeOutcomeSection({super.key,required this.amount});
+  final String incomeAmount;
+  final String outcomeAmount;
+  const IncomeOutcomeSection(
+      {super.key, required this.incomeAmount, required this.outcomeAmount});
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +33,19 @@ class IncomeOutcomeSection extends StatelessWidget {
             children: [
               IncomeOutcomeCard(
                 incomeOrOutcome: "Income",
-                amount: amount,
+                amount: incomeAmount,
                 backgroundColor: backgroundGreenColor,
                 colorTextStyle:
                     greenTextStyle.copyWith(fontWeight: FontWeight.bold),
+                icon: Icons.arrow_upward_rounded,
               ),
               IncomeOutcomeCard(
                 incomeOrOutcome: "Outcome",
-                amount: amount,
+                amount: outcomeAmount,
                 backgroundColor: textWarningColor,
                 colorTextStyle:
                     warningTextStyle.copyWith(fontWeight: FontWeight.bold),
+                icon: Icons.arrow_downward_rounded,
               ),
             ],
           ),

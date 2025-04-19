@@ -32,7 +32,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
                 routes.pushNamed(RouteNames.analytics);
               }),
               SizedBox(width: 40), // Ruang untuk FAB
-              _buildNavItem(advisorLogoPath, "Advisor", 2, () {}),
+              _buildNavItem(advisorLogoPath, "Advisor", 2, () {
+                routes.pushNamed(RouteNames.chatAdvisor);
+              }),
               _buildNavItem(
                 profileLogoPath,
                 "Profile",

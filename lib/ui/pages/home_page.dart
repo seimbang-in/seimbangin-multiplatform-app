@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage>
                   floating: false,
                   flexibleSpace: FlexibleSpaceBar(
                     background: HeaderSection(
-                      name: user.data.fullName,
-                      money: user.data.balance,
+                      name: user.data.fullName ?? "Guest",
+                      money: user.data.balance?.toString() ?? '0',
                       imageUrl: "assets/img_mascot-login.png",
                     ),
                   ),
@@ -78,7 +78,14 @@ class _HomePageState extends State<HomePage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             IncomeOutcomeSection(
-                              amount: user.data.balance,
+                              incomeAmount: user
+                                      .data.financeProfile?.totalIncome
+                                      .toString() ??
+                                  '0',
+                              outcomeAmount: user
+                                      .data.financeProfile?.totalOutcome
+                                      .toString() ??
+                                  '0',
                             ),
                             const SizedBox(height: 20),
                             Text(
@@ -89,7 +96,9 @@ class _HomePageState extends State<HomePage>
                             const SizedBox(height: 10),
                             AiAdvisorSection(
                               advice: state.advice,
-                              isAdviceExist: true,
+                              isAdviceExist: state.user.data.financeProfile
+                                      ?.financialGoals !=
+                                  null,
                             ),
                             const SizedBox(height: 20),
                             Text(

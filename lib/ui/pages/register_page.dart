@@ -100,7 +100,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  keyboardType: TextInputType.phone,
                   style: blackTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -130,13 +129,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  keyboardType: TextInputType.phone,
                   style: blackTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
+                const SizedBox(   
                   height: 16,
                 ),
                 TextField(
@@ -160,7 +158,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  keyboardType: TextInputType.phone,
                   style: blackTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,

@@ -165,13 +165,15 @@ class IncomeOutcomeCard extends StatelessWidget {
   final Color backgroundColor;
   final TextStyle colorTextStyle;
   final String incomeOrOutcome;
+  final IconData icon;
 
   const IncomeOutcomeCard(
       {super.key,
       required this.amount,
       required this.backgroundColor,
       required this.colorTextStyle,
-      required this.incomeOrOutcome});
+      required this.incomeOrOutcome,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -191,18 +193,17 @@ class IncomeOutcomeCard extends StatelessWidget {
                 top: 7,
                 left: 7,
                 child: Icon(
-                  Icons.arrow_downward,
+                  icon,
                   size: 16,
                   color: backgroundWhiteColor,
                 ),
               ),
               Center(
-                child: Icon(
-                  Icons.currency_bitcoin_outlined,
-                  color: backgroundWhiteColor,
-                  size: 30,
-                ),
-              )
+                  child: Image.asset(
+                'assets/logo-money.png',
+                width: 24,
+                height: 24,
+              ))
             ],
           ),
         ),
@@ -217,7 +218,7 @@ class IncomeOutcomeCard extends StatelessWidget {
               Text(
                   NumberFormat.currency(
                           locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                      .format(double.parse(amount)),
+                      .format(double.tryParse(amount) ?? 0.0),
                   style: colorTextStyle),
             ],
           ),

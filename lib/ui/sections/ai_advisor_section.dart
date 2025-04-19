@@ -39,12 +39,14 @@ class AiAdvisorSection extends StatelessWidget {
                           whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
                       softWrap: true,
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    AdvisorButton(onPressedEvent: () {
-                      routes.pushNamed(RouteNames.chatAdvisor);
-                    })
+                    // SizedBox(
+                    //   height: 30,
+                    // ),
+                    isAdviceExist
+                        ? AdvisorButton(onPressedEvent: () {
+                            routes.pushNamed(RouteNames.chatAdvisor);
+                          })
+                        : SizedBox.shrink(),
                   ],
                 )),
                 SizedBox(
