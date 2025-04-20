@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seimbangin_app/models/user_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
@@ -93,7 +95,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   Expanded(
                     child: PrimaryFilledButton(
                       title: 'Cancel',
-                      onPressed: () => routes.pop(),
                       backgroundColor: backgroundGreyColor,
                       textColor: textPrimaryColor,
                     ),
@@ -139,6 +140,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = GoRouterState.of(context).extra as User;
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
       body: ListView(
@@ -164,7 +166,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 10,
                 ),
                 Text(
-                  'Mf.humam',
+                  user.data.fullName!,
                   style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -174,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 4,
                 ),
                 Text(
-                  'mfawwazhumam@gmail.com',
+                  user.data.email!,
                   style: greyTextStyle.copyWith(
                     fontWeight: FontWeight.w500,
                     fontSize: 10,
@@ -207,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: 'Mf.humam',
+                    hintText: user.data.username,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -234,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 10,
                 ),
                 Text(
-                  'Full Name',
+                  'Fullname',
                   style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -248,7 +250,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: 'Fawwaz Humam',
+                    hintText: user.data.fullName,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -289,7 +291,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: 'mfawwazhumam@gmail.com',
+                    hintText: user.data.email,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,

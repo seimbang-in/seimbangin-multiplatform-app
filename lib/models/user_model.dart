@@ -28,6 +28,7 @@ class Data {
   dynamic birthDate;
   DateTime? createdAt;
   DateTime? updatedAt;
+  String? phoneNumber;
   FinanceProfile? financeProfile;
 
   Data({
@@ -43,6 +44,7 @@ class Data {
     required this.birthDate,
     required this.createdAt,
     required this.updatedAt,
+    required this.phoneNumber,
     required this.financeProfile,
   });
 
@@ -58,6 +60,7 @@ class Data {
       university: json['university'],
       gender: json['gender'],
       birthDate: json['birth_date'],
+      phoneNumber: json['phone_number'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       financeProfile: FinanceProfile.fromJson(json['finance_profile']),

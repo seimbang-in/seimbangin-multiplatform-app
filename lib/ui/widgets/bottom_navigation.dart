@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 
@@ -11,40 +13,57 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(30),
-        topRight: Radius.circular(30),
-      ),
-      child: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 0.0,
-        color: buttonColor, // Warna navbar
-        child: SizedBox(
-          height: 40, // Tambah tinggi agar muat teks
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(homeLogoPath, "Home", 0, () {
-                routes.pushNamed(RouteNames.home);
-              }),
-              _buildNavItem(analyticLogoPath, "Analytic", 1, () {
-                routes.pushNamed(RouteNames.analytics);
-              }),
-              SizedBox(width: 40), // Ruang untuk FAB
-              _buildNavItem(advisorLogoPath, "Advisor", 2, () {
-                routes.pushNamed(RouteNames.chatAdvisor);
-              }),
-              _buildNavItem(
-                profileLogoPath,
-                "Profile",
-                3,
-                () => routes.pushNamed(RouteNames.profile),
-              ),
-            ],
+    return BlocBuilder<HomepageBloc, HomepageState>(
+      builder: (context, state) {
+        return ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
           ),
-        ),
-      ),
+          child: BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 0.0,
+            color: buttonColor, // Warna navbar
+            child: SizedBox(
+              height: 40, // Tambah tinggi agar muat teks
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavItem(homeLogoPath, "Home", 0, () {
+                    routes.pushNamed(RouteNames.home);
+                  }),
+                  _buildNavItem(analyticLogoPath, "Analytic", 1, () {
+                    routes.pushNamed(RouteNames.analytics);
+                  }),
+                  SizedBox(width: 40), // Ruang untuk FAB
+                  _buildNavItem(advisorLogoPath, "Advisor", 2, () {
+                    routes.pushNamed(RouteNames.chatAdvisor);
+                  }),
+                  _buildNavItem(
+                    profileLogoPath,
+                    "Profile",
+                    3,
+                    () {
+                      if (state is HomePageSuccess) {
+                        final user = state.user;
+                        routes.pushNamed(
+                          RouteNames.profile,
+                          extra: user,
+                        );
+                      } else {
+                        // Opsional: handle kalau user belum tersedia
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('User data not loaded')),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
