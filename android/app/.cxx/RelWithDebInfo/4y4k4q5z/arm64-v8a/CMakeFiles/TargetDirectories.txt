@@ -1,0 +1,2 @@
+D:/Coding/Android/Flutter/seimbangin-multiplatform-app/android/app/.cxx/RelWithDebInfo/4y4k4q5z/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Coding/Android/Flutter/seimbangin-multiplatform-app/android/app/.cxx/RelWithDebInfo/4y4k4q5z/arm64-v8a/CMakeFiles/rebuild_cache.dir

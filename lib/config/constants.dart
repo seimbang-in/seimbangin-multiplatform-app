@@ -6,4 +6,5 @@ class Constant {
   static const String getUserAdviceEndpoint = '$baseUrlApi/advisor';
   static const String chatbotReplyEndpoint = '$baseUrlApi/chatbot';
   static const String addTransactionEndpoint = '$baseUrlApi/transaction';
+  static const String ocrEndpoint = '$baseUrlApi/ocr';
 }

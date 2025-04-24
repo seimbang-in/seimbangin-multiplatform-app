@@ -1,20 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
+import 'package:seimbangin_app/models/ocr_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
+import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatelessWidget {
-  final List<Map<String, dynamic>> transactions = [
-    {'name': 'Nasi Goreng', 'qty': 2, 'price': 25000},
-    {'name': 'Es Teh', 'qty': 1, 'price': 5000},
-    {'name': 'Ayam Bakar', 'qty': 1, 'price': 35000},
-    {'name': 'Sate Ayam', 'qty': 2, 'price': 30000},
-  ];
-
   TransactionStructPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    //     final List<Map<String, dynamic>> transactions = [
+    //   {'name': 'Nasi Goreng', 'qty': 2, 'price': 25000},
+    //   {'name': 'Es Teh', 'qty': 1, 'price': 5000},
+    //   {'name': 'Ayam Bakar', 'qty': 1, 'price': 35000},
+    //   {'name': 'Sate Ayam', 'qty': 2, 'price': 30000},
+    // ];
+
+    final OcrModel ocrModel = GoRouterState.of(context).extra as OcrModel;
+    final List<Item> transactions = ocrModel.data.items.map((i) {
+      return Item(
+        name: i.itemName,
+        quantity: i.quantity.toString(),
+        price: i.price.toString(),
+        category: i.category,
+      );
+    }).toList();
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -86,7 +101,7 @@ class TransactionStructPage extends StatelessWidget {
                       ),
                       Center(
                         child: Text(
-                          'Alfamidi',
+                          ocrModel.data.store,
                           style: blackTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
                             fontSize: 12,
@@ -99,7 +114,7 @@ class TransactionStructPage extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            '01 April 2025',
+                            DateFormat('dd/MM/yyyy').format(ocrModel.data.date),
                             style: blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 8,
@@ -184,7 +199,11 @@ class TransactionStructPage extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Rp37.000',
+                                NumberFormat.currency(
+                                  locale: 'id',
+                                  symbol: 'Rp ',
+                                  decimalDigits: 0,
+                                ).format(ocrModel.data.total),
                                 style: whiteTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
@@ -219,7 +238,7 @@ class TransactionStructPage extends StatelessWidget {
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(
-                                item['name'],
+                                item.name,
                                 style: blackTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 10,
@@ -230,13 +249,17 @@ class TransactionStructPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Qty: ${item['qty']}',
+                                    'Qty: ${item.quantity}',
                                     style: greyTextStyle.copyWith(
                                       fontSize: 10,
                                     ),
                                   ),
                                   Text(
-                                    'Rp ${item['price'].toStringAsFixed(0)}',
+                                    NumberFormat.currency(
+                                      locale: 'id',
+                                      symbol: 'Rp ',
+                                      decimalDigits: 0,
+                                    ).format(int.parse(item.price)),
                                     style: blackTextStyle.copyWith(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 10,
@@ -250,15 +273,33 @@ class TransactionStructPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      PrimaryFilledButton(
-                        title: 'Save',
-                        onPressed: () {
-                          routes.pushNamed(RouteNames.transactionSuccess);
+                      BlocListener<TransactionBloc, TransactionState>(
+                        listener: (context, state) {
+                          if (state is TransactionSuccess) {
+                            routes.pushNamed(RouteNames.transactionSuccess);
+                          } else if (state is TransactionFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(state.message),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         },
-                        backgroundColor: primaryColor,
-                        textColor: textWhiteColor,
-                        width: double.infinity,
-                      ),
+                        child: PrimaryFilledButton(
+                          title: 'Save',
+                          onPressed: () {
+                            context.read<TransactionBloc>().add(
+                                TransactionButtonPressed(
+                                    description: "Outcome",
+                                    type: 0,
+                                    items: transactions));
+                          },
+                          backgroundColor: primaryColor,
+                          textColor: textWhiteColor,
+                          width: double.infinity,
+                        ),
+                      )
                     ],
                   ),
                 ),

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seimbangin_app/blocs/ocr/ocr_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -68,7 +70,39 @@ class OcrPreviewPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 62),
-            PrimaryFilledButton(title: 'Upload Image'),
+            // PrimaryFilledButton(title: 'Upload Image'),
+            BlocListener<OcrBloc, OcrState>(
+              listener: (context, state) {
+                if (state is OcrSuccess) {
+                  routes.pushNamed(RouteNames.transactionStruct,
+                      extra: state.ocrModel);
+                } else if (state is OcrFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: BlocBuilder<OcrBloc, OcrState>(
+                builder: (context, state) {
+                  if (state is OcrLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return PrimaryFilledButton(
+                    title: 'Upload Image',
+                    onPressed: () {
+                      context.read<OcrBloc>().add(
+                            OcrButtonPressed(imagePath: path),
+                          );
+                    },
+                  );
+                },
+              ),
+            ),
             const SizedBox(height: 12),
             TextButton(
               onPressed: () {},
@@ -80,6 +114,7 @@ class OcrPreviewPage extends StatelessWidget {
                 ),
               ),
             ),
+            
           ],
         ),
       ),

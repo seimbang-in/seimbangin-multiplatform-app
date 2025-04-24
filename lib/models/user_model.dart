@@ -16,20 +16,20 @@ class User {
 }
 
 class Data {
-  int id;
-  String fullName;
-  int age;
-  String balance;
-  String username;
-  String email;
+  int? id;
+  String? fullName;
+  dynamic age;
+  String? balance;
+  String? username;
+  String? email;
   dynamic profilePicture;
   dynamic university;
-  String gender;
+  String? gender;
   dynamic birthDate;
-  DateTime createdAt;
-  DateTime updatedAt;
-  FinanceProfile financeProfile;
-  List<ThisMonthIncome> thisMonthIncome;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? phoneNumber;
+  FinanceProfile? financeProfile;
 
   Data({
     required this.id,
@@ -44,8 +44,8 @@ class Data {
     required this.birthDate,
     required this.createdAt,
     required this.updatedAt,
+    required this.phoneNumber,
     required this.financeProfile,
-    required this.thisMonthIncome,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) {
@@ -60,52 +60,45 @@ class Data {
       university: json['university'],
       gender: json['gender'],
       birthDate: json['birth_date'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      phoneNumber: json['phone_number'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
       financeProfile: FinanceProfile.fromJson(json['finance_profile']),
-      thisMonthIncome: (json['thisMonthIncome'] as List)
-          .map((e) => ThisMonthIncome.fromJson(e))
-          .toList(),
     );
   }
 }
 
 class FinanceProfile {
-  String monthlyIncome;
-  String currentSavings;
-  String debt;
-  String financialGoals;
-  String riskManagement;
+  dynamic monthlyIncome;
+  dynamic currentSavings;
+  dynamic debt;
+  dynamic financialGoals;
+  dynamic totalIncome;
+  dynamic totalOutcome;
+  dynamic riskManagement;
+  dynamic thisMonthIncome;
 
   FinanceProfile({
     required this.monthlyIncome,
     required this.currentSavings,
     required this.debt,
     required this.financialGoals,
+    required this.totalIncome,
+    required this.totalOutcome,
     required this.riskManagement,
+    required this.thisMonthIncome,
   });
 
   factory FinanceProfile.fromJson(Map<String, dynamic> json) {
     return FinanceProfile(
-      monthlyIncome: json['monthly_income'],
-      currentSavings: json['current_savings'],
-      debt: json['debt'],
-      financialGoals: json['financial_goals'],
-      riskManagement: json['risk_management'],
-    );
+        monthlyIncome: json['monthly_income'],
+        currentSavings: json['current_savings'],
+        debt: json['debt'],
+        financialGoals: json['financial_goals'],
+        totalIncome: json['total_income'],
+        totalOutcome: json['total_outcome'],
+        riskManagement: json['risk_management'],
+        thisMonthIncome: json['this_month_income']);
   }
 }
 
-class ThisMonthIncome {
-  dynamic averageIncome;
-
-  ThisMonthIncome({
-    required this.averageIncome,
-  });
-
-  factory ThisMonthIncome.fromJson(Map<String, dynamic> json) {
-    return ThisMonthIncome(
-      averageIncome: json['average_income'],
-    );
-  }
-}
