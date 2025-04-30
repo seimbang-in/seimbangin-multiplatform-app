@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -33,8 +34,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             Expanded(
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 94,
+                  SizedBox(
+                    height: 94.h,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -42,20 +43,22 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     children: [
                       SvgPicture.asset(
                         'assets/ic_seimbangin-blue-logo.svg',
-                        width: 40,
+                        width: 40.w,
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(
+                        width: 6.w,
+                      ),
                       Text(
                         'eimbangin',
                         style: blueTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 28,
+                          fontSize: 28.sp,
                         ),
                       )
                     ],
                   ),
-                  const SizedBox(
-                    height: 40,
+                  SizedBox(
+                    height: 40.h,
                   ),
                   CarouselSlider(
                     items: [
@@ -70,7 +73,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       )
                     ],
                     options: CarouselOptions(
-                      height: 250,
+                      height: 250.h,
                       viewportFraction: 1,
                       enableInfiniteScroll: false,
                       onPageChanged: (index, reason) {
@@ -81,8 +84,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     ),
                     carouselController: _carouselController,
                   ),
-                  const SizedBox(
-                    height: 24,
+                  SizedBox(
+                    height: 24.h,
                   ),
                   Column(
                     children: [
@@ -91,36 +94,36 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         textAlign: TextAlign.center,
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w700,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
-                      const SizedBox(
-                        height: 32,
+                      SizedBox(
+                        height: 32.h,
                       ),
                       (currentIndex == 1)
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: 20,
-                                  height: 8,
+                                  width: 20.w,
+                                  height: 8.h,
                                   margin: const EdgeInsets.only(
                                     right: 4,
-                                  ),
+                                  ).r,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(12.r),
                                     color: currentIndex == 0
                                         ? secondaryColor
                                         : sliderOnboardingColor,
                                   ),
                                 ),
                                 Container(
-                                  width: 38,
-                                  height: 8,
+                                  width: 38.r,
+                                  height: 8.r,
                                   margin: const EdgeInsets.only(
                                     right: 4,
-                                  ),
+                                  ).r,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(12),
@@ -130,8 +133,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   ),
                                 ),
                                 Container(
-                                  width: 20,
-                                  height: 8,
+                                  width: 20.w,
+                                  height: 8.h,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.rectangle,
                                     borderRadius: BorderRadius.circular(12),
@@ -147,11 +150,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 20,
-                                      height: 8,
+                                      width: 20.w,
+                                      height: 8.h,
                                       margin: const EdgeInsets.only(
                                         right: 4,
-                                      ),
+                                      ).r,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
                                         borderRadius: BorderRadius.circular(12),
@@ -161,25 +164,27 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                       ),
                                     ),
                                     Container(
-                                      width: 20,
-                                      height: 8,
+                                      width: 20.w,
+                                      height: 8.h,
                                       margin: const EdgeInsets.only(
                                         right: 4,
-                                      ),
+                                      ).r,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12).r,
                                         color: currentIndex == 1
                                             ? secondaryColor
                                             : sliderOnboardingColor,
                                       ),
                                     ),
                                     Container(
-                                      width: 38,
-                                      height: 8,
+                                      width: 38.w,
+                                      height: 8.h,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12).r,
                                         color: currentIndex == 2
                                             ? secondaryColor
                                             : sliderOnboardingColor,
@@ -191,39 +196,42 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 38,
-                                      height: 8,
+                                      width: 38.w,
+                                      height: 8.h,
                                       margin: const EdgeInsets.only(
                                         right: 4,
-                                      ),
+                                      ).r,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12).r,
                                         color: currentIndex == 0
                                             ? secondaryColor
                                             : sliderOnboardingColor,
                                       ),
                                     ),
                                     Container(
-                                      width: 20,
-                                      height: 8,
+                                      width: 20.w,
+                                      height: 8.h,
                                       margin: const EdgeInsets.only(
                                         right: 4,
-                                      ),
+                                      ).r,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12).r,
                                         color: currentIndex == 1
                                             ? secondaryColor
                                             : sliderOnboardingColor,
                                       ),
                                     ),
                                     Container(
-                                      width: 20,
-                                      height: 8,
+                                      width: 20.w,
+                                      height: 8.h,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12).r,
                                         color: currentIndex == 2
                                             ? secondaryColor
                                             : sliderOnboardingColor,
@@ -239,7 +247,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,
-              ),
+              ).r,
               child: (currentIndex == 2)
                   ? PrimaryFilledButton(
                       title: 'Login',
@@ -262,14 +270,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                 'Skip',
                 style: blueTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   decoration: TextDecoration.underline,
                   decorationColor: textBlueColor,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 53,
+            SizedBox(
+              height: 53.h,
             ),
           ],
         ),

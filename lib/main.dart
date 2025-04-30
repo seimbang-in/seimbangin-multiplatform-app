@@ -12,6 +12,7 @@ import 'package:seimbangin_app/services/login_service.dart';
 import 'package:seimbangin_app/services/ocr_service.dart';
 import 'package:seimbangin_app/services/transaction_service.dart';
 import 'package:seimbangin_app/services/user_service.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,9 +44,13 @@ class MyApp extends StatelessWidget {
           create: (context) => OcrBloc(ocrService: OcrService()),
         )
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        routerConfig: routes,
+      child: ScreenUtilInit(
+        designSize: const Size(390, 844),
+        minTextAdapt: true,
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routerConfig: routes,
+        ),
       ),
     );
   }
