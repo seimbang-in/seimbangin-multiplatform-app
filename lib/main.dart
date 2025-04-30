@@ -47,10 +47,12 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         designSize: const Size(390, 844),
         minTextAdapt: true,
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerConfig: routes,
-        ),
+        builder: (context, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerConfig: routes,
+          );
+        },
       ),
     );
   }
