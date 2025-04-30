@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/login_service.dart';
@@ -48,10 +49,10 @@ class _LoginPageState extends State<LoginPage> {
             print('State received in builder: $state');
             return SafeArea(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24).r,
                 children: [
-                  const SizedBox(
-                    height: 21,
+                  SizedBox(
+                    height: 21.h,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () {},
                         widget: Icon(
                           Icons.chevron_left,
-                          size: 32,
+                          size: 32.r,
                         ),
                         backgroundColor: backgroundWhiteColor,
                       ),
@@ -77,23 +78,23 @@ class _LoginPageState extends State<LoginPage> {
                         'Welcome',
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 28,
+                          fontSize: 28.sp,
                         ),
                       ),
-                      const SizedBox(
-                        height: 4,
+                      SizedBox(
+                        height: 4.h,
                       ),
                       Text(
                         'Let’s get started with Seimbangin',
                         style: greyTextStyle.copyWith(
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 45,
+                  SizedBox(
+                    height: 45.h,
                   ),
                   TextField(
                     controller: phoneNumController,
@@ -102,19 +103,19 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.phone,
-                        size: 18,
+                        size: 18.r,
                       ),
                       hintText: 'Phone Number',
                       hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24.r),
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
@@ -122,12 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     keyboardType: TextInputType.phone,
                     style: blackTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: 16.h,
                   ),
                   TextField(
                     controller: passwordController,
@@ -137,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                       fillColor: backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
-                        size: 18,
+                        size: 18.r,
                       ),
                       hintText: 'Password',
                       suffixIcon: IconButton(
@@ -147,32 +148,32 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                         icon: isObscure == true
-                            ? const Icon(
+                            ? Icon(
                                 Icons.remove_red_eye_outlined,
-                                size: 18,
+                                size: 18.r,
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.remove_red_eye_rounded,
-                                size: 18,
+                                size: 18.r,
                               ),
                       ),
                       suffixIconColor: textPrimaryColor,
                       hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(24).r,
                           borderSide: BorderSide.none),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
                       ),
                     ),
                     style: blackTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -185,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Recovery Password',
                           style: blueTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             decoration: TextDecoration.underline,
                             decorationColor: textBlueColor,
                           ),
@@ -193,8 +194,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 42,
+                  SizedBox(
+                    height: 42.h,
                   ),
                   PrimaryFilledButton(
                     title: 'Login',
@@ -208,20 +209,20 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                   ),
-                  const SizedBox(
-                    height: 22,
+                  SizedBox(
+                    height: 22.h,
                   ),
                   Center(
                     child: Text(
                       'Or Sign Up With',
                       style: greyTextStyle.copyWith(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: 16.h,
                   ),
                   Center(
                     child: CustomRoundedButton(
@@ -230,8 +231,8 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: backgroundGreyColor,
                     ),
                   ),
-                  const SizedBox(
-                    height: 31,
+                  SizedBox(
+                    height: 31.h,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -240,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                         "Don't have an account?",
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                       ),
                       TextButton(
@@ -251,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Register',
                           style: blueTextStyle.copyWith(
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             decoration: TextDecoration.underline,
                             decorationColor: textBlueColor,
                           ),
@@ -259,8 +260,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 42,
+                  SizedBox(
+                    height: 42.h,
                   ),
                 ],
               ),
@@ -276,10 +277,10 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: backgroundWhiteColor,
-        contentPadding: const EdgeInsets.all(24),
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24).r,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -288,12 +289,12 @@ class _LoginPageState extends State<LoginPage> {
               color: primaryColor,
               strokeWidth: 4,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'Logging In...',
               style: blackTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ],
