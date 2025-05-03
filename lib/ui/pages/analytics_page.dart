@@ -155,8 +155,28 @@ class _AnalyticsPageState extends State<AnalyticsPage>
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
-      floatingActionButton: ScanButton(),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: buttonColor.withOpacity(0.5),
+              blurRadius: 20,
+              spreadRadius: 2,
+              offset: const Offset(0, 4)),
+        ]),
+        child: FloatingActionButton(
+            onPressed: () {
+              routes.pushNamed(RouteNames.ocr);
+            },
+            backgroundColor: Colors.white,
+            elevation: 4,
+            shape: const CircleBorder(),
+            child: Image.asset(
+              'assets/icon-scan.png',
+              width: 24,
+              height: 24,
+            )),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
