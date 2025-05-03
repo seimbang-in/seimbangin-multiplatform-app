@@ -215,15 +215,15 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
             children: [
               Image.asset(
                 'assets/img_mascot-login.png',
-                width: 200,
+                width: 200.w,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             "Hi, Nice to meet you",
             style: blackTextStyle.copyWith(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
