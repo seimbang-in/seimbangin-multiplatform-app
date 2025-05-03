@@ -82,16 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 21.h,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CustomRoundedButton(
-                        onPressed: () {},
-                        widget: Icon(
-                          Icons.chevron_left,
-                          size: 32.r,
-                        ),
-                        backgroundColor: backgroundWhiteColor,
-                      ),
                       Image.asset(
                         'assets/ic_seimbangin-logo-logreg.png',
                       ),
