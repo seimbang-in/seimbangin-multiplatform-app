@@ -16,9 +16,26 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isObscure = true;
+  bool _isPhoneValid = true;
+  bool _isPassValid = true;
+  bool _isFormSubmitted = false;
   final TextEditingController phoneNumController = TextEditingController();
   final AuthService authService = AuthService();
   final TextEditingController passwordController = TextEditingController();
+
+  void _validateForm() {
+    setState(() {
+      _isFormSubmitted = true;
+      _isPhoneValid = phoneNumController.text.isNotEmpty;
+      _isPassValid = passwordController.text.isNotEmpty;
+    });
+  }
+
+  bool get _isFormValid {
+    return phoneNumController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +50,16 @@ class _LoginPageState extends State<LoginPage> {
           print('State received in listener: $state');
           if (state is LoginSuccess) {
             print('Login Success');
+            phoneNumController.clear();
+            passwordController.clear();
+
+            // reset the state
+            setState(() {
+              _isFormSubmitted = false;
+              _isPhoneValid = true;
+              _isPassValid = true;
+            });
+
             routes.pushNamed(RouteNames.home);
           } else if (state is LoginFailure) {
             print('Login Failed: ${state.error}');
@@ -100,14 +127,31 @@ class _LoginPageState extends State<LoginPage> {
                     controller: phoneNumController,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundGreyColor,
+                      fillColor: _isFormSubmitted && !_isPhoneValid
+                          ? backgroundPinkColor
+                          : backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.phone,
                         size: 18.r,
+                        color: _isFormSubmitted && !_isPhoneValid
+                            ? backgroundWarningColor
+                            : backgroundGreyColor,
                       ),
                       hintText: 'Phone Number',
-                      hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14.sp,
+                      errorText: _isFormSubmitted && !_isPhoneValid
+                          ? '*Phone number cannot be empty'
+                          : null,
+                      hintStyle: _isFormSubmitted && !_isPhoneValid
+                          ? warningTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            )
+                          : greyTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      errorStyle: warningTextStyle.copyWith(
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -115,10 +159,14 @@ class _LoginPageState extends State<LoginPage> {
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24.r),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
                       ),
                     ),
                     keyboardType: TextInputType.phone,
@@ -135,12 +183,20 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: isObscure,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundGreyColor,
+                      fillColor: _isFormSubmitted && !_isPassValid
+                          ? backgroundPinkColor
+                          : backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
                         size: 18.r,
+                        color: _isFormSubmitted && !_isPassValid
+                            ? backgroundWarningColor
+                            : backgroundGreyColor,
                       ),
                       hintText: 'Password',
+                      errorText: _isFormSubmitted && !_isPassValid
+                          ? '*Password cannot be empty'
+                          : null,
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -151,25 +207,45 @@ class _LoginPageState extends State<LoginPage> {
                             ? Icon(
                                 Icons.remove_red_eye_outlined,
                                 size: 18.r,
+                                color: _isFormSubmitted && !_isPassValid
+                                    ? backgroundWarningColor
+                                    : backgroundGreyColor,
                               )
                             : Icon(
                                 Icons.remove_red_eye_rounded,
                                 size: 18.r,
+                                color: _isFormSubmitted && !_isPassValid
+                                    ? backgroundWarningColor
+                                    : backgroundGreyColor,
                               ),
                       ),
                       suffixIconColor: textPrimaryColor,
-                      hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14.sp,
+                      hintStyle: _isFormSubmitted && !_isPassValid
+                          ? warningTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            )
+                          : greyTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      errorStyle: warningTextStyle.copyWith(
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24).r,
-                          borderSide: BorderSide.none),
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
                       ),
                     ),
                     style: blackTextStyle.copyWith(
@@ -200,12 +276,15 @@ class _LoginPageState extends State<LoginPage> {
                   PrimaryFilledButton(
                     title: 'Login',
                     onPressed: () {
-                      try {
-                        context.read<LoginBloc>().add(LoginButtonPressed(
-                            identifier: phoneNumController.text,
-                            password: passwordController.text));
-                      } catch (e) {
-                        print('Error: $e');
+                      _validateForm();
+                      if (_isFormValid) {
+                        try {
+                          context.read<LoginBloc>().add(LoginButtonPressed(
+                              identifier: phoneNumController.text,
+                              password: passwordController.text));
+                        } catch (e) {
+                          print('Error: $e');
+                        }
                       }
                     },
                   ),
