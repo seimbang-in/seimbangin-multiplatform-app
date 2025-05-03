@@ -89,14 +89,15 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24).r,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomRoundedButton(
-                        isEnable: false,
-                        widget: Icon(Icons.backpack),
-                        backgroundColor: backgroundWhiteColor),
+                      isEnable: false,
+                      widget: Icon(Icons.backpack),
+                      backgroundColor: backgroundWhiteColor,
+                    ),
                     Text(
                       'AI Advisor',
                       style: blackTextStyle.copyWith(
@@ -121,15 +122,17 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                     children: [
                       Expanded(
                         child: Container(
-                          height: 150,
-                          margin: const EdgeInsets.all(32),
+                          height: 150.h,
+                          margin: const EdgeInsets.all(32).r,
                           decoration: BoxDecoration(
                             color: backgroundGreyColor, // Warna abu-abu
                             borderRadius:
-                                BorderRadius.circular(20), // Radius melingkar
+                                BorderRadius.circular(20).r, // Radius melingkar
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
+                            horizontal: 16,
+                            vertical: 8,
+                          ).r,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -138,13 +141,16 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                                   controller: _messageController,
                                   maxLines: null,
                                   decoration: InputDecoration(
-                                      hintText: "Ask with Advisor...",
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(top: 8),
-                                      hintStyle: greyTextStyle.copyWith(
-                                          fontWeight: FontWeight.bold)),
+                                    hintText: "Ask with Advisor...",
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(top: 8).r,
+                                    hintStyle: greyTextStyle.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
                                   style: blackTextStyle.copyWith(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     color: Colors.black, // Warna teks
                                   ),
                                 ),
@@ -156,7 +162,7 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 20.h,
                   ),
                 ],
               ),
@@ -169,10 +175,10 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                   },
                   icon: Image.asset(
                     'assets/pesawat-icon.png',
-                    width: 24,
-                    height: 24,
+                    width: 24.r,
+                    height: 24.r,
                   ),
-                  iconSize: 32, // Ukuran area klik
+                  iconSize: 32.r, // Ukuran area klik
                 ),
               ),
             ],
@@ -184,8 +190,8 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
               color: buttonColor.withOpacity(0.5),
-              blurRadius: 20,
-              spreadRadius: 2,
+              blurRadius: 20.r,
+              spreadRadius: 2.r,
               offset: const Offset(0, 4)),
         ]),
         child: FloatingActionButton(
@@ -235,43 +241,46 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget _buildChatMessages() {
     return ListView.builder(
       itemCount: _messages.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16).r,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.only(
             left: _messages[index].messageType == "user" ? 80 : 0,
             right: _messages[index].messageType == "user" ? 0 : 80,
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 8),
+          ).r,
+          margin: const EdgeInsets.symmetric(vertical: 8).r,
           child: Column(
             crossAxisAlignment: _messages[index].messageType == "user"
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16).r,
                 decoration: BoxDecoration(
                   color: _messages[index].messageType == "user"
                       ? Colors.blue
                       : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20).r,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (_messages[index].messageType != "user")
                       Container(
-                        width: 30,
-                        height: 30,
-                        margin: const EdgeInsets.only(right: 8),
+                        width: 30.w,
+                        height: 30.h,
+                        margin: const EdgeInsets.only(right: 8).r,
                         decoration: const BoxDecoration(
                           color: Colors.blue,
                           shape: BoxShape.circle,
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             "A-I",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                            ),
                           ),
                         ),
                       ),
@@ -289,10 +298,13 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
               ),
               if (_messages[index].messageType == "user")
                 Padding(
-                  padding: const EdgeInsets.only(top: 4, right: 8),
+                  padding: const EdgeInsets.only(top: 4, right: 8).r,
                   child: Text(
                     _messages[index].time,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ),
             ],
