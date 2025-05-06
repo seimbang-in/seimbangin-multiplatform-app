@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
               _isPassValid = true;
             });
 
-            routes.pushNamed(RouteNames.home);
+            routes.pushNamed(RouteNames.main);
           } else if (state is LoginFailure) {
             print('Login Failed: ${state.error}');
             ScaffoldMessenger.of(context).showSnackBar(

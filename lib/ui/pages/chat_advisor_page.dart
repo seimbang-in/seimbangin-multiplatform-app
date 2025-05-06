@@ -5,7 +5,7 @@ import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
 import 'package:seimbangin_app/models/chat_message_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
+import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class ChatAdvisorPage extends StatefulWidget {
@@ -57,157 +57,137 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
-      body: BlocConsumer<ChatbotBloc, ChatbotState>(listener: (context, state) {
-        if (state is ChatbotSuccess) {
-          setState(() {
+      body: BlocConsumer<ChatbotBloc, ChatbotState>(
+        listener: (context, state) {
+          if (state is ChatbotSuccess) {
+            setState(() {
+              print("Current State: $state");
+              _messages.add(
+                ChatMessage(
+                  messageContent: state.reply,
+                  messageType: "assistant",
+                  time: "${DateTime.now().hour}:${DateTime.now().minute}",
+                ),
+              );
+            });
+          } else if (state is ChatbotFailure) {
             print("Current State: $state");
-            _messages.add(
-              ChatMessage(
-                messageContent: state.reply,
-                messageType: "assistant",
-                time: "${DateTime.now().hour}:${DateTime.now().minute}",
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
               ),
             );
-          });
-        } else if (state is ChatbotFailure) {
-          print("Current State: $state");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }, builder: (context, state) {
-        if (state is ChatbotLoading) {
-          print("Current State: $state");
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return SafeArea(
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24).r,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomRoundedButton(
-                      isEnable: false,
-                      widget: Icon(Icons.backpack),
-                      backgroundColor: backgroundWhiteColor,
-                    ),
-                    Text(
-                      'AI Advisor',
-                      style: blackTextStyle.copyWith(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Image.asset(
-                      'assets/ic_seimbangin-logo-logreg.png',
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  Expanded(
-                    child: _hasChats
-                        ? _buildChatMessages()
-                        : _buildWelcomeScreen(),
-                  ),
-                  Row(
+          }
+        },
+        builder: (context, state) {
+          if (state is ChatbotLoading) {
+            print("Current State: $state");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return SafeArea(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24).r,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Container(
-                          height: 150.h,
-                          margin: const EdgeInsets.all(32).r,
-                          decoration: BoxDecoration(
-                            color: backgroundGreyColor, // Warna abu-abu
-                            borderRadius:
-                                BorderRadius.circular(20).r, // Radius melingkar
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ).r,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _messageController,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    hintText: "Ask with Advisor...",
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(top: 8).r,
-                                    hintStyle: greyTextStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                  style: blackTextStyle.copyWith(
-                                    fontSize: 16.sp,
-                                    color: Colors.black, // Warna teks
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                      CustomRoundedButton(
+                        isEnable: false,
+                        widget: Icon(Icons.backpack),
+                        backgroundColor: backgroundWhiteColor,
+                      ),
+                      Text(
+                        'AI Advisor',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      Image.asset(
+                        'assets/ic_seimbangin-logo-logreg.png',
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                ],
-              ),
-              Positioned(
-                bottom: MediaQuery.of(context).size.width * 0.14,
-                right: MediaQuery.of(context).size.width * 0.1,
-                child: IconButton(
-                  onPressed: () {
-                    _handleSendMessage();
-                  },
-                  icon: Image.asset(
-                    'assets/pesawat-icon.png',
-                    width: 24.r,
-                    height: 24.r,
-                  ),
-                  iconSize: 32.r, // Ukuran area klik
                 ),
-              ),
-            ],
-          ),
-        );
-      }),
-      bottomNavigationBar: CustomBottomNavigationBar(),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: buttonColor.withOpacity(0.5),
-              blurRadius: 20.r,
-              spreadRadius: 2.r,
-              offset: const Offset(0, 4)),
-        ]),
-        child: FloatingActionButton(
-            onPressed: () {
-              routes.pushNamed(RouteNames.ocr);
-            },
-            backgroundColor: Colors.white,
-            elevation: 4,
-            shape: const CircleBorder(),
-            child: Image.asset(
-              'assets/icon-scan.png',
-              width: 24,
-              height: 24,
-            )),
+                Column(
+                  children: [
+                    Expanded(
+                      child: _hasChats
+                          ? _buildChatMessages()
+                          : _buildWelcomeScreen(),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 150.h,
+                            margin: const EdgeInsets.all(32).r,
+                            decoration: BoxDecoration(
+                              color: backgroundGreyColor, // Warna abu-abu
+                              borderRadius: BorderRadius.circular(20)
+                                  .r, // Radius melingkar
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ).r,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _messageController,
+                                    maxLines: null,
+                                    decoration: InputDecoration(
+                                      hintText: "Ask with Advisor...",
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(top: 8).r,
+                                      hintStyle: greyTextStyle.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                    style: blackTextStyle.copyWith(
+                                      fontSize: 16.sp,
+                                      color: Colors.black, // Warna teks
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                  ],
+                ),
+                Positioned(
+                  bottom: MediaQuery.of(context).size.width * 0.14,
+                  right: MediaQuery.of(context).size.width * 0.1,
+                  child: IconButton(
+                    onPressed: () {
+                      _handleSendMessage();
+                    },
+                    icon: Image.asset(
+                      'assets/pesawat-icon.png',
+                      width: 24.r,
+                      height: 24.r,
+                    ),
+                    iconSize: 32.r, // Ukuran area klik
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 

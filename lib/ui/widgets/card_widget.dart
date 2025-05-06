@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
@@ -115,11 +116,11 @@ class RecentTransactionCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          width: 60,
-          height: 60,
+          width: 60.r,
+          height: 60.r,
           decoration: BoxDecoration(
             color: backgroundIcon,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(25).r,
           ),
           child: Stack(
             children: [
@@ -127,32 +128,47 @@ class RecentTransactionCard extends StatelessWidget {
                 child: Icon(
                   Icons.emoji_food_beverage,
                   color: backgroundWhiteColor,
-                  size: 30,
+                  size: 30.r,
                 ),
               )
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title,
-                  style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
-              Text(subtitle,
-                  style: blueTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 12)),
+              Text(
+                title,
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
+              ),
+              SizedBox(
+                height: 4.r,
+              ),
+              Text(
+                subtitle,
+                style: blueTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10.sp,
+                ),
+              ),
             ],
           ),
         ),
         Spacer(),
         Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.all(10).r,
           child: Text(
             amount,
-            style: warningTextStyle.copyWith(fontWeight: FontWeight.bold),
+            style: warningTextStyle.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 14.sp,
+            ),
           ),
         )
       ],
@@ -181,11 +197,11 @@ class IncomeOutcomeCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          width: 60,
-          height: 60,
+          width: 60.r,
+          height: 60.r,
           decoration: BoxDecoration(
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(25).r,
           ),
           child: Stack(
             children: [
@@ -201,25 +217,35 @@ class IncomeOutcomeCard extends StatelessWidget {
               Center(
                   child: Image.asset(
                 'assets/logo-money.png',
-                width: 24,
-                height: 24,
+                width: 24.r,
+                height: 24.r,
               ))
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Total $incomeOrOutcome",
-                  style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
               Text(
-                  NumberFormat.currency(
-                          locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                      .format(double.tryParse(amount) ?? 0.0),
-                  style: colorTextStyle),
+                "Total $incomeOrOutcome",
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14.sp,
+                ),
+              ),
+              Text(
+                NumberFormat.currency(
+                  locale: 'id',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(
+                  double.tryParse(amount) ?? 0.0,
+                ),
+                style: colorTextStyle,
+              ),
             ],
           ),
         )

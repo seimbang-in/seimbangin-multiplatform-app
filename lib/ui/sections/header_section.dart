@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,39 +39,57 @@ class HeaderSection extends StatelessWidget {
         Column(
           children: [
             SizedBox(
-              width: 100,
+              width: 100.r,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 44).r,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: backgroundWhiteColor,
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.person, // Ikon fallback
-                          color: primaryColor,
-                          size: 36,
-                        );
-                      },
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text("Welcome 👋", style: whiteTextStyle),
-                      Text(name,
-                          style: whiteTextStyle.copyWith(
-                              fontWeight: FontWeight.bold)),
+                      Container(
+                        width: 60.r,
+                        height: 60.r,
+                        decoration: BoxDecoration(
+                          color: backgroundWhiteColor,
+                          borderRadius: BorderRadius.circular(25).r,
+                        ),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.person, // Ikon fallback
+                              color: primaryColor,
+                              size: 36.r,
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: 12.r,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Welcome 👋",
+                            style: whiteTextStyle.copyWith(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            name,
+                            style: whiteTextStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -84,34 +103,33 @@ class HeaderSection extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            Text("Current Balance",
-                style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "Current Balance",
+              style: whiteTextStyle.copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             SizedBox(
-              height: 10,
+              height: 12.r,
             ),
             Stack(
               alignment: Alignment.center,
               children: [
                 Text(
-                    NumberFormat.currency(
-                            locale: 'id', symbol: 'Rp ', decimalDigits: 0)
-                        .format(double.parse(money)),
-                    style: whiteTextStyle.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: 18)),
+                  NumberFormat.currency(
+                          locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+                      .format(
+                    double.parse(money),
+                  ),
+                  style: whiteTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.sp,
+                  ),
+                ),
               ],
             ),
           ],
-        ),
-        Positioned(
-          right: MediaQuery.of(context).size.width * 0.25,
-          bottom: MediaQuery.of(context).size.height * 0.062,
-          child: IconButton(
-            icon: Icon(Icons.visibility_outlined),
-            iconSize: 20,
-            color: backgroundWhiteColor,
-            onPressed: () {},
-          ),
         ),
       ],
     );
@@ -125,7 +143,7 @@ class CurrentBalanceSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: EdgeInsets.symmetric(vertical: 20).r,
       width: double.infinity,
       child: Column(
         children: [

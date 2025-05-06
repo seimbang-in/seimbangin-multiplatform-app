@@ -141,7 +141,8 @@ class AdvisorButton extends StatelessWidget {
       child: Text(
         "Chat Advisor",
         style: whiteTextStyle.copyWith(
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
+          fontSize: 14.sp,
         ),
       ),
     );

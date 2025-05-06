@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 
@@ -14,7 +15,7 @@ class IncomeOutcomeSection extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.all(15).r,
           decoration: BoxDecoration(
             color: backgroundWhiteColor,
             boxShadow: [
@@ -25,7 +26,7 @@ class IncomeOutcomeSection extends StatelessWidget {
                 offset: Offset(0, 4),
               )
             ],
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30).r,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -34,28 +35,32 @@ class IncomeOutcomeSection extends StatelessWidget {
               IncomeOutcomeCard(
                 incomeOrOutcome: "Income",
                 amount: incomeAmount,
-                backgroundColor: backgroundGreenColor,
-                colorTextStyle:
-                    greenTextStyle.copyWith(fontWeight: FontWeight.bold),
+                backgroundColor: backgroundOldGreenColor,
+                colorTextStyle: greenTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
                 icon: Icons.arrow_upward_rounded,
               ),
               IncomeOutcomeCard(
                 incomeOrOutcome: "Outcome",
                 amount: outcomeAmount,
-                backgroundColor: textWarningColor,
-                colorTextStyle:
-                    warningTextStyle.copyWith(fontWeight: FontWeight.bold),
+                backgroundColor: backgroundOldWarningColor,
+                colorTextStyle: warningTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                ),
                 icon: Icons.arrow_downward_rounded,
               ),
             ],
           ),
         ),
         Positioned(
-          right: -120,
-          bottom: -60,
+          right: -120.r,
+          bottom: -60.r,
           child: Image.asset(
             "assets/img_mascot-login.png",
-            width: 250,
+            width: 250.r,
           ),
         ),
       ],

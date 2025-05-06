@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
-import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
+import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage>
               slivers: [
                 SliverAppBar(
                   automaticallyImplyLeading: false,
-                  expandedHeight: 250,
+                  expandedHeight: 220.r,
                   pinned: false,
                   floating: false,
                   flexibleSpace: FlexibleSpaceBar(
@@ -64,16 +65,16 @@ class _HomePageState extends State<HomePage>
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
-                      ),
+                      ).r,
                       child: Container(
                         decoration: BoxDecoration(
                           color: backgroundWhiteColor,
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30),
-                          ),
+                          ).r,
                         ),
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.all(24).r,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -87,91 +88,103 @@ class _HomePageState extends State<HomePage>
                                       .toString() ??
                                   '0',
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 20.r,
+                            ),
                             Text(
                               "AI Advisor",
                               style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.sp,
+                              ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.r),
                             AiAdvisorSection(
                               advice: state.advice,
                               isAdviceExist: state.user.data.financeProfile
                                       ?.financialGoals !=
                                   null,
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20.r),
                             Text(
-                              "Recent Transaction",
+                              "Recent Transactions",
                               style: blackTextStyle.copyWith(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            SizedBox(height: 4.r),
                             Text(
                               "Today",
                               style: blueTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.sp,
+                              ),
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.r),
                             RecentTransactionCard(
                                 backgroundIcon: backgroundGreenColor,
-                                title: "food",
+                                title: "Food",
                                 subtitle: "12:00 WIB",
                                 amount: "-Rp 12.000"),
                             RecentTransactionCard(
                                 backgroundIcon: backgroundGreenColor,
-                                title: "food",
+                                title: "Food",
                                 subtitle: "18:00 WIB",
                                 amount: "-Rp 18.000"),
                             Center(
                               child: TextButton(
-                                onPressed: () {},
-                                child: const Text(
-                                  "See More",
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 16),
-                                ),
-                              ),
+                                  onPressed: () {},
+                                  child: Text(
+                                    "See More",
+                                    style: TextStyle(
+                                      color: textBlueColor,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )),
                             ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "Seimbangin Article",
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            ArticleCard(
-                              category: "Finance Management",
-                              title: "Student Budgeting 101:",
-                              subtitle:
-                                  "How to Manage Your Money on a Tight Budget",
-                              date: "12 Jan 2025",
-                              imageUrl: "assets/img_onboarding1.png",
-                            ),
-                            ArticleCard(
-                              category: "College & Finance",
-                              title: "College Without Financial Stress:",
-                              subtitle:
-                                  "How to Manage Money and Avoid Going Broke",
-                              date: "12 Jan 2025",
-                              imageUrl: "assets/img_onboarding2.png",
-                            ),
-                            ArticleCard(
-                              category: "Lifestyle & Finance",
-                              title:
-                                  "Living the Student Life Without Going Broke:",
-                              subtitle: "Smart Spending Tips",
-                              date: "12 Jan 2025",
-                              imageUrl: "assets/img_onboarding3.png",
-                            ),
-                            Center(
-                              child: TextButton(
-                                onPressed: () {},
-                                child: const Text(
-                                  "Read More",
-                                  style: TextStyle(
-                                      color: Colors.blue, fontSize: 16),
-                                ),
-                              ),
-                            ),
+                            SizedBox(height: 20.r),
+                            // TODO ARTIKEL
+                            // Text(
+                            //   "Seimbangin Article",
+                            //   style: blackTextStyle.copyWith(
+                            //       fontWeight: FontWeight.bold, fontSize: 20),
+                            // ),
+                            // ArticleCard(
+                            //   category: "Finance Management",
+                            //   title: "Student Budgeting 101:",
+                            //   subtitle:
+                            //       "How to Manage Your Money on a Tight Budget",
+                            //   date: "12 Jan 2025",
+                            //   imageUrl: "assets/img_onboarding1.png",
+                            // ),
+                            // ArticleCard(
+                            //   category: "College & Finance",
+                            //   title: "College Without Financial Stress:",
+                            //   subtitle:
+                            //       "How to Manage Money and Avoid Going Broke",
+                            //   date: "12 Jan 2025",
+                            //   imageUrl: "assets/img_onboarding2.png",
+                            // ),
+                            // ArticleCard(
+                            //   category: "Lifestyle & Finance",
+                            //   title:
+                            //       "Living the Student Life Without Going Broke:",
+                            //   subtitle: "Smart Spending Tips",
+                            //   date: "12 Jan 2025",
+                            //   imageUrl: "assets/img_onboarding3.png",
+                            // ),
+                            // Center(
+                            //   child: TextButton(
+                            //     onPressed: () {},
+                            //     child: const Text(
+                            //       "Read More",
+                            //       style: TextStyle(
+                            //           color: Colors.blue, fontSize: 16),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -189,30 +202,6 @@ class _HomePageState extends State<HomePage>
                   )
               ],
             ),
-            bottomNavigationBar: const CustomBottomNavigationBar(),
-            floatingActionButton: Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                    color: buttonColor.withOpacity(0.5),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 4)),
-              ]),
-              child: FloatingActionButton(
-                  onPressed: () {
-                    routes.pushNamed(RouteNames.ocr);
-                  },
-                  backgroundColor: Colors.white,
-                  elevation: 4,
-                  shape: const CircleBorder(),
-                  child: Image.asset(
-                    'assets/icon-scan.png',
-                    width: 24,
-                    height: 24,
-                  )),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           );
         }
         return Scaffold(

@@ -139,7 +139,7 @@ class _OcrPageState extends State<OcrPage> {
             left: 24,
             child: CustomRoundedButton(
               onPressed: () {
-                routes.replaceNamed(RouteNames.home);
+                routes.replaceNamed(RouteNames.main);
               },
               widget: Icon(
                 Icons.chevron_left,
