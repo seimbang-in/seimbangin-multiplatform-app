@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
 import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
+import 'package:seimbangin_app/ui/pages/financial_profile_page.dart';
 import 'package:seimbangin_app/ui/pages/home_page.dart';
 import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_page.dart';
@@ -94,5 +95,10 @@ final routes = GoRouter(routes: [
     path: '/chat-advisor',
     name: RouteNames.chatAdvisor,
     builder: (context, state) => const ChatAdvisorPage(),
+  ),
+  GoRoute(
+    path: '/financialProfile',
+    name: RouteNames.financialProfile,
+    builder: (context, state) => const FinancialProfilePage(),
   ),
 ]);

@@ -100,6 +100,8 @@ class _HomePageState extends State<HomePage>
                             ),
                             SizedBox(height: 10.r),
                             AiAdvisorSection(
+                              financialProfileButtonOntap: () =>
+                                  routes.pushNamed(RouteNames.financialProfile),
                               advice: state.advice,
                               isAdviceExist: state.user.data.financeProfile
                                       ?.financialGoals !=

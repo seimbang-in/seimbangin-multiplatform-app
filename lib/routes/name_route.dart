@@ -17,4 +17,5 @@ abstract class RouteNames {
   static const chatAdvisor = 'chat-advisor';
   static const transactionStruct = 'transactionStruct';
   static const transactionSuccess = 'transactionSuccess';
+  static const financialProfile = 'financialProfile';
 }

@@ -8,8 +8,13 @@ import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 class AiAdvisorSection extends StatelessWidget {
   final Advice advice;
   final bool isAdviceExist;
-  const AiAdvisorSection(
-      {super.key, required this.advice, required this.isAdviceExist});
+  final VoidCallback financialProfileButtonOntap;
+  const AiAdvisorSection({
+    super.key,
+    required this.advice,
+    required this.isAdviceExist,
+    required this.financialProfileButtonOntap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,15 +61,18 @@ class AiAdvisorSection extends StatelessWidget {
                   width: 10,
                 ),
                 if (!isAdviceExist)
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: backgroundWhiteColor,
-                      borderRadius: BorderRadius.circular(20),
+                  GestureDetector(
+                    onTap: financialProfileButtonOntap,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: backgroundWhiteColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Icon(Icons.error_outline,
+                          color: primaryColor, size: 30),
                     ),
-                    child: Icon(Icons.error_outline,
-                        color: primaryColor, size: 30),
                   )
               ],
             ),
