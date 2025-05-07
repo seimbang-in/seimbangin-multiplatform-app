@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -18,7 +19,7 @@ class AiAdvisorSection extends StatelessWidget {
             colors: [primaryColor, secondaryColor],
             begin: Alignment.bottomRight,
             end: Alignment.topLeft),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24).r,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -35,12 +36,14 @@ class AiAdvisorSection extends StatelessWidget {
                       isAdviceExist
                           ? advice.data
                           : "Please fill in your financial profile data here first to get Financial AI Advice",
-                      style:
-                          whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+                      style: whiteTextStyle.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp,
+                      ),
                       softWrap: true,
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 30.r,
                     ),
                     isAdviceExist
                         ? AdvisorButton(onPressedEvent: () {

@@ -9,7 +9,10 @@ Color sliderOnboardingColor = const Color(0xFF9AB7FF);
 Color backgroundWhiteColor = const Color(0xFFFFFFFF);
 Color backgroundGreyColor = const Color(0xFFECECEC);
 Color backgroundWarningColor = const Color(0xFFEA1763);
+Color backgroundPinkColor = const Color(0xFFFFCBDE);
 Color backgroundGreenColor = const Color(0xFF20E828);
+Color backgroundOldGreenColor = const Color(0xFF4CAF50);
+Color backgroundOldWarningColor = const Color(0xFFEA1763);
 
 // Text Color
 Color textPrimaryColor = const Color(0xFF000000);

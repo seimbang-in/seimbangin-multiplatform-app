@@ -44,7 +44,7 @@ class _OcrPageState extends State<OcrPage> {
 
   @override
   void dispose() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     cameraController?.dispose();
     super.dispose();
   }
@@ -55,7 +55,7 @@ class _OcrPageState extends State<OcrPage> {
       await cameraController!.dispose();
     }
     cameraController =
-        CameraController(cameraDescription, ResolutionPreset.high);
+        CameraController(cameraDescription, ResolutionPreset.medium);
 
     cameraController!.addListener(() {
       if (mounted) setState(() {});
@@ -139,7 +139,7 @@ class _OcrPageState extends State<OcrPage> {
             left: 24,
             child: CustomRoundedButton(
               onPressed: () {
-                routes.replaceNamed(RouteNames.home);
+                routes.pop();
               },
               widget: Icon(
                 Icons.chevron_left,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/login_service.dart';
@@ -15,9 +16,26 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isObscure = true;
+  bool _isPhoneValid = true;
+  bool _isPassValid = true;
+  bool _isFormSubmitted = false;
   final TextEditingController phoneNumController = TextEditingController();
   final AuthService authService = AuthService();
   final TextEditingController passwordController = TextEditingController();
+
+  void _validateForm() {
+    setState(() {
+      _isFormSubmitted = true;
+      _isPhoneValid = phoneNumController.text.isNotEmpty;
+      _isPassValid = passwordController.text.isNotEmpty;
+    });
+  }
+
+  bool get _isFormValid {
+    return phoneNumController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +50,17 @@ class _LoginPageState extends State<LoginPage> {
           print('State received in listener: $state');
           if (state is LoginSuccess) {
             print('Login Success');
-            routes.pushNamed(RouteNames.home);
+            phoneNumController.clear();
+            passwordController.clear();
+
+            // reset the state
+            setState(() {
+              _isFormSubmitted = false;
+              _isPhoneValid = true;
+              _isPassValid = true;
+            });
+
+            routes.pushNamed(RouteNames.main);
           } else if (state is LoginFailure) {
             print('Login Failed: ${state.error}');
             ScaffoldMessenger.of(context).showSnackBar(
@@ -48,22 +76,14 @@ class _LoginPageState extends State<LoginPage> {
             print('State received in builder: $state');
             return SafeArea(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24).r,
                 children: [
-                  const SizedBox(
-                    height: 21,
+                  SizedBox(
+                    height: 21.h,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CustomRoundedButton(
-                        onPressed: () {},
-                        widget: Icon(
-                          Icons.chevron_left,
-                          size: 32,
-                        ),
-                        backgroundColor: backgroundWhiteColor,
-                      ),
                       Image.asset(
                         'assets/ic_seimbangin-logo-logreg.png',
                       ),
@@ -77,69 +97,98 @@ class _LoginPageState extends State<LoginPage> {
                         'Welcome',
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 28,
+                          fontSize: 28.sp,
                         ),
                       ),
-                      const SizedBox(
-                        height: 4,
+                      SizedBox(
+                        height: 4.h,
                       ),
                       Text(
                         'Let’s get started with Seimbangin',
                         style: greyTextStyle.copyWith(
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 45,
+                  SizedBox(
+                    height: 45.h,
                   ),
                   TextField(
                     controller: phoneNumController,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundGreyColor,
+                      fillColor: _isFormSubmitted && !_isPhoneValid
+                          ? backgroundPinkColor
+                          : backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.phone,
-                        size: 18,
+                        size: 18.r,
+                        color: _isFormSubmitted && !_isPhoneValid
+                            ? backgroundWarningColor
+                            : backgroundGreyColor,
                       ),
                       hintText: 'Phone Number',
-                      hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                      errorText: _isFormSubmitted && !_isPhoneValid
+                          ? '*Phone number cannot be empty'
+                          : null,
+                      hintStyle: _isFormSubmitted && !_isPhoneValid
+                          ? warningTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            )
+                          : greyTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      errorStyle: warningTextStyle.copyWith(
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                     keyboardType: TextInputType.phone,
                     style: blackTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: 16.h,
                   ),
                   TextField(
                     controller: passwordController,
                     obscureText: isObscure,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: backgroundGreyColor,
+                      fillColor: _isFormSubmitted && !_isPassValid
+                          ? backgroundPinkColor
+                          : backgroundGreyColor,
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
-                        size: 18,
+                        size: 18.r,
+                        color: _isFormSubmitted && !_isPassValid
+                            ? backgroundWarningColor
+                            : backgroundGreyColor,
                       ),
                       hintText: 'Password',
+                      errorText: _isFormSubmitted && !_isPassValid
+                          ? '*Password cannot be empty'
+                          : null,
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
@@ -147,32 +196,52 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         },
                         icon: isObscure == true
-                            ? const Icon(
+                            ? Icon(
                                 Icons.remove_red_eye_outlined,
-                                size: 18,
+                                size: 18.r,
+                                color: _isFormSubmitted && !_isPassValid
+                                    ? backgroundWarningColor
+                                    : backgroundGreyColor,
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.remove_red_eye_rounded,
-                                size: 18,
+                                size: 18.r,
+                                color: _isFormSubmitted && !_isPassValid
+                                    ? backgroundWarningColor
+                                    : backgroundGreyColor,
                               ),
                       ),
                       suffixIconColor: textPrimaryColor,
-                      hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                      hintStyle: _isFormSubmitted && !_isPassValid
+                          ? warningTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            )
+                          : greyTextStyle.copyWith(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      errorStyle: warningTextStyle.copyWith(
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: BorderSide.none),
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
+                      ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide(
                           color: textBlueColor,
                         ),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24).r,
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                     style: blackTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -185,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Recovery Password',
                           style: blueTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             decoration: TextDecoration.underline,
                             decorationColor: textBlueColor,
                           ),
@@ -193,35 +262,38 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 42,
+                  SizedBox(
+                    height: 42.h,
                   ),
                   PrimaryFilledButton(
                     title: 'Login',
                     onPressed: () {
-                      try {
-                        context.read<LoginBloc>().add(LoginButtonPressed(
-                            identifier: phoneNumController.text,
-                            password: passwordController.text));
-                      } catch (e) {
-                        print('Error: $e');
+                      _validateForm();
+                      if (_isFormValid) {
+                        try {
+                          context.read<LoginBloc>().add(LoginButtonPressed(
+                              identifier: phoneNumController.text,
+                              password: passwordController.text));
+                        } catch (e) {
+                          print('Error: $e');
+                        }
                       }
                     },
                   ),
-                  const SizedBox(
-                    height: 22,
+                  SizedBox(
+                    height: 22.h,
                   ),
                   Center(
                     child: Text(
                       'Or Sign Up With',
                       style: greyTextStyle.copyWith(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: 16.h,
                   ),
                   Center(
                     child: CustomRoundedButton(
@@ -230,8 +302,8 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: backgroundGreyColor,
                     ),
                   ),
-                  const SizedBox(
-                    height: 31,
+                  SizedBox(
+                    height: 31.h,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -240,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
                         "Don't have an account?",
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                         ),
                       ),
                       TextButton(
@@ -251,7 +323,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Register',
                           style: blueTextStyle.copyWith(
                             fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             decoration: TextDecoration.underline,
                             decorationColor: textBlueColor,
                           ),
@@ -259,8 +331,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 42,
+                  SizedBox(
+                    height: 42.h,
                   ),
                 ],
               ),
@@ -276,10 +348,10 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: backgroundWhiteColor,
-        contentPadding: const EdgeInsets.all(24),
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24).r,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -288,12 +360,12 @@ class _LoginPageState extends State<LoginPage> {
               color: primaryColor,
               strokeWidth: 4,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'Logging In...',
               style: blackTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ],

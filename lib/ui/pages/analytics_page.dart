@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/donut_chart_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
 import 'package:seimbangin_app/ui/widgets/bar_widget.dart';
-import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
+import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
@@ -63,11 +64,13 @@ class _AnalyticsPageState extends State<AnalyticsPage>
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        toolbarHeight: 70,
+        toolbarHeight: 70.r,
         title: Text(
           'Analytics',
           style: blackTextStyle.copyWith(
-              fontWeight: FontWeight.bold, fontSize: 20),
+            fontWeight: FontWeight.bold,
+            fontSize: 20.sp,
+          ),
         ),
         elevation: 0,
         leading: IconButton(
@@ -155,9 +158,6 @@ class _AnalyticsPageState extends State<AnalyticsPage>
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
-      floatingActionButton: ScanButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

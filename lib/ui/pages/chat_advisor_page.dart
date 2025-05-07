@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
 import 'package:seimbangin_app/models/chat_message_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
+import 'package:seimbangin_app/ui/pages/main_page.dart';
+import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class ChatAdvisorPage extends StatefulWidget {
   const ChatAdvisorPage({super.key});
@@ -55,146 +57,137 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        toolbarHeight: 70,
-        title: Text(
-          'AI Advisor',
-          style: blackTextStyle.copyWith(
-              fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        elevation: 0,
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            child: Image.asset(
-              'assets/ic_seimbangin-logo-logreg.png',
-              width: 50,
-            ),
-          ),
-        ],
-      ),
-      body: BlocConsumer<ChatbotBloc, ChatbotState>(listener: (context, state) {
-        if (state is ChatbotSuccess) {
-          setState(() {
+      body: BlocConsumer<ChatbotBloc, ChatbotState>(
+        listener: (context, state) {
+          if (state is ChatbotSuccess) {
+            setState(() {
+              print("Current State: $state");
+              _messages.add(
+                ChatMessage(
+                  messageContent: state.reply,
+                  messageType: "assistant",
+                  time: "${DateTime.now().hour}:${DateTime.now().minute}",
+                ),
+              );
+            });
+          } else if (state is ChatbotFailure) {
             print("Current State: $state");
-            _messages.add(
-              ChatMessage(
-                messageContent: state.reply,
-                messageType: "assistant",
-                time: "${DateTime.now().hour}:${DateTime.now().minute}",
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
               ),
             );
-          });
-        } else if (state is ChatbotFailure) {
-          print("Current State: $state");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }, builder: (context, state) {
-        if (state is ChatbotLoading) {
-          print("Current State: $state");
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        return Stack(
-          children: [
-            Column(
+          }
+        },
+        builder: (context, state) {
+          if (state is ChatbotLoading) {
+            print("Current State: $state");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return SafeArea(
+            child: Stack(
               children: [
-                Expanded(
-                  child:
-                      _hasChats ? _buildChatMessages() : _buildWelcomeScreen(),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 150,
-                        margin: const EdgeInsets.all(32),
-                        decoration: BoxDecoration(
-                          color: backgroundGreyColor, // Warna abu-abu
-                          borderRadius:
-                              BorderRadius.circular(20), // Radius melingkar
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _messageController,
-                                maxLines: null,
-                                decoration: InputDecoration(
-                                    hintText: "Ask with Advisor...",
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(top: 8),
-                                    hintStyle: greyTextStyle.copyWith(
-                                        fontWeight: FontWeight.bold)),
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 16,
-                                  color: Colors.black, // Warna teks
-                                ),
-                              ),
-                            ),
-                          ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24).r,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomRoundedButton(
+                        isEnable: false,
+                        widget: Icon(Icons.backpack),
+                        backgroundColor: backgroundWhiteColor,
+                      ),
+                      Text(
+                        'AI Advisor',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
+                      Image.asset(
+                        'assets/ic_seimbangin-logo-logreg.png',
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  children: [
+                    Expanded(
+                      child: _hasChats
+                          ? _buildChatMessages()
+                          : _buildWelcomeScreen(),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 150.h,
+                            margin: const EdgeInsets.all(32).r,
+                            decoration: BoxDecoration(
+                              color: backgroundGreyColor, // Warna abu-abu
+                              borderRadius: BorderRadius.circular(20)
+                                  .r, // Radius melingkar
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ).r,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _messageController,
+                                    maxLines: null,
+                                    decoration: InputDecoration(
+                                      hintText: "Ask with Advisor...",
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(top: 8).r,
+                                      hintStyle: greyTextStyle.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                    style: blackTextStyle.copyWith(
+                                      fontSize: 16.sp,
+                                      color: Colors.black, // Warna teks
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.h,
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
+                Positioned(
+                  bottom: MediaQuery.of(context).size.width * 0.14,
+                  right: MediaQuery.of(context).size.width * 0.1,
+                  child: IconButton(
+                    onPressed: () {
+                      _handleSendMessage();
+                    },
+                    icon: Image.asset(
+                      'assets/pesawat-icon.png',
+                      width: 24.r,
+                      height: 24.r,
+                    ),
+                    iconSize: 32.r, // Ukuran area klik
+                  ),
                 ),
               ],
             ),
-            Positioned(
-              bottom: MediaQuery.of(context).size.width * 0.14,
-              right: MediaQuery.of(context).size.width * 0.1,
-              child: IconButton(
-                onPressed: () {
-                  _handleSendMessage();
-                },
-                icon: Image.asset(
-                  'assets/pesawat-icon.png',
-                  width: 24,
-                  height: 24,
-                ),
-                iconSize: 32, // Ukuran area klik
-              ),
-            ),
-          ],
-        );
-      }),
-      bottomNavigationBar: CustomBottomNavigationBar(),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: buttonColor.withOpacity(0.5),
-              blurRadius: 20,
-              spreadRadius: 2,
-              offset: const Offset(0, 4)),
-        ]),
-        child: FloatingActionButton(
-            onPressed: () {
-              routes.pushNamed(RouteNames.ocr);
-            },
-            backgroundColor: Colors.white,
-            elevation: 4,
-            shape: const CircleBorder(),
-            child: Image.asset(
-              'assets/icon-scan.png',
-              width: 24,
-              height: 24,
-            )),
+          );
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -207,16 +200,16 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
             alignment: Alignment.center,
             children: [
               Image.asset(
-                'assets/img_onboarding2.png',
-                width: 200,
+                'assets/img_mascot-login.png',
+                width: 200.w,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             "Hi, Nice to meet you",
             style: blackTextStyle.copyWith(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -228,43 +221,46 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget _buildChatMessages() {
     return ListView.builder(
       itemCount: _messages.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16).r,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.only(
             left: _messages[index].messageType == "user" ? 80 : 0,
             right: _messages[index].messageType == "user" ? 0 : 80,
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 8),
+          ).r,
+          margin: const EdgeInsets.symmetric(vertical: 8).r,
           child: Column(
             crossAxisAlignment: _messages[index].messageType == "user"
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16).r,
                 decoration: BoxDecoration(
                   color: _messages[index].messageType == "user"
                       ? Colors.blue
                       : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20).r,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (_messages[index].messageType != "user")
                       Container(
-                        width: 30,
-                        height: 30,
-                        margin: const EdgeInsets.only(right: 8),
+                        width: 30.w,
+                        height: 30.h,
+                        margin: const EdgeInsets.only(right: 8).r,
                         decoration: const BoxDecoration(
                           color: Colors.blue,
                           shape: BoxShape.circle,
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             "A-I",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                            ),
                           ),
                         ),
                       ),
@@ -282,10 +278,13 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
               ),
               if (_messages[index].messageType == "user")
                 Padding(
-                  padding: const EdgeInsets.only(top: 4, right: 8),
+                  padding: const EdgeInsets.only(top: 4, right: 8).r,
                   child: Text(
                     _messages[index].time,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ),
             ],

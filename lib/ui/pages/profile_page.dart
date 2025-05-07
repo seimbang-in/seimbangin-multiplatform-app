@@ -2,23 +2,47 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/models/user_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/bottom_navigation.dart';
+import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomepageBloc, HomepageState>(
+      builder: (context, state) {
+        if (state is HomePageSuccess) {
+          final user = state.user;
+          return _ProfilePageContent(user: user);
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageContent extends StatefulWidget {
+  final User user;
+  const _ProfilePageContent({
+    required this.user,
+  });
+
+  @override
+  State<_ProfilePageContent> createState() => __ProfilePageContentState();
+}
+
+class __ProfilePageContentState extends State<_ProfilePageContent> {
   XFile? _imageFile;
 
   Future<void> _editImage() async {
@@ -140,7 +164,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = GoRouterState.of(context).extra as User;
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
       body: ListView(
@@ -166,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 10,
                 ),
                 Text(
-                  user.data.fullName!,
+                  widget.user.data.fullName!,
                   style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -176,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 4,
                 ),
                 Text(
-                  user.data.email!,
+                  widget.user.data.email!,
                   style: greyTextStyle.copyWith(
                     fontWeight: FontWeight.w500,
                     fontSize: 10,
@@ -209,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: user.data.username,
+                    hintText: widget.user.data.username,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -250,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: user.data.fullName,
+                    hintText: widget.user.data.fullName,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -291,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: backgroundGreyColor,
-                    hintText: user.data.email,
+                    hintText: widget.user.data.email,
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -370,29 +393,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: buttonColor.withOpacity(0.5),
-              blurRadius: 20,
-              spreadRadius: 2,
-              offset: const Offset(0, 4)),
-        ]),
-        child: FloatingActionButton(
-            onPressed: () {
-              routes.pushNamed(RouteNames.ocr);
-            },
-            backgroundColor: Colors.white,
-            elevation: 4,
-            shape: const CircleBorder(),
-            child: Image.asset(
-              'assets/icon-scan.png',
-              width: 24,
-              height: 24,
-            )),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class PrimaryFilledButton extends StatelessWidget {
@@ -29,13 +30,13 @@ class PrimaryFilledButton extends StatelessWidget {
         style: TextButton.styleFrom(
           backgroundColor: backgroundColor ?? buttonColor, // Default color
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(24).r,
           ),
         ),
         child: Text(title,
             style: whiteTextStyle.copyWith(
               color: textColor ?? textWhiteColor,
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             )),
       ),
@@ -71,11 +72,11 @@ class CustomRoundedButton extends StatelessWidget {
               style: TextButton.styleFrom(
                 backgroundColor: backgroundColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24).r,
                 ),
                 side: BorderSide(
                   color: backgroundGreyColor,
-                  width: 2,
+                  width: 2.w,
                 ),
               ),
               child: widget,
@@ -85,11 +86,11 @@ class CustomRoundedButton extends StatelessWidget {
               style: TextButton.styleFrom(
                 backgroundColor: backgroundColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24).r,
                 ),
                 side: BorderSide(
                   color: backgroundGreyColor,
-                  width: 2,
+                  width: 2.w,
                 ),
               ),
               child: Icon(Icons.chevron_left),
@@ -133,13 +134,16 @@ class AdvisorButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
           side: BorderSide(color: backgroundWhiteColor),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16).r,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14).r,
           backgroundColor: Colors.transparent),
       child: Text(
         "Chat Advisor",
-        style: whiteTextStyle.copyWith(fontWeight: FontWeight.bold),
+        style: whiteTextStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 14.sp,
+        ),
       ),
     );
   }
@@ -170,35 +174,35 @@ class AddItemTransactButton extends StatelessWidget {
           color: backgroundGreyColor,
           borderRadius: BorderRadius.circular(
             24,
-          ),
+          ).r,
         ),
         child: Row(
           children: [
-            const SizedBox(
-              width: 8,
+            SizedBox(
+              width: 8.w,
             ),
             Container(
-              width: 48,
-              height: 48,
+              width: 48.w,
+              height: 48.h,
               decoration: BoxDecoration(
                 color: buttonColor,
                 borderRadius: BorderRadius.circular(
                   18,
-                ),
+                ).r,
               ),
               child: Icon(
                 Icons.add_box_outlined,
                 color: textWhiteColor,
               ),
             ),
-            const SizedBox(
-              width: 12,
+            SizedBox(
+              width: 12.w,
             ),
             Text(
               title,
               style: blackTextStyle.copyWith(
                 fontWeight: FontWeight.w500,
-                fontSize: 12,
+                fontSize: 12.sp,
               ),
             ),
           ],
