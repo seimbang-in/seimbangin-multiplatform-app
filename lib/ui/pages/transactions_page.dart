@@ -385,6 +385,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               context.read<TransactionBloc>().add(
                                     TransactionButtonPressed(
                                       description: 'Income',
+                                      name: singleItem.name,
                                       type: 0,
                                       items: [
                                         singleItem
@@ -417,6 +418,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               context.read<TransactionBloc>().add(
                                     TransactionButtonPressed(
                                       description: 'Outcome',
+                                      name: 'outcome',
                                       type: 1,
                                       items: _items,
                                     ),

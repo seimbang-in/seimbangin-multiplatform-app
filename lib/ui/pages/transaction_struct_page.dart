@@ -292,6 +292,7 @@ class TransactionStructPage extends StatelessWidget {
                             context.read<TransactionBloc>().add(
                                 TransactionButtonPressed(
                                     description: "Outcome",
+                                    name: ocrModel.data.store,
                                     type: 0,
                                     items: transactions));
                           },
