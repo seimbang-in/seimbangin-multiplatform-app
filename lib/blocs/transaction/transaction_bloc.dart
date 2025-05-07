@@ -20,6 +20,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
         event.items,
         event.type,
         event.description,
+        event.name
       );
       emit(TransactionSuccess("Transaction successful"));
       emit(TransactionInitial());

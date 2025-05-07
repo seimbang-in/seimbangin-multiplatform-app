@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
-import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
-import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
 
 class HomePage extends StatefulWidget {

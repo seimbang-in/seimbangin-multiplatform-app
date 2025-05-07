@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
 import 'package:seimbangin_app/models/chat_message_model.dart';
-import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/pages/main_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class ChatAdvisorPage extends StatefulWidget {
@@ -15,7 +13,7 @@ class ChatAdvisorPage extends StatefulWidget {
 }
 
 class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
-  int _selectedIndex = 2;
+  // int _selectedIndex = 2;
   bool _hasChats = false;
   final TextEditingController _messageController = TextEditingController();
 
@@ -31,8 +29,6 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
     _messageController.dispose();
     super.dispose();
   }
-
-  void _toggleChatState() {}
 
   void _handleSendMessage() {
     if (_messageController.text.isNotEmpty) {

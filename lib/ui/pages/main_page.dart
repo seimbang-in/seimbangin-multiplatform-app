@@ -8,7 +8,6 @@ import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
 import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
 import 'package:seimbangin_app/ui/pages/home_page.dart';
-import 'package:seimbangin_app/ui/pages/ocr_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
 
 class MainPage extends StatelessWidget {
@@ -54,8 +53,8 @@ class MainPage extends StatelessWidget {
           item: ItemConfig(
             icon: Image.asset(
               'assets/icon-scan.png',
-              width: 24,
-              height: 24,
+              width: 30,
+              height: 30,
             ),
             activeForegroundColor: backgroundWhiteColor,
             inactiveForegroundColor: backgroundWhiteColor,
@@ -108,7 +107,11 @@ class MainPage extends StatelessWidget {
           navBarConfig: navBarConfig,
           navBarDecoration: NavBarDecoration(
             color: buttonColor,
-          ),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.r),
+              topRight: Radius.circular(24.r),
+            ),
+          ), 
         ),
       );
 }

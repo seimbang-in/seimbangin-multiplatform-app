@@ -7,7 +7,7 @@ import 'package:seimbangin_app/utils/token.dart';
 
 class TransactionService {
   Future<void> addTransaction(
-      List<Item> items, int type, String description) async {
+      List<Item> items, int type, String description, String name) async {
     try {
       final String? token = await Token.getToken();
       final response =
@@ -19,6 +19,7 @@ class TransactionService {
               body: jsonEncode({
                 'type': type,
                 'description': description,
+                'name' : name,
                 'items': items.map((item) => item.toJson()).toList(),
               }));
       print('response status code : ${response.statusCode}');
@@ -28,4 +29,6 @@ class TransactionService {
       throw Exception('Error: $e');
     }
   }
+
+  // Future
 }

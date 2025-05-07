@@ -5,8 +5,6 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
 import 'package:seimbangin_app/ui/widgets/bar_widget.dart';
-import 'package:seimbangin_app/ui/pages/main_page.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
 
