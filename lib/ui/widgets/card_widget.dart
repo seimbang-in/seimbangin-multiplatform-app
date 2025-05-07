@@ -9,6 +9,7 @@ class ArticleCard extends StatelessWidget {
   final String subtitle;
   final String date;
   final String imageUrl;
+  final VoidCallback? onTap;
 
   const ArticleCard({
     super.key,
@@ -17,79 +18,83 @@ class ArticleCard extends StatelessWidget {
     required this.subtitle,
     required this.date,
     required this.imageUrl,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      color: backgroundGreyColor,
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imageUrl,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        color: backgroundGreyColor,
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imageUrl,
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
+              const SizedBox(width: 12),
 
-            // Text Content
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Date
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      date,
-                      style: blackTextStyle.copyWith(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w500,
+              // Text Content
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Date
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        date,
+                        style: blackTextStyle.copyWith(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
-                  ),
-                  // Category
-                  Text(
-                    category,
-                    style: buttonTextStyle.copyWith(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.clip,
+                    // Category
+                    Text(
+                      category,
+                      style: buttonTextStyle.copyWith(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.clip,
+                      ),
                     ),
-                  ),
-                  Text(
-                    title,
-                    style: blackTextStyle.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.clip,
+                    Text(
+                      title,
+                      style: blackTextStyle.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.clip,
+                      ),
                     ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: blackTextStyle.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.clip,
-                    ),
-                  )
-                ],
+                    Text(
+                      subtitle,
+                      style: blackTextStyle.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.clip,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -101,6 +106,7 @@ class RecentTransactionCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String amount;
+  final VoidCallback? onTap;
 
   const RecentTransactionCard({
     super.key,
@@ -108,70 +114,74 @@ class RecentTransactionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.amount,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          width: 60.r,
-          height: 60.r,
-          decoration: BoxDecoration(
-            color: backgroundIcon,
-            borderRadius: BorderRadius.circular(25).r,
-          ),
-          child: Stack(
-            children: [
-              Center(
-                child: Icon(
-                  Icons.emoji_food_beverage,
-                  color: backgroundWhiteColor,
-                  size: 30.r,
-                ),
-              )
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: blackTextStyle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.sp,
-                ),
-              ),
-              SizedBox(
-                height: 4.r,
-              ),
-              Text(
-                subtitle,
-                style: blueTextStyle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10.sp,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Spacer(),
-        Padding(
-          padding: EdgeInsets.all(10).r,
-          child: Text(
-            amount,
-            style: warningTextStyle.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 14.sp,
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: 60.r,
+            height: 60.r,
+            decoration: BoxDecoration(
+              color: backgroundIcon,
+              borderRadius: BorderRadius.circular(25).r,
+            ),
+            child: Stack(
+              children: [
+                Center(
+                  child: Icon(
+                    Icons.emoji_food_beverage,
+                    color: backgroundWhiteColor,
+                    size: 30.r,
+                  ),
+                )
+              ],
             ),
           ),
-        )
-      ],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: blackTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(
+                  height: 4.r,
+                ),
+                Text(
+                  subtitle,
+                  style: blueTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Spacer(),
+          Padding(
+            padding: EdgeInsets.all(10).r,
+            child: Text(
+              amount,
+              style: warningTextStyle.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

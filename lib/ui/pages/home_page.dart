@@ -98,6 +98,8 @@ class _HomePageState extends State<HomePage>
                             ),
                             SizedBox(height: 10.r),
                             AiAdvisorSection(
+                              financialProfileButtonOntap: () =>
+                                  routes.pushNamed(RouteNames.financialProfile),
                               advice: state.advice,
                               isAdviceExist: state.user.data.financeProfile
                                       ?.financialGoals !=
@@ -121,18 +123,21 @@ class _HomePageState extends State<HomePage>
                             ),
                             SizedBox(height: 10.r),
                             RecentTransactionCard(
+                                onTap: () {},
                                 backgroundIcon: backgroundGreenColor,
                                 title: "Food",
                                 subtitle: "12:00 WIB",
                                 amount: "-Rp 12.000"),
                             RecentTransactionCard(
+                                onTap: () {},
                                 backgroundIcon: backgroundGreenColor,
                                 title: "Food",
                                 subtitle: "18:00 WIB",
                                 amount: "-Rp 18.000"),
                             Center(
                               child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () => routes
+                                      .pushNamed(RouteNames.historyTransact),
                                   child: Text(
                                     "See More",
                                     style: TextStyle(
@@ -142,7 +147,7 @@ class _HomePageState extends State<HomePage>
                                     ),
                                   )),
                             ),
-                            SizedBox(height: 20.r),
+                            SizedBox(height: 80.r),
                             // TODO ARTIKEL
                             // Text(
                             //   "Seimbangin Article",
