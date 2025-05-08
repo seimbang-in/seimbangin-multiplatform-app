@@ -16,11 +16,36 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool isObscure = true;
   bool isChecked = false;
+  bool _isFullNameValid = true;
+  bool _isUserNameValid = true;
+  bool _isEmailValid = true;
+  bool _isPhoneValid = true;
+  bool _isPassValid = true;
+  bool _isFormSubmitted = false;
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  void _validateForm() {
+    setState(() {
+      _isFormSubmitted = true;
+      _isFullNameValid = fullNameController.text.isNotEmpty;
+      _isUserNameValid = usernameController.text.isNotEmpty;
+      _isEmailValid = emailController.text.isNotEmpty;
+      _isPhoneValid = phoneNumberController.text.isNotEmpty;
+      _isPassValid = passwordController.text.isNotEmpty;
+    });
+  }
+
+  bool get _isFormValid {
+    return fullNameController.text.isNotEmpty &&
+        usernameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        phoneNumberController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +119,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Full Name',
+                    errorText: _isFormSubmitted && !_isFullNameValid
+                        ? '*Full name cannot be empty'
+                        : null,
+                    errorStyle: warningTextStyle.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -107,6 +139,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24).r,
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   style: blackTextStyle.copyWith(
@@ -123,6 +159,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Username',
+                    errorText: _isFormSubmitted && !_isUserNameValid
+                        ? '*Username cannot be empty'
+                        : null,
+                    errorStyle: warningTextStyle.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -136,6 +179,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24).r,
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   style: blackTextStyle.copyWith(
@@ -152,6 +199,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Email Address',
+                    errorText: _isFormSubmitted && !_isEmailValid
+                        ? '*Email address cannot be empty'
+                        : null,
+                    errorStyle: warningTextStyle.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -165,6 +219,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24).r,
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   style: blackTextStyle.copyWith(
@@ -181,6 +239,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Phone Number',
+                    errorText: _isFormSubmitted && !_isPhoneValid
+                        ? '*Phone number cannot be empty'
+                        : null,
+                    errorStyle: warningTextStyle.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                     hintStyle: greyTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
@@ -194,6 +259,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24).r,
+                      borderSide: BorderSide.none,
                     ),
                   ),
                   keyboardType: TextInputType.phone,
@@ -212,6 +281,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Password',
+                    errorText: _isFormSubmitted && !_isPassValid
+                        ? '*Password cannot be empty'
+                        : null,
+                    errorStyle: warningTextStyle.copyWith(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -242,6 +318,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: textBlueColor,
                       ),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24).r,
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                   style: blackTextStyle.copyWith(
                     fontSize: 14.sp,
@@ -254,19 +334,26 @@ class _RegisterPageState extends State<RegisterPage> {
                 PrimaryFilledButton(
                   title: 'Create Account',
                   onPressed: () {
-                    context.read<RegisterBloc>().add(
-                          RegisterButtonPressed(
-                            fullname: fullNameController.text,
-                            phone: phoneNumberController.text,
-                            username: usernameController.text,
-                            email: emailController.text,
-                            password: passwordController.text,
-                          ),
-                        );
+                    _validateForm();
+                    if (_isFormValid) {
+                      try {
+                        context.read<RegisterBloc>().add(
+                              RegisterButtonPressed(
+                                fullname: fullNameController.text,
+                                phone: phoneNumberController.text,
+                                username: usernameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                              ),
+                            );
+                      } catch (e) {
+                        print('Error: $e');
+                      }
+                    }
                   },
                 ),
                 SizedBox(
-                  height: 42.r,
+                  height: 62.r,
                 ),
               ],
             ),
