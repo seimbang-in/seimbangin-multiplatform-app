@@ -40,6 +40,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                   widget: Icon(
                     Icons.chevron_left,
                     size: 32.r,
+                    color: textSecondaryColor,
                   ),
                   backgroundColor: backgroundWhiteColor,
                 ),

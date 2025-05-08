@@ -221,12 +221,12 @@ class _TransactionsPageState extends State<TransactionsPage>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomRoundedButton(
-                            onPressed: () {
-                              routes.pop();
-                            },
+                            onPressed: () =>
+                                routes.pushReplacementNamed(RouteNames.ocr),
                             widget: Icon(
                               Icons.chevron_left,
                               size: 32,
+                              color: textSecondaryColor,
                             ),
                             backgroundColor: backgroundWhiteColor,
                           ),
