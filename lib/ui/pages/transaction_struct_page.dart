@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
@@ -134,7 +135,7 @@ class TransactionStructPage extends StatelessWidget {
                             width: 5,
                           ),
                           Text(
-                            '12:00',
+                            TimeOfDay.now().toString(),
                             style: blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 8,
@@ -276,8 +277,12 @@ class TransactionStructPage extends StatelessWidget {
                       BlocListener<TransactionBloc, TransactionState>(
                         listener: (context, state) {
                           if (state is TransactionSuccess) {
+                            _dismissLoadingDialog(context);
                             routes.pushNamed(RouteNames.transactionSuccess);
+                          } else if (state is TransactionLoading) {
+                            _showLoadingDialog(context);
                           } else if (state is TransactionFailure) {
+                            _dismissLoadingDialog(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(state.message),
@@ -310,5 +315,42 @@ class TransactionStructPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24).r,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Saving Transaction...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
