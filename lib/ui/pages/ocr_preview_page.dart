@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/ocr/ocr_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -74,9 +75,13 @@ class OcrPreviewPage extends StatelessWidget {
             BlocListener<OcrBloc, OcrState>(
               listener: (context, state) {
                 if (state is OcrSuccess) {
+                  _dismissLoadingDialog(context);
                   routes.pushNamed(RouteNames.transactionStruct,
                       extra: state.ocrModel);
+                } else if (state is OcrLoading) {
+                  _showLoadingDialog(context);
                 } else if (state is OcrFailure) {
+                  _dismissLoadingDialog(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
@@ -87,11 +92,6 @@ class OcrPreviewPage extends StatelessWidget {
               },
               child: BlocBuilder<OcrBloc, OcrState>(
                 builder: (context, state) {
-                  if (state is OcrLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
                   return PrimaryFilledButton(
                     title: 'Upload Image',
                     onPressed: () {
@@ -114,10 +114,46 @@ class OcrPreviewPage extends StatelessWidget {
                 ),
               ),
             ),
-            
           ],
         ),
       ),
     );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24).r,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Processing Image...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
