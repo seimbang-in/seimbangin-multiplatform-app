@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -26,10 +27,17 @@ class _RegisterPageState extends State<RegisterPage> {
     return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterSuccess) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
+          _dismissLoadingDialog(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
           routes.pushNamed(RouteNames.login);
+        } else if (state is RegisterLoading) {
+          _showLoadingDialog(context);
         } else if (state is RegisterFailure) {
+          _dismissLoadingDialog(context);
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
@@ -42,8 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               children: [
-                const SizedBox(
-                  height: 21,
+                SizedBox(
+                  height: 21.r,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +62,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       widget: Icon(
                         Icons.chevron_left,
-                        size: 32,
+                        size: 32.r,
+                        color: textSecondaryColor,
                       ),
                       backgroundColor: backgroundWhiteColor,
                     ),
@@ -71,13 +80,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       'Create Account',
                       style: blackTextStyle.copyWith(
                         fontWeight: FontWeight.w600,
-                        fontSize: 28,
+                        fontSize: 28.sp,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 45,
+                SizedBox(
+                  height: 45.r,
                 ),
                 TextField(
                   controller: fullNameController,
@@ -86,27 +95,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     fillColor: backgroundGreyColor,
                     hintText: 'Full Name',
                     hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
                     ),
                   ),
                   style: blackTextStyle.copyWith(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
+                SizedBox(
+                  height: 16.r,
                 ),
                 TextField(
                   controller: usernameController,
@@ -115,27 +124,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     fillColor: backgroundGreyColor,
                     hintText: 'Username',
                     hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
                     ),
                   ),
                   style: blackTextStyle.copyWith(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(   
-                  height: 16,
+                SizedBox(
+                  height: 16.r,
                 ),
                 TextField(
                   controller: emailController,
@@ -144,27 +153,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     fillColor: backgroundGreyColor,
                     hintText: 'Email Address',
                     hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
                     ),
                   ),
                   style: blackTextStyle.copyWith(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
+                SizedBox(
+                  height: 16.r,
                 ),
                 TextField(
                   controller: phoneNumberController,
@@ -173,15 +182,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     fillColor: backgroundGreyColor,
                     hintText: 'Phone Number',
                     hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide.none,
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
@@ -189,12 +198,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   keyboardType: TextInputType.phone,
                   style: blackTextStyle.copyWith(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
+                SizedBox(
+                  height: 16.r,
                 ),
                 TextField(
                   controller: passwordController,
@@ -210,120 +219,54 @@ class _RegisterPageState extends State<RegisterPage> {
                         });
                       },
                       icon: isObscure == true
-                          ? const Icon(
-                              Icons.remove_red_eye_outlined,
-                              size: 18,
-                            )
-                          : const Icon(
+                          ? Icon(
                               Icons.remove_red_eye_rounded,
-                              size: 18,
+                              size: 18.r,
+                            )
+                          : Icon(
+                              Icons.remove_red_eye_outlined,
+                              size: 18.r,
                             ),
                     ),
                     suffixIconColor: textPrimaryColor,
                     hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24).r,
                         borderSide: BorderSide.none),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24).r,
                       borderSide: BorderSide(
                         color: textBlueColor,
                       ),
                     ),
                   ),
                   style: blackTextStyle.copyWith(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(
-                  height: 42,
+                SizedBox(
+                  height: 42.r,
                 ),
                 PrimaryFilledButton(
                   title: 'Create Account',
                   onPressed: () {
-                    context.read<RegisterBloc>().add(RegisterButtonPressed(
-                        fullname: fullNameController.text,
-                        phone: phoneNumberController.text,
-                        username: usernameController.text,
-                        email: emailController.text,
-                        password: passwordController.text));
+                    context.read<RegisterBloc>().add(
+                          RegisterButtonPressed(
+                            fullname: fullNameController.text,
+                            phone: phoneNumberController.text,
+                            username: usernameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                          ),
+                        );
                   },
                 ),
-                const SizedBox(
-                  height: 22,
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        value: isChecked,
-                        onChanged: (value) {
-                          setState(() {
-                            isChecked = value ?? false;
-                          });
-                        }),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'By continuing, you agree to our ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                                decorationColor: textPrimaryColor,
-                              ),
-                            ),
-                            TextSpan(
-                                text: 'Terms of Service',
-                                style: blueTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: textBlueColor,
-                                )
-                                // recognizer: TapGestureRecognizer()
-                                //   ..onTap = widget.onTermsPressed,
-                                ),
-                            TextSpan(
-                              text: ' and ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                                decorationColor: primaryColor,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Privacy Policy',
-                              style: blueTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                                decorationColor: textBlueColor,
-                              ),
-                              // recognizer: TapGestureRecognizer()
-                              //   ..onTap = widget.onPrivacyPressed,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (state is RegisterLoading)
-                      const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const SizedBox(
-                  height: 42,
+                SizedBox(
+                  height: 42.r,
                 ),
               ],
             ),
@@ -331,5 +274,42 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
     );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24).r,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Registering Account...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
