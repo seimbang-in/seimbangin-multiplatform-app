@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage>
                   floating: false,
                   flexibleSpace: FlexibleSpaceBar(
                     background: HeaderSection(
-                      name: user.data.fullName ?? "Guest",
+                      name: user.data.username ?? "Guest",
                       money: user.data.balance?.toString() ?? '0',
                       imageUrl: "assets/img_mascot-login.png",
                     ),
