@@ -6,7 +6,6 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/transactions_section.dart';
-import 'package:seimbangin_app/ui/widgets/bar_widget.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionsPage extends StatefulWidget {
@@ -111,7 +110,8 @@ class _TransactionsPageState extends State<TransactionsPage>
   String? selectedCategory;
   double totalPrice = 0.0;
 
-  final List<Category> categories = [
+  // INCOME CATEGORY LIST
+  final List<Category> incomeCategories = [
     Category(
       id: '1',
       title: 'salary',
@@ -136,6 +136,44 @@ class _TransactionsPageState extends State<TransactionsPage>
       id: '5',
       title: 'gift',
       icon: 'assets/ic_gift.png',
+    ),
+  ];
+
+  final List<Category> outcomeCategories = [
+    Category(
+      id: '1',
+      title: 'health',
+      icon: 'assets/ic_health.png',
+    ),
+    Category(
+      id: '2',
+      title: 'housing',
+      icon: 'assets/ic_housing.png',
+    ),
+    Category(
+      id: '3',
+      title: 'internet',
+      icon: 'assets/ic_internet.png',
+    ),
+    Category(
+      id: '4',
+      title: 'education',
+      icon: 'assets/ic_education.png',
+    ),
+    Category(
+      id: '5',
+      title: 'shopping',
+      icon: 'assets/ic_shopping.png',
+    ),
+    Category(
+      id: '6',
+      title: 'transportation',
+      icon: 'assets/ic_transportation.png',
+    ),
+    Category(
+      id: '7',
+      title: 'food',
+      icon: 'assets/ic_food.png',
     ),
   ];
 
@@ -257,7 +295,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                                 routes.pushReplacementNamed(RouteNames.ocr),
                             widget: Icon(
                               Icons.chevron_left,
-                              size: 32,
+                              size: 32.r,
                               color: textSecondaryColor,
                             ),
                             backgroundColor: backgroundWhiteColor,
@@ -266,7 +304,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                             'Add Transaction',
                             style: blackTextStyle.copyWith(
                               fontWeight: FontWeight.w600,
-                              fontSize: 16,
+                              fontSize: 18.sp,
                             ),
                           ),
                           Image.asset(
@@ -274,8 +312,8 @@ class _TransactionsPageState extends State<TransactionsPage>
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 40,
+                      SizedBox(
+                        height: 40.r,
                       ),
                       _buildCustomTabBar(),
                       SizedBox(
@@ -292,14 +330,14 @@ class _TransactionsPageState extends State<TransactionsPage>
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(32),
                       topRight: Radius.circular(32),
-                    ),
+                    ).r,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
-                        const SizedBox(
-                          height: 36,
+                        SizedBox(
+                          height: 36.r,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -308,7 +346,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               'Total Price:',
                               style: whiteTextStyle.copyWith(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                                fontSize: 14.sp,
                               ),
                             ),
                             Text(
@@ -316,10 +354,14 @@ class _TransactionsPageState extends State<TransactionsPage>
                                       locale: 'id',
                                       symbol: 'Rp ',
                                       decimalDigits: 0)
-                                  .format(double.parse(totalPrice.toString())),
+                                  .format(
+                                double.parse(
+                                  totalPrice.toString(),
+                                ),
+                              ),
                               style: whiteTextStyle.copyWith(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                                fontSize: 14.sp,
                               ),
                             ),
                           ],
@@ -343,10 +385,10 @@ class _TransactionsPageState extends State<TransactionsPage>
                                   amount.isEmpty ||
                                   category == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        'Please complete all income fields'),
-                                    backgroundColor: Colors.red,
+                                        'Please complete all income fields!'),
+                                    backgroundColor: backgroundWarningColor,
                                   ),
                                 );
                                 return;
@@ -392,10 +434,10 @@ class _TransactionsPageState extends State<TransactionsPage>
 
                               if (!isValid || _itemsOutcome.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                        'Please complete all Outcome item fields'),
-                                    backgroundColor: Colors.red,
+                                        'Please complete all outcome fields!'),
+                                    backgroundColor: backgroundWarningColor,
                                   ),
                                 );
                                 return;
@@ -414,8 +456,8 @@ class _TransactionsPageState extends State<TransactionsPage>
                           backgroundColor: textWhiteColor,
                           textColor: primaryColor,
                         ),
-                        const SizedBox(
-                          height: 34,
+                        SizedBox(
+                          height: 34.r,
                         ),
                       ],
                     ),
@@ -447,40 +489,77 @@ class _TransactionsPageState extends State<TransactionsPage>
               ),
             ],
           ),
-          const SizedBox(
-            height: 25,
+          SizedBox(
+            height: 25.r,
           ),
           CategorySelector(
-            categories: categories,
+            categories: incomeCategories,
             onCategorySelected: (selectedId) {
               print('Selected category ID: $selectedId');
               setState(() {
-                selectedCategory =
-                    categories.firstWhere((cat) => cat.id == selectedId).title;
+                selectedCategory = incomeCategories
+                    .firstWhere((cat) => cat.id == selectedId)
+                    .title;
               });
               print('Selected category: $selectedCategory');
             },
           ),
-          const SizedBox(
-            height: 120,
+          SizedBox(
+            height: 120.r,
           ),
         ],
       );
     } else if (_selectedIndexTab == 1) {
       // TAB OUTCOME
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _itemsOutcome.length + 1,
-        itemBuilder: (context, index) {
-          if (index < _itemsOutcome.length) {
-            return _buildItemContainer(index);
-          }
-          return AddItemTransactButton(
-            title: 'Add Another Item',
-            onPressed: _addItem,
-          );
-        },
+      return SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Column(
+          children: [
+            TextField(
+              // controller: transactNameController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: backgroundGreyColor,
+                hintText: 'Transaction Name',
+                hintStyle: greyTextStyle.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24).r,
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24).r,
+                  borderSide: BorderSide(
+                    color: textBlueColor,
+                  ),
+                ),
+              ),
+              style: blackTextStyle.copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(
+              height: 20.r,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _itemsOutcome.length + 1,
+              itemBuilder: (context, index) {
+                if (index < _itemsOutcome.length) {
+                  return _buildItemContainer(index);
+                }
+                return AddItemTransactButton(
+                  title: 'Add Another Item',
+                  onPressed: _addItem,
+                );
+              },
+            ),
+          ],
+        ),
       );
     }
     return Center(
@@ -536,20 +615,20 @@ class _TransactionsPageState extends State<TransactionsPage>
     item.qtyController.addListener(_calculateTotalPrice);
     return Card(
       color: backgroundGreyColor,
-      margin: const EdgeInsets.only(bottom: 18),
+      margin: const EdgeInsets.only(bottom: 18).r,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 19),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 19).r,
         child: Column(
           children: [
             Text(
               "Item ${itemIndex + 1}",
               style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: 20.r,
             ),
             TextField(
               controller: item.nameController,
@@ -558,7 +637,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                 fillColor: backgroundWhiteColor,
                 hintText: 'Item Name',
                 hintStyle: greyTextStyle.copyWith(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
                 enabledBorder: OutlineInputBorder(
@@ -574,39 +653,49 @@ class _TransactionsPageState extends State<TransactionsPage>
               ),
               keyboardType: TextInputType.name,
               style: blackTextStyle.copyWith(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.r),
             DropdownButtonFormField<String>(
+              dropdownColor: backgroundWhiteColor,
+              style: blackTextStyle.copyWith(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: backgroundWhiteColor,
                 hintText: 'Category',
                 hintStyle: greyTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 14.sp,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24).r,
                   borderSide: BorderSide.none,
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24).r,
                   borderSide: BorderSide(
                     color: textBlueColor,
                   ),
                 ),
               ),
-              items: categories.map((Category category) {
+              items: outcomeCategories.map((Category category) {
                 return DropdownMenuItem<String>(
                   value: category.id,
                   child: Row(
                     children: [
                       Image.asset(category.icon),
-                      const SizedBox(width: 10),
-                      Text(category.title),
+                      SizedBox(width: 10.r),
+                      Text(
+                        category.title,
+                        style: blackTextStyle.copyWith(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -614,7 +703,7 @@ class _TransactionsPageState extends State<TransactionsPage>
               onChanged: (value) =>
                   _itemsOutcome[itemIndex].category = value ?? '',
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.r),
             Row(
               children: [
                 Expanded(
@@ -626,7 +715,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                       fillColor: backgroundWhiteColor,
                       hintText: 'Price',
                       hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
@@ -643,7 +732,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                     keyboardType: TextInputType.number,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.r),
                 Expanded(
                   flex: 1,
                   child: TextField(
@@ -653,7 +742,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                       fillColor: backgroundWhiteColor,
                       hintText: 'Qty',
                       hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       enabledBorder: OutlineInputBorder(
