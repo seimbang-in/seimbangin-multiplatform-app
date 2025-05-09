@@ -6,13 +6,12 @@ class AddTransactionIncomeSection extends StatelessWidget {
   late TextEditingController transactPriceController = TextEditingController();
   late TextEditingController transactAmountController = TextEditingController();
   final ValueChanged onChangePressed;
-  AddTransactionIncomeSection({
-    super.key,
-    required this.transactNameController,
-    required this.transactPriceController,
-    required this.transactAmountController,
-    required this.onChangePressed
-  });
+  AddTransactionIncomeSection(
+      {super.key,
+      required this.transactNameController,
+      required this.transactPriceController,
+      required this.transactAmountController,
+      required this.onChangePressed});
 
   @override
   Widget build(BuildContext context) {

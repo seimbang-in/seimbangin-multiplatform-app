@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
@@ -13,18 +14,6 @@ class TransactionsPage extends StatefulWidget {
 
   @override
   State<TransactionsPage> createState() => _TransactionsPageState();
-}
-
-class CategoryOutcome {
-  final String id;
-  final String name;
-  final IconData icon;
-
-  CategoryOutcome({
-    required this.id,
-    required this.name,
-    required this.icon,
-  });
 }
 
 class Item {
@@ -59,14 +48,63 @@ class Item {
   }
 }
 
+class ItemOutcome {
+  TextEditingController nameController;
+  TextEditingController priceController;
+  TextEditingController qtyController;
+  String category;
+
+  ItemOutcome({
+    required this.nameController,
+    required this.priceController,
+    required this.qtyController,
+    this.category = '',
+  });
+  void dispose() {
+    nameController.dispose();
+    priceController.dispose();
+    qtyController.dispose();
+  }
+
+  factory ItemOutcome.fromJson(Map<String, dynamic> json) {
+    return ItemOutcome(
+      nameController: json['item_name'],
+      category: json['category'],
+      priceController: json['price'],
+      qtyController: json['quantity'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'item_name': nameController,
+      'category': category,
+      'price': priceController,
+      'quantity': qtyController,
+    };
+  }
+}
+
 class _TransactionsPageState extends State<TransactionsPage>
     with TickerProviderStateMixin {
+  int _selectedIndexTab = 0;
+  final List<String> _tabs = ['Income', 'Outcome'];
   TextEditingController _transactNameController = TextEditingController();
   TextEditingController _transactPriceController = TextEditingController();
   TextEditingController _transactAmountController = TextEditingController();
+
   final List<Item> _items = [
     Item(name: '', category: '', price: '', quantity: '')
   ];
+
+  final List<ItemOutcome> _itemsOutcome = [
+    ItemOutcome(
+      nameController: TextEditingController(),
+      priceController: TextEditingController(),
+      qtyController: TextEditingController(),
+    )
+  ];
+
   final List<String> mainTabTitles = ["Income", "Outcome"];
   late TabController _mainTabController;
   int selectedMainTab = 0;
@@ -76,12 +114,12 @@ class _TransactionsPageState extends State<TransactionsPage>
   final List<Category> categories = [
     Category(
       id: '1',
-      title: 'Salary',
+      title: 'salary',
       icon: 'assets/ic_salary.png',
     ),
     Category(
       id: '2',
-      title: 'Bonus',
+      title: 'bonus',
       icon: 'assets/ic_bonus.png',
     ),
     Category(
@@ -91,63 +129,46 @@ class _TransactionsPageState extends State<TransactionsPage>
     ),
     Category(
       id: '4',
-      title: 'Parents',
+      title: 'Parent',
       icon: 'assets/ic_parents.png',
     ),
     Category(
       id: '5',
-      title: 'Gift',
-      icon: 'assets/ic_gift.png',
-    ),
-  ];
-
-  final List<Category> outcomeCategories = [
-    Category(
-      id: '1',
-      title: 'Salary',
-      icon: 'assets/ic_salary.png',
-    ),
-    Category(
-      id: '2',
-      title: 'Bonus',
-      icon: 'assets/ic_bonus.png',
-    ),
-    Category(
-      id: '3',
-      title: 'Freelance',
-      icon: 'assets/ic_freelance.png',
-    ),
-    Category(
-      id: '4',
-      title: 'Parents',
-      icon: 'assets/ic_parents.png',
-    ),
-    Category(
-      id: '5',
-      title: 'Gift',
+      title: 'gift',
       icon: 'assets/ic_gift.png',
     ),
   ];
 
   void _addItem() {
     setState(() {
-      _items.add(Item(name: '', category: '', price: '', quantity: ''));
+      _itemsOutcome.add(ItemOutcome(
+        nameController: TextEditingController(),
+        priceController: TextEditingController(),
+        qtyController: TextEditingController(),
+      ));
+
+      _items.add(Item(
+        name: '',
+        category: '',
+        price: '',
+        quantity: '',
+      ));
     });
   }
 
   void _calculateTotalPrice() {
     double total = 0.0;
 
-    if (selectedMainTab == 0) {
+    if (_selectedIndexTab == 0) {
       // For Income tab
       final price = double.tryParse(_transactPriceController.text) ?? 0.0;
       final amount = double.tryParse(_transactAmountController.text) ?? 0.0;
       total = price * amount;
     } else {
       // For Outcome tab - sum all items
-      for (var item in _items) {
-        final price = double.tryParse(item.price) ?? 0.0;
-        final quantity = double.tryParse(item.quantity) ?? 0.0;
+      for (var item in _itemsOutcome) {
+        final price = double.tryParse(item.priceController.text) ?? 0.0;
+        final quantity = double.tryParse(item.qtyController.text) ?? 0.0;
         total += price * quantity;
       }
     }
@@ -171,7 +192,9 @@ class _TransactionsPageState extends State<TransactionsPage>
 
   @override
   void dispose() {
-    _mainTabController.dispose();
+    for (var item in _itemsOutcome) {
+      item.dispose();
+    }
     super.dispose();
   }
 
@@ -182,6 +205,7 @@ class _TransactionsPageState extends State<TransactionsPage>
       body: BlocConsumer<TransactionBloc, TransactionState>(
         listener: (context, state) {
           if (state is TransactionSuccess) {
+            _dismissLoadingDialog(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.green,
@@ -190,16 +214,24 @@ class _TransactionsPageState extends State<TransactionsPage>
             _transactNameController.clear();
             _transactPriceController.clear();
             _transactAmountController.clear();
+            totalPrice = 0;
             setState(() {
               selectedCategory = null;
-              _items.clear();
-              _items.add(Item(
-                  name: '',
+              _itemsOutcome.clear();
+              totalPrice = 0;
+              _itemsOutcome.add(
+                ItemOutcome(
+                  nameController: TextEditingController(),
+                  priceController: TextEditingController(),
+                  qtyController: TextEditingController(),
                   category: '',
-                  price: '',
-                  quantity: '')); // Tambahkan item kosong
+                ),
+              ); // Tambahkan item kosong
             });
+          } else if (state is TransactionLoading) {
+            _showLoadingDialog(context);
           } else if (state is TransactionFailure) {
+            _dismissLoadingDialog(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.red,
@@ -245,57 +277,11 @@ class _TransactionsPageState extends State<TransactionsPage>
                       const SizedBox(
                         height: 40,
                       ),
-                      AnalyticsTabBar(
-                        tabController: _mainTabController,
-                        tabTitles: mainTabTitles,
+                      _buildCustomTabBar(),
+                      SizedBox(
+                        height: 32.r,
                       ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      if (selectedMainTab == 1)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _items.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < _items.length) {
-                              return _buildItemContainer(index);
-                            }
-                            // return _buildAddButton();
-                            return AddItemTransactButton(
-                              title: 'Add Another Item',
-                              onPressed: _addItem,
-                            );
-                          },
-                        ),
-                      if (selectedMainTab == 0) ...[
-                        AddTransactionIncomeSection(
-                          transactNameController: _transactNameController,
-                          transactPriceController: _transactPriceController,
-                          transactAmountController: _transactAmountController,
-                          onChangePressed: (total) {
-                            _calculateTotalPrice();
-                          },
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        CategorySelector(
-                          categories: categories,
-                          onCategorySelected: (selectedId) {
-                            print('Selected category ID: $selectedId');
-                            setState(() {
-                              selectedCategory = categories
-                                  .firstWhere((cat) => cat.id == selectedId)
-                                  .title;
-                            });
-                            print('Selected category: $selectedCategory');
-                          },
-                        ),
-                        const SizedBox(
-                          height: 120,
-                        ),
-                      ]
+                      _buildContent(),
                     ],
                   ),
                 ),
@@ -338,22 +324,13 @@ class _TransactionsPageState extends State<TransactionsPage>
                             ),
                           ],
                         ),
-                        if (state is TransactionLoading) ...[
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          LinearProgressIndicator(
-                            color: textWhiteColor,
-                            backgroundColor: backgroundWhiteColor,
-                          ),
-                        ],
                         const SizedBox(
                           height: 36,
                         ),
                         PrimaryFilledButton(
                           title: 'Add Transaction',
                           onPressed: () {
-                            if (selectedMainTab == 0) {
+                            if (_selectedIndexTab == 0) {
                               final name = _transactNameController.text.trim();
                               final price =
                                   _transactPriceController.text.trim();
@@ -392,23 +369,32 @@ class _TransactionsPageState extends State<TransactionsPage>
                                       ], // 👈 hanya 1 item income
                                     ),
                                   );
-                            } else if (selectedMainTab == 1) {
+                            } else if (_selectedIndexTab == 1) {
                               bool isValid = true;
-                              for (int i = 0; i < _items.length; i++) {
-                                if (_items[i].name.isEmpty ||
-                                    _items[i].category.isEmpty ||
-                                    _items[i].price.isEmpty ||
-                                    _items[i].quantity.isEmpty) {
+                              for (int i = 0; i < _itemsOutcome.length; i++) {
+                                if (_itemsOutcome[i]
+                                        .nameController
+                                        .text
+                                        .isEmpty ||
+                                    _itemsOutcome[i].category.isEmpty ||
+                                    _itemsOutcome[i]
+                                        .priceController
+                                        .text
+                                        .isEmpty ||
+                                    _itemsOutcome[i]
+                                        .qtyController
+                                        .text
+                                        .isEmpty) {
                                   isValid = false;
                                   break;
                                 }
                               }
 
-                              if (!isValid || _items.isEmpty) {
+                              if (!isValid || _itemsOutcome.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content:
-                                        Text('Please complete all item fields'),
+                                    content: Text(
+                                        'Please complete all Outcome item fields'),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -416,11 +402,11 @@ class _TransactionsPageState extends State<TransactionsPage>
                               }
 
                               context.read<TransactionBloc>().add(
-                                    TransactionButtonPressed(
+                                    TransactionOutcomeButtonPressed(
                                       description: 'Outcome',
                                       name: 'outcome',
                                       type: 1,
-                                      items: _items,
+                                      items: _itemsOutcome,
                                     ),
                                   );
                             }
@@ -443,29 +429,113 @@ class _TransactionsPageState extends State<TransactionsPage>
     );
   }
 
+  // SECTION CONTENT TRANSACTIONS
+  Widget _buildContent() {
+    // TAB INCOME
+    if (_selectedIndexTab == 0) {
+      return Column(
+        children: [
+          Column(
+            children: [
+              AddTransactionIncomeSection(
+                transactNameController: _transactNameController,
+                transactPriceController: _transactPriceController,
+                transactAmountController: _transactAmountController,
+                onChangePressed: (total) {
+                  _calculateTotalPrice();
+                },
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          CategorySelector(
+            categories: categories,
+            onCategorySelected: (selectedId) {
+              print('Selected category ID: $selectedId');
+              setState(() {
+                selectedCategory =
+                    categories.firstWhere((cat) => cat.id == selectedId).title;
+              });
+              print('Selected category: $selectedCategory');
+            },
+          ),
+          const SizedBox(
+            height: 120,
+          ),
+        ],
+      );
+    } else if (_selectedIndexTab == 1) {
+      // TAB OUTCOME
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _itemsOutcome.length + 1,
+        itemBuilder: (context, index) {
+          if (index < _itemsOutcome.length) {
+            return _buildItemContainer(index);
+          }
+          return AddItemTransactButton(
+            title: 'Add Another Item',
+            onPressed: _addItem,
+          );
+        },
+      );
+    }
+    return Center(
+      child: Text('invalid tab'),
+    );
+  }
+
+  Widget _buildCustomTabBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundGreyColor,
+        borderRadius: BorderRadius.circular(24.r),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: List.generate(_tabs.length, (index) {
+          final isSelected = _selectedIndexTab == index;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _selectedIndexTab = index),
+              child: Container(
+                margin: EdgeInsets.all(4.r),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? (index == 0 ? buttonColor : backgroundWarningColor)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.r),
+                child: Center(
+                  child: Text(
+                    _tabs[index],
+                    style: blackTextStyle.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: isSelected ? textWhiteColor : textSecondaryColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
   Widget _buildItemContainer(int itemIndex) {
-    final TextEditingController nameController =
-        TextEditingController(text: _items[itemIndex].name);
-    final TextEditingController priceController =
-        TextEditingController(text: _items[itemIndex].price);
-    final TextEditingController quantityController =
-        TextEditingController(text: _items[itemIndex].quantity);
+    final item = _itemsOutcome[itemIndex];
 
-    // Use the controllers with proper listeners
-    nameController.addListener(() {
-      _items[itemIndex].name = nameController.text;
-    });
-
-    priceController.addListener(() {
-      _items[itemIndex].price = priceController.text;
-      _calculateTotalPrice(); // Recalculate total when price changes
-    });
-
-    quantityController.addListener(() {
-      _items[itemIndex].quantity = quantityController.text;
-      _calculateTotalPrice(); // Recalculate total when quantity changes
-    });
+    // Setup listeners
+    item.priceController.addListener(_calculateTotalPrice);
+    item.qtyController.addListener(_calculateTotalPrice);
     return Card(
+      color: backgroundGreyColor,
       margin: const EdgeInsets.only(bottom: 18),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 19),
@@ -482,7 +552,7 @@ class _TransactionsPageState extends State<TransactionsPage>
               height: 20,
             ),
             TextField(
-              controller: nameController,
+              controller: item.nameController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: backgroundWhiteColor,
@@ -541,7 +611,8 @@ class _TransactionsPageState extends State<TransactionsPage>
                   ),
                 );
               }).toList(),
-              onChanged: (value) => _items[itemIndex].category = value ?? '',
+              onChanged: (value) =>
+                  _itemsOutcome[itemIndex].category = value ?? '',
             ),
             const SizedBox(height: 8),
             Row(
@@ -549,7 +620,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                 Expanded(
                   flex: 2,
                   child: TextField(
-                    controller: priceController,
+                    controller: item.priceController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: backgroundWhiteColor,
@@ -568,17 +639,15 @@ class _TransactionsPageState extends State<TransactionsPage>
                           color: textBlueColor,
                         ),
                       ),
-                      prefixText: 'Rp ',
                     ),
                     keyboardType: TextInputType.number,
-                    onChanged: (value) => _items[itemIndex].price = value,
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   flex: 1,
                   child: TextField(
-                    controller: quantityController,
+                    controller: item.qtyController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: backgroundWhiteColor,
@@ -599,7 +668,6 @@ class _TransactionsPageState extends State<TransactionsPage>
                       ),
                     ),
                     keyboardType: TextInputType.number,
-                    onChanged: (value) => _items[itemIndex].quantity = value,
                   ),
                 ),
               ],
@@ -608,5 +676,43 @@ class _TransactionsPageState extends State<TransactionsPage>
         ),
       ),
     );
+  }
+
+  // DIALOG LOADING
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24).r,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Saving Transaction...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
