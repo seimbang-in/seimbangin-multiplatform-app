@@ -1,0 +1,2 @@
+/home/shandika/Documents/projects/flutter/seimbangin_app/android/app/.cxx/RelWithDebInfo/1973d1j4/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/shandika/Documents/projects/flutter/seimbangin_app/android/app/.cxx/RelWithDebInfo/1973d1j4/arm64-v8a/CMakeFiles/rebuild_cache.dir

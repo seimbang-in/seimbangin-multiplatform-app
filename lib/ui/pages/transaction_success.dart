@@ -14,8 +14,8 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      routes.goNamed(RouteNames.home);
+    Future.delayed(const Duration(seconds: 2), () {
+      routes.goNamed(RouteNames.main);
     });
   }
 

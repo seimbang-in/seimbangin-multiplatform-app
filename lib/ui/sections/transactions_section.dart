@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class AddTransactionIncomeSection extends StatelessWidget {
@@ -6,13 +7,12 @@ class AddTransactionIncomeSection extends StatelessWidget {
   late TextEditingController transactPriceController = TextEditingController();
   late TextEditingController transactAmountController = TextEditingController();
   final ValueChanged onChangePressed;
-  AddTransactionIncomeSection({
-    super.key,
-    required this.transactNameController,
-    required this.transactPriceController,
-    required this.transactAmountController,
-    required this.onChangePressed
-  });
+  AddTransactionIncomeSection(
+      {super.key,
+      required this.transactNameController,
+      required this.transactPriceController,
+      required this.transactAmountController,
+      required this.onChangePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +25,27 @@ class AddTransactionIncomeSection extends StatelessWidget {
             fillColor: backgroundGreyColor,
             hintText: 'Transaction Name',
             hintStyle: greyTextStyle.copyWith(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide(
                 color: textBlueColor,
               ),
             ),
           ),
           style: blackTextStyle.copyWith(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(
-          height: 16,
+        SizedBox(
+          height: 16.r,
         ),
         TextField(
           controller: transactPriceController,
@@ -55,15 +55,15 @@ class AddTransactionIncomeSection extends StatelessWidget {
             fillColor: backgroundGreyColor,
             hintText: 'Enter The Price',
             hintStyle: greyTextStyle.copyWith(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide(
                 color: textBlueColor,
               ),
@@ -71,12 +71,12 @@ class AddTransactionIncomeSection extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           style: blackTextStyle.copyWith(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(
-          height: 16,
+        SizedBox(
+          height: 16.r,
         ),
         TextField(
           controller: transactAmountController,
@@ -86,15 +86,15 @@ class AddTransactionIncomeSection extends StatelessWidget {
             fillColor: backgroundGreyColor,
             hintText: 'Amount',
             hintStyle: greyTextStyle.copyWith(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide(
                 color: textBlueColor,
               ),
@@ -102,7 +102,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           style: blackTextStyle.copyWith(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -158,13 +158,15 @@ class _CategorySelectorState extends State<CategorySelector> {
           'Select Category',
           style: blackTextStyle.copyWith(
             fontWeight: FontWeight.w500,
-            fontSize: 14,
+            fontSize: 14.sp,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(
+          height: 16.r,
+        ),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 12.r,
+          runSpacing: 12.r,
           children: widget.categories.map((category) {
             final isSelected = _selectedCategoryId == category.id;
 
@@ -176,24 +178,24 @@ class _CategorySelectorState extends State<CategorySelector> {
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue[50] : Colors.grey[100],
-                      borderRadius: BorderRadius.circular(24),
+                      color: isSelected ? buttonColor : backgroundGreyColor,
+                      borderRadius: BorderRadius.circular(24).r,
                       border: Border.all(
                         color: isSelected ? buttonColor : Colors.transparent,
-                        width: 1.5,
+                        width: 1.5.r,
                       ),
                     ),
                     child: Image.asset(category.icon),
                   ),
-                  const SizedBox(
-                    height: 8,
+                  SizedBox(
+                    height: 8.r,
                   ),
                   Text(
                     category.title,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
-                      color: isSelected ? Colors.blue : Colors.grey[600],
+                      color: isSelected ? buttonColor : textSecondaryColor,
                     ),
                   ),
                 ],

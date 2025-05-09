@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -135,15 +136,14 @@ class _OcrPageState extends State<OcrPage> {
 
           // Top buttons
           Positioned(
-            top: 60,
-            left: 24,
+            top: 60.r,
+            left: 24.r,
             child: CustomRoundedButton(
-              onPressed: () {
-                routes.pop();
-              },
+              onPressed: () => routes.pushReplacementNamed(RouteNames.main),
               widget: Icon(
                 Icons.chevron_left,
-                size: 32,
+                size: 32.r,
+                color: textSecondaryColor,
               ),
               backgroundColor: backgroundWhiteColor,
             ),
@@ -151,8 +151,8 @@ class _OcrPageState extends State<OcrPage> {
 
           // App Logo
           Positioned(
-            top: 60,
-            right: 24,
+            top: 60.r,
+            right: 24.r,
             child: Image.asset(
               'assets/ic_seimbangin-logo-logreg.png',
             ),
@@ -164,8 +164,8 @@ class _OcrPageState extends State<OcrPage> {
             child: GestureDetector(
               onTap: () => takePicture(), // Add camera capture logic
               child: Container(
-                width: 80,
-                height: 80,
+                width: 80.r,
+                height: 80.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: textWhiteColor,
@@ -177,14 +177,15 @@ class _OcrPageState extends State<OcrPage> {
 
           // Bottom Container
           Positioned(
-            bottom: 30,
-            left: 20,
-            right: 20,
+            bottom: 30.r,
+            left: 20.r,
+            right: 20.r,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 8).r,
               decoration: BoxDecoration(
                 color: textWhiteColor,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(24).r,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -195,7 +196,7 @@ class _OcrPageState extends State<OcrPage> {
                       _selectFromGallery();
                     },
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.r),
                   PrimaryFilledButton(
                     title: 'Add Manual',
                     backgroundColor: backgroundGreyColor,

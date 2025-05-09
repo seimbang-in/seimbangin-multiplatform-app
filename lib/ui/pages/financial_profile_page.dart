@@ -12,8 +12,8 @@ class FinancialProfilePage extends StatefulWidget {
 }
 
 class _FinancialProfilePageState extends State<FinancialProfilePage> {
-  String? _selectedInterval = 'monthly'; // Nilai default
-  final List<String> _intervals = ['daily', 'weekly', 'monthly'];
+  String? _selectedInterval = 'low'; // Nilai default
+  final List<String> _intervals = ['low', 'normal', 'high'];
   final TextEditingController totalIncomeController = TextEditingController();
   final TextEditingController currentSavingController = TextEditingController();
   final TextEditingController totalDebtController = TextEditingController();
@@ -40,6 +40,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                   widget: Icon(
                     Icons.chevron_left,
                     size: 32.r,
+                    color: textSecondaryColor,
                   ),
                   backgroundColor: backgroundWhiteColor,
                 ),
@@ -136,7 +137,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: backgroundGreyColor,
-                hintText: 'Total Income',
+                hintText: 'Financial Goals',
                 // errorText: _isFormSubmitted && !_isPhoneValid
                 //     ? '*Phone number cannot be empty'
                 //     : null,
@@ -163,7 +164,6 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              keyboardType: TextInputType.number,
               style: blackTextStyle.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
@@ -254,44 +254,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
             SizedBox(
               height: 16.h,
             ),
-            TextField(
-              controller: totalBillController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: backgroundGreyColor,
-                hintText: 'Total Bill',
-                // errorText: _isFormSubmitted && !_isPhoneValid
-                //     ? '*Phone number cannot be empty'
-                //     : null,
-                hintStyle: greyTextStyle.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                errorStyle: warningTextStyle.copyWith(
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24).r,
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24).r,
-                  borderSide: BorderSide(
-                    color: textBlueColor,
-                  ),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24).r,
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              keyboardType: TextInputType.number,
-              style: blackTextStyle.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            //
             SizedBox(
               height: 42.h,
             ),
