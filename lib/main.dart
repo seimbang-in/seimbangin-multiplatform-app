@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => OcrBloc(ocrService: OcrService()),
-        )
+        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(390, 844),

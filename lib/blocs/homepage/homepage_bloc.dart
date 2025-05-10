@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
@@ -12,6 +14,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
   HomepageBloc({required this.userService}) : super(HomepageInitial()) {
     on<HomepageStarted>(_handleHomepageStarted);
+    on<UpdateFinancialProfile>(_updateFinancialProfile);
   }
 
   Future<void> _handleHomepageStarted(
@@ -32,6 +35,23 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       }
     } catch (e) {
       emit(HomePageFailure('Gagal memuat data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _updateFinancialProfile(
+      UpdateFinancialProfile event, Emitter<HomepageState> emit) async {
+    emit(financialProfileLoading("Memperbarui data..."));
+    try {
+      print(
+          'payload : current savings: ${event.currentSavings}, debt: ${event.debt}, financialGoals: ${event.financialGoals}, riskManagement: ${event.riskManagement}');
+      await userService.updateUserProfile(event.currentSavings, event.debt,
+          event.financialGoals, event.riskManagement);
+      emit(financialProfileSuccess(message: "Data berhasil diperbarui"));
+      add(HomepageStarted());
+    } catch (e) {
+      emit(financialProfileFailure("Gagal memperbarui data: ${e.toString()}"));
+    } finally {
+      add(HomepageStarted());
     }
   }
 }
