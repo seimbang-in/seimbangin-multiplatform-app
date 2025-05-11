@@ -5,11 +5,13 @@ import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/blocs/ocr/ocr_bloc.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
+import 'package:seimbangin_app/blocs/statistics/statistics_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/chatbot_service.dart';
 import 'package:seimbangin_app/services/login_service.dart';
 import 'package:seimbangin_app/services/ocr_service.dart';
+import 'package:seimbangin_app/services/statistics_service.dart';
 import 'package:seimbangin_app/services/transaction_service.dart';
 import 'package:seimbangin_app/services/user_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,6 +45,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => OcrBloc(ocrService: OcrService()),
         ),
+        BlocProvider(
+            create: (context) =>
+                StatisticsBloc(statisticsService: StatisticsService()))
       ],
       child: ScreenUtilInit(
         designSize: const Size(390, 844),

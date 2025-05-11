@@ -9,4 +9,6 @@ class Constant {
   static const String ocrEndpoint = '$baseUrlApi/ocr';
   static const String updateUserProfileEndpoint =
       '$baseUrlApi/financial-profile';
+  static const String statisticsMonthlyEndpoint =
+      '$baseUrlApi/statistic/monthly';
 }
