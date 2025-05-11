@@ -10,4 +10,6 @@ class Constant {
   static const String getTransactionEndpoint = '$baseUrlApi/transaction';
   static const String updateUserProfileEndpoint =
       '$baseUrlApi/financial-profile';
+  static const String statisticsMonthlyEndpoint =
+      '$baseUrlApi/statistic/monthly';
 }
