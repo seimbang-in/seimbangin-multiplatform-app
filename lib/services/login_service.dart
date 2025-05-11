@@ -18,28 +18,31 @@ class AuthService {
       );
 
       if (response.statusCode == 200) {
-        final Map<String,dynamic> data = json.decode(response.body);
+        final Map<String, dynamic> data = json.decode(response.body);
         return LoginModel.fromJson(data);
       } else {
-        throw Exception('Failed to login');
+        throw Exception('username or password is incorrect');
       }
     } catch (e) {
       throw Exception('$e');
     }
   }
 
-  Future<Register> register(String fullName,String username,String email,String password,String phone) async{
+  Future<Register> register(String fullName, String username, String email,
+      String password, String phone) async {
     try {
-      final response = await http.post(Uri.parse(Constant.registerEndpoint), body: {
+      final response =
+          await http.post(Uri.parse(Constant.registerEndpoint), body: {
         'full_name': fullName,
         'username': username,
         'email': email,
         'password': password,
         'phone': phone,
       });
+      print("response : ${response.body}");
       return Register.fromJson(json.decode(response.body));
     } catch (e) {
-      throw Exception('$e');     
+      throw Exception('$e');
     }
   }
 }

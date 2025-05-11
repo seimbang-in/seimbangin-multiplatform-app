@@ -21,12 +21,32 @@ class Item {
   String price;
   String quantity;
 
+  // Controllers untuk kebutuhan UI
+  TextEditingController nameController;
+  TextEditingController priceController;
+  TextEditingController quantityController;
+
   Item({
     required this.name,
     required this.category,
     required this.price,
     required this.quantity,
-  });
+    TextEditingController? nameController,
+    TextEditingController? priceController,
+    TextEditingController? quantityController,
+  })  : this.nameController =
+            nameController ?? TextEditingController(text: name),
+        this.priceController =
+            priceController ?? TextEditingController(text: price),
+        this.quantityController =
+            quantityController ?? TextEditingController(text: quantity);
+
+  // Perbarui data dari controllers
+  void updateFromControllers() {
+    name = nameController.text;
+    price = priceController.text;
+    quantity = quantityController.text;
+  }
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
@@ -38,6 +58,9 @@ class Item {
   }
 
   Map<String, dynamic> toJson() {
+    // Perbarui nilai dari controllers terlebih dahulu
+    updateFromControllers();
+
     return {
       'item_name': name,
       'category': category,
@@ -45,42 +68,12 @@ class Item {
       'quantity': quantity,
     };
   }
-}
 
-class ItemOutcome {
-  TextEditingController nameController;
-  TextEditingController priceController;
-  TextEditingController qtyController;
-  String category;
-
-  ItemOutcome({
-    required this.nameController,
-    required this.priceController,
-    required this.qtyController,
-    this.category = '',
-  });
+  // Fungsi untuk dispose controllers
   void dispose() {
     nameController.dispose();
     priceController.dispose();
-    qtyController.dispose();
-  }
-
-  factory ItemOutcome.fromJson(Map<String, dynamic> json) {
-    return ItemOutcome(
-      nameController: json['item_name'],
-      category: json['category'],
-      priceController: json['price'],
-      qtyController: json['quantity'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'item_name': nameController,
-      'category': category,
-      'price': priceController,
-      'quantity': qtyController,
-    };
+    quantityController.dispose();
   }
 }
 
@@ -92,17 +85,7 @@ class _TransactionsPageState extends State<TransactionsPage>
   TextEditingController _transactPriceController = TextEditingController();
   TextEditingController _transactAmountController = TextEditingController();
 
-  final List<Item> _items = [
-    Item(name: '', category: '', price: '', quantity: '')
-  ];
-
-  final List<ItemOutcome> _itemsOutcome = [
-    ItemOutcome(
-      nameController: TextEditingController(),
-      priceController: TextEditingController(),
-      qtyController: TextEditingController(),
-    )
-  ];
+  final List<Item> _outcomeItems = [];
 
   final List<String> mainTabTitles = ["Income", "Outcome"];
   late TabController _mainTabController;
@@ -124,12 +107,12 @@ class _TransactionsPageState extends State<TransactionsPage>
     ),
     Category(
       id: '3',
-      title: 'Freelance',
+      title: 'freelance',
       icon: 'assets/ic_freelance.png',
     ),
     Category(
       id: '4',
-      title: 'Parent',
+      title: 'parent',
       icon: 'assets/ic_parents.png',
     ),
     Category(
@@ -177,23 +160,6 @@ class _TransactionsPageState extends State<TransactionsPage>
     ),
   ];
 
-  void _addItem() {
-    setState(() {
-      _itemsOutcome.add(ItemOutcome(
-        nameController: TextEditingController(),
-        priceController: TextEditingController(),
-        qtyController: TextEditingController(),
-      ));
-
-      _items.add(Item(
-        name: '',
-        category: '',
-        price: '',
-        quantity: '',
-      ));
-    });
-  }
-
   void _calculateTotalPrice() {
     double total = 0.0;
 
@@ -203,16 +169,32 @@ class _TransactionsPageState extends State<TransactionsPage>
       final amount = double.tryParse(_transactAmountController.text) ?? 0.0;
       total = price * amount;
     } else {
-      // For Outcome tab - sum all items
-      for (var item in _itemsOutcome) {
+      // For Outcome tab - calculate total from all items
+      for (var item in _outcomeItems) {
         final price = double.tryParse(item.priceController.text) ?? 0.0;
-        final quantity = double.tryParse(item.qtyController.text) ?? 0.0;
-        total += price * quantity;
+        final qty = double.tryParse(item.quantityController.text) ?? 0.0;
+        total += price * qty;
       }
     }
 
     setState(() {
       totalPrice = total;
+    });
+  }
+
+  void _addItem() {
+    setState(() {
+      _outcomeItems.add(
+        Item(
+          name: '',
+          category: '',
+          price: '',
+          quantity: '',
+          nameController: TextEditingController(),
+          priceController: TextEditingController(),
+          quantityController: TextEditingController(),
+        ),
+      );
     });
   }
 
@@ -225,12 +207,25 @@ class _TransactionsPageState extends State<TransactionsPage>
         selectedMainTab = _mainTabController.index;
       });
     });
+
+    // Tambahkan item outcome pertama
+    _outcomeItems.add(
+      Item(
+        name: '',
+        category: '',
+        price: '',
+        quantity: '',
+        nameController: TextEditingController(),
+        priceController: TextEditingController(),
+        quantityController: TextEditingController(),
+      ),
+    );
     super.initState();
   }
 
   @override
   void dispose() {
-    for (var item in _itemsOutcome) {
+    for (var item in _outcomeItems) {
       item.dispose();
     }
     super.dispose();
@@ -255,14 +250,17 @@ class _TransactionsPageState extends State<TransactionsPage>
             totalPrice = 0;
             setState(() {
               selectedCategory = null;
-              _itemsOutcome.clear();
+              _outcomeItems.clear();
               totalPrice = 0;
-              _itemsOutcome.add(
-                ItemOutcome(
+              _outcomeItems.add(
+                Item(
                   nameController: TextEditingController(),
                   priceController: TextEditingController(),
-                  qtyController: TextEditingController(),
+                  quantityController: TextEditingController(),
+                  name: '',
                   category: '',
+                  price: '',
+                  quantity: '',
                 ),
               ); // Tambahkan item kosong
             });
@@ -401,9 +399,12 @@ class _TransactionsPageState extends State<TransactionsPage>
                                 category: category,
                               );
 
+                              print('payload : description: $name name: $name '
+                                  ' type: 0 items: ${singleItem.toJson()}');
+
                               context.read<TransactionBloc>().add(
                                     TransactionButtonPressed(
-                                      description: 'Income',
+                                      description: singleItem.name,
                                       name: singleItem.name,
                                       type: 0,
                                       items: [
@@ -413,18 +414,18 @@ class _TransactionsPageState extends State<TransactionsPage>
                                   );
                             } else if (_selectedIndexTab == 1) {
                               bool isValid = true;
-                              for (int i = 0; i < _itemsOutcome.length; i++) {
-                                if (_itemsOutcome[i]
+                              for (int i = 0; i < _outcomeItems.length; i++) {
+                                if (_outcomeItems[i]
                                         .nameController
                                         .text
                                         .isEmpty ||
-                                    _itemsOutcome[i].category.isEmpty ||
-                                    _itemsOutcome[i]
+                                    _outcomeItems[i].category.isEmpty ||
+                                    _outcomeItems[i]
                                         .priceController
                                         .text
                                         .isEmpty ||
-                                    _itemsOutcome[i]
-                                        .qtyController
+                                    _outcomeItems[i]
+                                        .quantityController
                                         .text
                                         .isEmpty) {
                                   isValid = false;
@@ -432,7 +433,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                                 }
                               }
 
-                              if (!isValid || _itemsOutcome.isEmpty) {
+                              if (!isValid || _outcomeItems.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -443,12 +444,15 @@ class _TransactionsPageState extends State<TransactionsPage>
                                 return;
                               }
 
+                              print(
+                                  "description: ${_transactNameController.text}");
+
                               context.read<TransactionBloc>().add(
-                                    TransactionOutcomeButtonPressed(
-                                      description: 'Outcome',
-                                      name: 'outcome',
+                                    TransactionButtonPressed(
+                                      description: _transactNameController.text,
+                                      name: _transactNameController.text,
                                       type: 1,
-                                      items: _itemsOutcome,
+                                      items: _outcomeItems,
                                     ),
                                   );
                             }
@@ -516,7 +520,7 @@ class _TransactionsPageState extends State<TransactionsPage>
         child: Column(
           children: [
             TextField(
-              // controller: transactNameController,
+              controller: _transactNameController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: backgroundGreyColor,
@@ -547,9 +551,9 @@ class _TransactionsPageState extends State<TransactionsPage>
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _itemsOutcome.length + 1,
+              itemCount: _outcomeItems.length + 1,
               itemBuilder: (context, index) {
-                if (index < _itemsOutcome.length) {
+                if (index < _outcomeItems.length) {
                   return _buildItemContainer(index);
                 }
                 return AddItemTransactButton(
@@ -608,11 +612,11 @@ class _TransactionsPageState extends State<TransactionsPage>
   }
 
   Widget _buildItemContainer(int itemIndex) {
-    final item = _itemsOutcome[itemIndex];
+    final item = _outcomeItems[itemIndex];
 
     // Setup listeners
     item.priceController.addListener(_calculateTotalPrice);
-    item.qtyController.addListener(_calculateTotalPrice);
+    item.quantityController.addListener(_calculateTotalPrice);
     return Card(
       color: backgroundGreyColor,
       margin: const EdgeInsets.only(bottom: 18).r,
@@ -701,7 +705,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                 );
               }).toList(),
               onChanged: (value) =>
-                  _itemsOutcome[itemIndex].category = value ?? '',
+                  _outcomeItems[itemIndex].category = value ?? '',
             ),
             SizedBox(height: 8.r),
             Row(
@@ -736,7 +740,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                 Expanded(
                   flex: 1,
                   child: TextField(
-                    controller: item.qtyController,
+                    controller: item.quantityController,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: backgroundWhiteColor,
