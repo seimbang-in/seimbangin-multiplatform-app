@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:seimbangin_app/config/constants.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
 import 'package:seimbangin_app/models/user_model.dart';
