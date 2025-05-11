@@ -79,6 +79,7 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
       body: BlocConsumer<ChatbotBloc, ChatbotState>(
         listener: (context, state) {
           if (state is ChatbotSuccess) {
+            _dismissLoadingDialog(context);
             setState(() {
               print("Current State: $state");
               _messages.add(
@@ -89,7 +90,10 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                 ),
               );
             });
+          } else if (state is ChatbotLoading) {
+            _showLoadingDialog(context);
           } else if (state is ChatbotFailure) {
+            _dismissLoadingDialog(context);
             print("Current State: $state");
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -100,12 +104,6 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
           }
         },
         builder: (context, state) {
-          if (state is ChatbotLoading) {
-            print("Current State: $state");
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
           return SafeArea(
             child: Stack(
               children: [
@@ -240,11 +238,12 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (_messages[index].messageType != "user")
                       Container(
-                        width: 30.w,
-                        height: 30.h,
+                        width: 40.w,
+                        height: 40.h,
                         margin: const EdgeInsets.only(right: 8).r,
                         decoration: const BoxDecoration(
                           color: Colors.blue,
@@ -288,5 +287,42 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
         );
       },
     );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        // backgroundColor: backgroundWhiteColor,
+        contentPadding: const EdgeInsets.all(24).r,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24).r,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(
+              color: primaryColor,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 16.h),
+            Text(
+              'Loading Chat...',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissLoadingDialog(BuildContext context) {
+    if (Navigator.of(context, rootNavigator: true).canPop()) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
   }
 }
