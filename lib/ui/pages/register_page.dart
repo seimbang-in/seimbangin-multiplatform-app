@@ -27,24 +27,83 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  String? _fullNameError;
+  String? _usernameError;
+  String? _emailError;
+  String? _phoneError;
+  String? _passwordError;
+
+  void _validateFullName() {
+    _isFullNameValid = fullNameController.text.isNotEmpty;
+    _fullNameError = _isFullNameValid ? null : '*Full name cannot be empty';
+  }
+
+  void _validateUsername() {
+    _isUserNameValid = usernameController.text.isNotEmpty;
+    _usernameError = _isUserNameValid ? null : '*Username cannot be empty';
+  }
+
+  void _validateEmail() {
+    if (emailController.text.isEmpty) {
+      _isEmailValid = false;
+      _emailError = '*Email address cannot be empty';
+    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        .hasMatch(emailController.text)) {
+      _isEmailValid = false;
+      _emailError = '*Email address is invalid';
+    } else {
+      _isEmailValid = true;
+      _emailError = null;
+    }
+  }
+
+  void _validatePhone() {
+    if (phoneNumberController.text.isEmpty) {
+      _isPhoneValid = false;
+      _phoneError = '*Phone number cannot be empty';
+    } else if (phoneNumberController.text.length < 11) {
+      _isPhoneValid = false;
+      _phoneError = '*Phone number must be at least 11 digits';
+    } else if (phoneNumberController.text.length > 13) {
+      _isPhoneValid = false;
+      _phoneError = '*Phone number cannot exceed 13 digits';
+    } else {
+      _isPhoneValid = true;
+      _phoneError = null;
+    }
+  }
+
+  void _validatePassword() {
+    if (passwordController.text.isEmpty) {
+      _isPassValid = false;
+      _passwordError = '*Password cannot be empty';
+    } else if (passwordController.text.length < 8) {
+      _isPassValid = false;
+      _passwordError = '*Password must be at least 8 characters';
+    } else {
+      _isPassValid = true;
+      _passwordError = null;
+    }
+  }
 
   void _validateForm() {
     setState(() {
       _isFormSubmitted = true;
-      _isFullNameValid = fullNameController.text.isNotEmpty;
-      _isUserNameValid = usernameController.text.isNotEmpty;
-      _isEmailValid = emailController.text.isNotEmpty;
-      _isPhoneValid = phoneNumberController.text.isNotEmpty;
-      _isPassValid = passwordController.text.isNotEmpty;
+
+      _validateFullName();
+      _validateUsername();
+      _validateEmail();
+      _validatePhone();
+      _validatePassword();
     });
   }
 
   bool get _isFormValid {
-    return fullNameController.text.isNotEmpty &&
-        usernameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        phoneNumberController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty;
+    return _isFullNameValid &&
+        _isUserNameValid &&
+        _isEmailValid &&
+        _isPhoneValid &&
+        _isPassValid;
   }
 
   @override
@@ -119,9 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Full Name',
-                    errorText: _isFormSubmitted && !_isFullNameValid
-                        ? '*Full name cannot be empty'
-                        : null,
+                    errorText: _fullNameError,
                     errorStyle: warningTextStyle.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
@@ -159,9 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Username',
-                    errorText: _isFormSubmitted && !_isUserNameValid
-                        ? '*Username cannot be empty'
-                        : null,
+                    errorText: _usernameError,
                     errorStyle: warningTextStyle.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
@@ -199,9 +254,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Email Address',
-                    errorText: _isFormSubmitted && !_isEmailValid
-                        ? '*Email address cannot be empty'
-                        : null,
+                    errorText: _emailError,
                     errorStyle: warningTextStyle.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
@@ -239,9 +292,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Phone Number',
-                    errorText: _isFormSubmitted && !_isPhoneValid
-                        ? '*Phone number cannot be empty'
-                        : null,
+                    errorText: _phoneError,
                     errorStyle: warningTextStyle.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
@@ -281,9 +332,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     filled: true,
                     fillColor: backgroundGreyColor,
                     hintText: 'Password',
-                    errorText: _isFormSubmitted && !_isPassValid
-                        ? '*Password cannot be empty'
-                        : null,
+                    errorText: _passwordError,
                     errorStyle: warningTextStyle.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
@@ -335,7 +384,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   title: 'Create Account',
                   onPressed: () {
                     _validateForm();
-                    if (_isFormValid) {
+                    if (_isFormValid && _isFormSubmitted) {
                       try {
                         context.read<RegisterBloc>().add(
                               RegisterButtonPressed(

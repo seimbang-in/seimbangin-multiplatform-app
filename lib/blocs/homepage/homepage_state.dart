@@ -22,3 +22,18 @@ class HomePageFailure extends HomepageState {
   final String error;
   HomePageFailure(this.error);
 }
+
+class financialProfileLoading extends HomepageState {
+  final String message;
+  financialProfileLoading(this.message);
+}
+
+class financialProfileSuccess extends HomepageState {
+  final String message;
+  financialProfileSuccess({required this.message});
+}
+
+class financialProfileFailure extends HomepageState {
+  final String error;
+  financialProfileFailure(this.error);
+}
