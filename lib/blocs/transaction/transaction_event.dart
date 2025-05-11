@@ -16,3 +16,23 @@ class TransactionButtonPressed extends TransactionEvent {
     required this.name,
   });
 }
+
+class TransactionOutcomeButtonPressed extends TransactionEvent {
+  final String name;
+  final String description;
+  final int type;
+  final List<ItemOutcome> items;
+
+  TransactionOutcomeButtonPressed({
+    required this.description,
+    required this.type,
+    required this.items,
+    required this.name,
+  });
+}
+
+class GetRecentTransactionsEvent extends TransactionEvent {
+  final int limit;
+  
+  GetRecentTransactionsEvent({this.limit = 2}); // Default 2 transaksi terbaru
+}

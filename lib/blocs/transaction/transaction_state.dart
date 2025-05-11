@@ -19,3 +19,9 @@ class TransactionFailure extends TransactionState {
   final String message;
   TransactionFailure(this.message);
 }
+
+class TransactionGetSuccess extends TransactionState {
+  final Transaction transaction;
+
+  TransactionGetSuccess(this.transaction);
+}

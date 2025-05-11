@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
+import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
@@ -31,6 +33,27 @@ class _HomePageState extends State<HomePage>
     super.didChangeDependencies();
     if (context.read<HomepageBloc>().state is! HomePageSuccess) {
       context.read<HomepageBloc>().add(HomepageStarted());
+    }
+
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 3));
+  }
+
+  Color getCategoryColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'food':
+        return backgroundGreenColor;
+      case 'transport':
+        return backgroundGreenColor;
+      case 'shopping':
+        return backgroundGreenColor;
+      case 'entertainment':
+        return backgroundGreenColor;
+      case 'salary':
+        return backgroundGreenColor;
+      case 'freelance':
+        return backgroundGreenColor;
+      default:
+        return backgroundGreyColor;
     }
   }
 
@@ -123,18 +146,96 @@ class _HomePageState extends State<HomePage>
                               ),
                             ),
                             SizedBox(height: 10.r),
-                            RecentTransactionCard(
-                                onTap: () {},
-                                backgroundIcon: backgroundGreenColor,
-                                title: "Food",
-                                subtitle: "12:00 WIB",
-                                amount: "-Rp 12.000"),
-                            RecentTransactionCard(
-                                onTap: () {},
-                                backgroundIcon: backgroundGreenColor,
-                                title: "Food",
-                                subtitle: "18:00 WIB",
-                                amount: "-Rp 18.000"),
+                            BlocBuilder<TransactionBloc, TransactionState>(
+                              builder: (context, state) {
+                                if (state is TransactionLoading) {
+                                  return Center(
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 20.r),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                } else if (state is TransactionGetSuccess &&
+                                    state.transaction.data.isNotEmpty) {
+                                  // Urutkan transaksi berdasarkan tanggal terbaru
+                                  final transactions =
+                                      List.from(state.transaction.data);
+                                  transactions.sort((a, b) =>
+                                      DateTime.parse(b.createdAt).compareTo(
+                                          DateTime.parse(a.createdAt)));
+
+                                  return Column(
+                                    children:
+                                        transactions.take(3).map((transaction) {
+                                      // Format waktu
+                                      final createdAt =
+                                          DateTime.parse(transaction.createdAt);
+                                      final timeString =
+                                          DateFormat('HH:mm').format(createdAt);
+
+                                      // Format jumlah - gunakan amount dari transaksi langsung
+                                      final total =
+                                          int.tryParse(transaction.amount) ?? 0;
+
+                                      // Tentukan tanda + atau - berdasarkan tipe transaksi
+                                      final prefix =
+                                          transaction.type == 0 ? '+' : '-';
+
+                                      // Tentukan kategori untuk warna ikon
+                                      // Jika transaksi memiliki item, gunakan kategori item pertama
+                                      // Jika tidak, gunakan kategori transaksi
+                                      String categoryForIcon =
+                                          transaction.category;
+                                      if (transaction.items.isNotEmpty) {
+                                        categoryForIcon =
+                                            transaction.items.first.category;
+                                      }
+
+                                      return RecentTransactionCard(
+                                        onTap: () {
+                                          // Navigasi ke detail transaksi jika diperlukan
+                                        },
+                                        backgroundIcon:
+                                            getCategoryColor(categoryForIcon),
+                                        // Gunakan nama transaksi, bukan nama item
+                                        title: transaction.name,
+                                        subtitle: "$timeString WIB",
+                                        amount: "$prefix${NumberFormat.currency(
+                                          locale: 'id',
+                                          symbol: 'Rp ',
+                                          decimalDigits: 0,
+                                        ).format(total)}",
+                                      );
+                                    }).toList(),
+                                  );
+                                } else if (state is TransactionFailure) {
+                                  return Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.r),
+                                    child: Center(
+                                      child: Text(
+                                        "Tidak dapat memuat transaksi terbaru.",
+                                        style: greyTextStyle.copyWith(
+                                            fontSize: 14.sp),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Column(
+                                    children: [
+                                      RecentTransactionCard(
+                                        onTap: () {},
+                                        backgroundIcon: backgroundGreenColor,
+                                        title: "Belum ada transaksi",
+                                        subtitle: "Hari ini",
+                                        amount: "Rp 0",
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            ),
                             Center(
                               child: TextButton(
                                   onPressed: () => routes
