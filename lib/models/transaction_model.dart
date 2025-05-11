@@ -35,9 +35,9 @@ class Data {
   String amount;
   String category;
   String description;
-  DateTime createdAt;
-  DateTime updatedAt;
-  List<Item> items;
+  String? createdAt;
+  String? updatedAt;
+  List<Items> items;
 
   Data({
     required this.id,
@@ -54,7 +54,8 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) {
     var itemsFromJson = json['items'] as List;
-    List<Item> itemsList = itemsFromJson.map((i) => Item.fromJson(i)).toList();
+    List<Items> itemsList =
+        itemsFromJson.map((i) => Items.fromJson(i)).toList();
 
     return Data(
       id: json['id'],
@@ -64,14 +65,14 @@ class Data {
       amount: json['amount'],
       category: json['category'],
       description: json['description'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
       items: itemsList,
     );
   }
 }
 
-class Item {
+class Items {
   int id;
   int transactionId;
   String itemName;
@@ -82,7 +83,7 @@ class Item {
   dynamic createdAt;
   dynamic updatedAt;
 
-  Item({
+  Items({
     required this.id,
     required this.transactionId,
     required this.itemName,
@@ -94,8 +95,8 @@ class Item {
     required this.updatedAt,
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
+  factory Items.fromJson(Map<String, dynamic> json) {
+    return Items(
       id: json['id'],
       transactionId: json['transaction_id'],
       itemName: json['item_name'],
@@ -103,8 +104,22 @@ class Item {
       price: json['price'],
       quantity: json['quantity'],
       subtotal: json['subtotal'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+    );
+  }
+
+  factory Items.toJson(Map<String, dynamic> json) {
+    return Items(
+      id: json['id'],
+      transactionId: json['transaction_id'],
+      itemName: json['item_name'],
+      category: json['category'],
+      price: json['price'],
+      quantity: json['quantity'],
+      subtotal: json['subtotal'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
     );
   }
 }

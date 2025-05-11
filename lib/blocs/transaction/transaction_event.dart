@@ -30,3 +30,9 @@ class TransactionOutcomeButtonPressed extends TransactionEvent {
     required this.name,
   });
 }
+
+class GetRecentTransactionsEvent extends TransactionEvent {
+  final int limit;
+  
+  GetRecentTransactionsEvent({this.limit = 2}); // Default 2 transaksi terbaru
+}
