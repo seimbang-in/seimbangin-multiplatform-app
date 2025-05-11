@@ -29,7 +29,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
           message: 'Data berhasil dimuat',
           user: userData,
           advice: adviceData,
-        ));
+      ));
       }
     } catch (e) {
       emit(HomePageFailure('Gagal memuat data: ${e.toString()}'));
