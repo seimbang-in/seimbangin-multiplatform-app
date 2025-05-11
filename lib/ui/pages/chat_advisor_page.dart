@@ -52,6 +52,29 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        toolbarHeight: 70.r,
+        title: Text(
+          'AI Advisor',
+          style: blackTextStyle.copyWith(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 24),
+            child: Image.asset(
+              'assets/ic_seimbangin-logo-logreg.png',
+              width: 50,
+            ),
+          ),
+        ],
+      ),
       backgroundColor: backgroundWhiteColor,
       body: BlocConsumer<ChatbotBloc, ChatbotState>(
         listener: (context, state) {
@@ -86,29 +109,6 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
           return SafeArea(
             child: Stack(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24).r,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomRoundedButton(
-                        isEnable: false,
-                        widget: Icon(Icons.backpack),
-                        backgroundColor: backgroundWhiteColor,
-                      ),
-                      Text(
-                        'AI Advisor',
-                        style: blackTextStyle.copyWith(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Image.asset(
-                        'assets/ic_seimbangin-logo-logreg.png',
-                      ),
-                    ],
-                  ),
-                ),
                 Column(
                   children: [
                     Expanded(
