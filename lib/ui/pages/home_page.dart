@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage>
       builder: (context, state) {
         if (state is HomePageSuccess) {
           final user = state.user;
+          // print(user.data.financeProfile?.totalIncome);
           return Scaffold(
             backgroundColor: backgroundWhiteColor,
             body: CustomScrollView(
