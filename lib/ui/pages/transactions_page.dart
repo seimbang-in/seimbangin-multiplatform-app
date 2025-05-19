@@ -377,6 +377,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                               final amount =
                                   _transactAmountController.text.trim();
                               final category = selectedCategory;
+                              print(_selectedIndexTab);
 
                               if (name.isEmpty ||
                                   price.isEmpty ||
@@ -406,7 +407,7 @@ class _TransactionsPageState extends State<TransactionsPage>
                                     TransactionButtonPressed(
                                       description: singleItem.name,
                                       name: singleItem.name,
-                                      type: 0,
+                                      type: _selectedIndexTab,
                                       items: [
                                         singleItem
                                       ], // 👈 hanya 1 item income
@@ -446,12 +447,12 @@ class _TransactionsPageState extends State<TransactionsPage>
 
                               print(
                                   "description: ${_transactNameController.text}");
-
+                              print(_selectedIndexTab);
                               context.read<TransactionBloc>().add(
                                     TransactionButtonPressed(
                                       description: _transactNameController.text,
                                       name: _transactNameController.text,
-                                      type: 1,
+                                      type: _selectedIndexTab,
                                       items: _outcomeItems,
                                     ),
                                   );

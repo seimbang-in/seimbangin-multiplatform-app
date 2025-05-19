@@ -1,1 +1,0 @@
-/home/shandika/Documents/projects/flutter/seimbangin_app/build/app/intermediates/cxx/RelWithDebInfo/2fr51212/obj/x86_64

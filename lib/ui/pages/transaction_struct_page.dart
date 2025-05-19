@@ -298,7 +298,7 @@ class TransactionStructPage extends StatelessWidget {
                                 TransactionButtonPressed(
                                     description: "Outcome",
                                     name: ocrModel.data.store,
-                                    type: 0,
+                                    type: 1,
                                     items: transactions));
                           },
                           backgroundColor: primaryColor,
