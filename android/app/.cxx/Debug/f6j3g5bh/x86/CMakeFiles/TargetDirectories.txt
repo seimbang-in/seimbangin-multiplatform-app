@@ -1,2 +1,0 @@
-/home/shandika/Documents/projects/Flutter/seimbangin_app/android/app/.cxx/Debug/f6j3g5bh/x86/CMakeFiles/edit_cache.dir
-/home/shandika/Documents/projects/Flutter/seimbangin_app/android/app/.cxx/Debug/f6j3g5bh/x86/CMakeFiles/rebuild_cache.dir

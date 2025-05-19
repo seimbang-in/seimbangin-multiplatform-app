@@ -126,9 +126,8 @@ class _HomePageState extends State<HomePage>
                               financialProfileButtonOntap: () =>
                                   routes.pushNamed(RouteNames.financialProfile),
                               advice: state.advice,
-                              isAdviceExist: state.user.data.financeProfile
-                                      ?.financialGoals !=
-                                  null,
+                              isAdviceExist:
+                                  state.user.data.financeProfile != null,
                             ),
                             SizedBox(height: 20.r),
                             Text(
@@ -168,7 +167,7 @@ class _HomePageState extends State<HomePage>
 
                                   return Column(
                                     children:
-                                        transactions.take(3).map((transaction) {
+                                        transactions.take(5).map((transaction) {
                                       // Format waktu
                                       final createdAt =
                                           DateTime.parse(transaction.createdAt);

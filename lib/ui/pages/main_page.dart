@@ -111,7 +111,7 @@ class MainPage extends StatelessWidget {
               topLeft: Radius.circular(24.r),
               topRight: Radius.circular(24.r),
             ),
-          ), 
+          ),
         ),
       );
 }

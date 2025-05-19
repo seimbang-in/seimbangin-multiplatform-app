@@ -22,11 +22,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       final response = await transactionService.addTransaction(
           event.items, event.type, event.description, event.name);
       emit(TransactionSuccess("Transaction successful"));
-      emit(TransactionInitial());
       return response;
     } catch (e) {
       emit(TransactionFailure("Failed to add transaction: $e"));
-      emit(TransactionInitial());
     }
   }
 

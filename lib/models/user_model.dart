@@ -63,7 +63,8 @@ class Data {
       phoneNumber: json['phone_number'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      financeProfile: FinanceProfile.fromJson(json['finance_profile']),
+      financeProfile:
+          FinanceProfile.fromJson(json['finance_profile']['finance_profile']),
     );
   }
 }
@@ -101,4 +102,3 @@ class FinanceProfile {
         thisMonthIncome: json['this_month_income']);
   }
 }
-
