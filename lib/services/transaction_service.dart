@@ -3,7 +3,6 @@ import 'package:seimbangin_app/config/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/transaction_model.dart';
-import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 import 'package:seimbangin_app/utils/token.dart';
 
 class TransactionService {

@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/transaction_model.dart';
 import 'package:seimbangin_app/services/transaction_service.dart';
-import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 
 part 'transaction_event.dart';
 part 'transaction_state.dart';
