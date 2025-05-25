@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:seimbangin_app/config/constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/transaction_model.dart';
-import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 import 'package:seimbangin_app/utils/token.dart';
 
 class TransactionService {
@@ -33,11 +33,12 @@ class TransactionService {
   Future<Transaction> getTransaction(int limit) async {
     try {
       final String? token = await Token.getToken();
-      final response = await http
-          .get(Uri.parse('${Constant.getTransactionEndpoint}?limit=$limit'), headers: {
-        'content-type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+      final response = await http.get(
+          Uri.parse('${Constant.getTransactionEndpoint}?limit=$limit'),
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': 'Bearer $token',
+          });
       print('response status code : ${response.statusCode}');
       print('response body : ${response.body}');
       if (response.statusCode == 200) {

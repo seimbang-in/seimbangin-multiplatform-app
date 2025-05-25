@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
 import 'package:seimbangin_app/models/chat_message_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class ChatAdvisorPage extends StatefulWidget {
   const ChatAdvisorPage({super.key});
@@ -17,7 +16,7 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   bool _hasChats = false;
   final TextEditingController _messageController = TextEditingController();
 
-  List<ChatMessage> _messages = [];
+  final List<ChatMessage> _messages = [];
 
   @override
   void initState() {

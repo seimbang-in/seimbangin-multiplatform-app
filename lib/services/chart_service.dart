@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 BarChartGroupData makeGroupData(int x, double income, double outcome) {

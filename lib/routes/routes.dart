@@ -13,7 +13,7 @@ import 'package:seimbangin_app/ui/pages/register_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_struct_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_success.dart';
-import 'package:seimbangin_app/ui/pages/transactions_page.dart';
+import 'package:seimbangin_app/ui/pages/transaction_page.dart';
 import 'package:seimbangin_app/ui/pages/main_page.dart';
 
 part 'name_route.dart';

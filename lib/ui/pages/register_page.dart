@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
+import 'package:seimbangin_app/ui/sections/register/register_footer_page.dart';
+import 'package:seimbangin_app/ui/sections/register/register_form_section.dart';
+import 'package:seimbangin_app/ui/sections/register/register_header_section.dart';
+import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,438 +17,140 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  // --- STATE & CONTROLLERS ---
   bool isObscure = true;
-  bool isChecked = false;
-  bool _isFullNameValid = true;
-  bool _isUserNameValid = true;
-  bool _isEmailValid = true;
-  bool _isPhoneValid = true;
-  bool _isPassValid = true;
-  bool _isFormSubmitted = false;
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  // --- ERROR STATE ---
   String? _fullNameError;
   String? _usernameError;
   String? _emailError;
   String? _phoneError;
   String? _passwordError;
 
-  void _validateFullName() {
-    _isFullNameValid = fullNameController.text.isNotEmpty;
-    _fullNameError = _isFullNameValid ? null : '*Full name cannot be empty';
-  }
+  // --- VALIDATION LOGIC ---
+  bool _validateForm() {
+    bool isFullNameValid = fullNameController.text.isNotEmpty;
+    bool isUsernameValid = usernameController.text.isNotEmpty;
+    bool isEmailValid =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+            .hasMatch(emailController.text);
+    bool isPhoneValid = phoneNumberController.text.length >= 11 &&
+        phoneNumberController.text.length <= 13;
+    bool isPasswordValid = passwordController.text.length >= 8;
 
-  void _validateUsername() {
-    _isUserNameValid = usernameController.text.isNotEmpty;
-    _usernameError = _isUserNameValid ? null : '*Username cannot be empty';
-  }
-
-  void _validateEmail() {
-    if (emailController.text.isEmpty) {
-      _isEmailValid = false;
-      _emailError = '*Email address cannot be empty';
-    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-        .hasMatch(emailController.text)) {
-      _isEmailValid = false;
-      _emailError = '*Email address is invalid';
-    } else {
-      _isEmailValid = true;
-      _emailError = null;
-    }
-  }
-
-  void _validatePhone() {
-    if (phoneNumberController.text.isEmpty) {
-      _isPhoneValid = false;
-      _phoneError = '*Phone number cannot be empty';
-    } else if (phoneNumberController.text.length < 11) {
-      _isPhoneValid = false;
-      _phoneError = '*Phone number must be at least 11 digits';
-    } else if (phoneNumberController.text.length > 13) {
-      _isPhoneValid = false;
-      _phoneError = '*Phone number cannot exceed 13 digits';
-    } else {
-      _isPhoneValid = true;
-      _phoneError = null;
-    }
-  }
-
-  void _validatePassword() {
-    if (passwordController.text.isEmpty) {
-      _isPassValid = false;
-      _passwordError = '*Password cannot be empty';
-    } else if (passwordController.text.length < 8) {
-      _isPassValid = false;
-      _passwordError = '*Password must be at least 8 characters';
-    } else {
-      _isPassValid = true;
-      _passwordError = null;
-    }
-  }
-
-  void _validateForm() {
     setState(() {
-      _isFormSubmitted = true;
-
-      _validateFullName();
-      _validateUsername();
-      _validateEmail();
-      _validatePhone();
-      _validatePassword();
+      _fullNameError = isFullNameValid ? null : '*Full name cannot be empty';
+      _usernameError = isUsernameValid ? null : '*Username cannot be empty';
+      _emailError = emailController.text.isEmpty
+          ? '*Email cannot be empty'
+          : (isEmailValid ? null : '*Email is invalid');
+      _phoneError = phoneNumberController.text.isEmpty
+          ? '*Phone number cannot be empty'
+          : (isPhoneValid ? null : '*Phone must be 11-13 digits');
+      _passwordError = passwordController.text.isEmpty
+          ? '*Password cannot be empty'
+          : (isPasswordValid
+              ? null
+              : '*Password must be at least 8 characters');
     });
+
+    return isFullNameValid &&
+        isUsernameValid &&
+        isEmailValid &&
+        isPhoneValid &&
+        isPasswordValid;
   }
 
-  bool get _isFormValid {
-    return _isFullNameValid &&
-        _isUserNameValid &&
-        _isEmailValid &&
-        _isPhoneValid &&
-        _isPassValid;
+  // --- ACTION ---
+  void _onCreateAccountPressed() {
+    if (_validateForm()) {
+      context.read<RegisterBloc>().add(
+            RegisterButtonPressed(
+              fullname: fullNameController.text,
+              phone: phoneNumberController.text,
+              username: usernameController.text,
+              email: emailController.text,
+              password: passwordController.text,
+            ),
+          );
+    }
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    usernameController.dispose();
+    emailController.dispose();
+    phoneNumberController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterBloc, RegisterState>(
+    return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
-        if (state is RegisterSuccess) {
-          _dismissLoadingDialog(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
-          );
-          routes.pushNamed(RouteNames.login);
-        } else if (state is RegisterLoading) {
-          _showLoadingDialog(context);
+        if (state is RegisterLoading) {
+          AlertDialogWidget.showLoading(context,
+              message: 'Registering Account...');
+        } else if (state is RegisterSuccess) {
+          AlertDialogWidget.dismiss(context);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
+          routes.pushReplacementNamed(RouteNames.login);
         } else if (state is RegisterFailure) {
-          _dismissLoadingDialog(context);
+          AlertDialogWidget.dismiss(context);
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
       },
-      builder: (context, state) {
-        print('state : $state');
-        return Scaffold(
-          backgroundColor: backgroundWhiteColor,
-          body: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              children: [
-                SizedBox(
-                  height: 21.r,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomRoundedButton(
-                      onPressed: () {
-                        routes.replaceNamed(RouteNames.login);
-                      },
-                      widget: Icon(
-                        Icons.chevron_left,
-                        size: 32.r,
-                        color: textSecondaryColor,
-                      ),
-                      backgroundColor: backgroundWhiteColor,
-                    ),
-                    Image.asset(
-                      'assets/ic_seimbangin-logo-logreg.png',
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/img_mascot-login.png'),
-                    Text(
-                      'Create Account',
-                      style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 28.sp,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 45.r,
-                ),
-                TextField(
-                  controller: fullNameController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'Full Name',
-                    errorText: _fullNameError,
-                    errorStyle: warningTextStyle.copyWith(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide(
-                        color: textBlueColor,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: blackTextStyle.copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                TextField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'Username',
-                    errorText: _usernameError,
-                    errorStyle: warningTextStyle.copyWith(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide(
-                        color: textBlueColor,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: blackTextStyle.copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'Email Address',
-                    errorText: _emailError,
-                    errorStyle: warningTextStyle.copyWith(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide(
-                        color: textBlueColor,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: blackTextStyle.copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                TextField(
-                  controller: phoneNumberController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'Phone Number',
-                    errorText: _phoneError,
-                    errorStyle: warningTextStyle.copyWith(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide(
-                        color: textBlueColor,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  style: blackTextStyle.copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(
-                  height: 16.r,
-                ),
-                TextField(
-                  controller: passwordController,
-                  obscureText: isObscure,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'Password',
-                    errorText: _passwordError,
-                    errorStyle: warningTextStyle.copyWith(
-                      fontSize: 10.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isObscure = !isObscure;
-                        });
-                      },
-                      icon: isObscure == true
-                          ? Icon(
-                              Icons.remove_red_eye_rounded,
-                              size: 18.r,
-                            )
-                          : Icon(
-                              Icons.remove_red_eye_outlined,
-                              size: 18.r,
-                            ),
-                    ),
-                    suffixIconColor: textPrimaryColor,
-                    hintStyle: greyTextStyle.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24).r,
-                        borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide(
-                        color: textBlueColor,
-                      ),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24).r,
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: blackTextStyle.copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(
-                  height: 42.r,
-                ),
-                PrimaryFilledButton(
-                  title: 'Create Account',
-                  onPressed: () {
-                    _validateForm();
-                    if (_isFormValid && _isFormSubmitted) {
-                      try {
-                        context.read<RegisterBloc>().add(
-                              RegisterButtonPressed(
-                                fullname: fullNameController.text,
-                                phone: phoneNumberController.text,
-                                username: usernameController.text,
-                                email: emailController.text,
-                                password: passwordController.text,
-                              ),
-                            );
-                      } catch (e) {
-                        print('Error: $e');
-                      }
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 62.r,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        // backgroundColor: backgroundWhiteColor,
-        contentPadding: const EdgeInsets.all(24).r,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24).r,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(
-              color: primaryColor,
-              strokeWidth: 4,
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'Registering Account...',
-              style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            children: [
+              // SECTION 1: HEADER
+              RegisterHeaderSection(
+                onBack: () => routes.replaceNamed(RouteNames.login),
               ),
-            ),
-          ],
+              SizedBox(height: 45.r),
+
+              // SECTION 2: FORM
+              RegisterFormSection(
+                fullNameController: fullNameController,
+                usernameController: usernameController,
+                emailController: emailController,
+                phoneController: phoneNumberController,
+                passwordController: passwordController,
+                fullNameError: _fullNameError,
+                usernameError: _usernameError,
+                emailError: _emailError,
+                phoneError: _phoneError,
+                passwordError: _passwordError,
+                isObscure: isObscure,
+                onToggleObscure: () {
+                  setState(() {
+                    isObscure = !isObscure;
+                  });
+                },
+              ),
+              SizedBox(height: 42.r),
+
+              // SECTION 3: ACTION
+              RegisterActionSection(
+                onCreateAccount: _onCreateAccountPressed,
+              ),
+              SizedBox(height: 62.r),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  void _dismissLoadingDialog(BuildContext context) {
-    if (Navigator.of(context, rootNavigator: true).canPop()) {
-      Navigator.of(context, rootNavigator: true).pop();
-    }
   }
 }
