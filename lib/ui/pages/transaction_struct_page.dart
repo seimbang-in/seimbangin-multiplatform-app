@@ -11,7 +11,7 @@ import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatelessWidget {
-  TransactionStructPage({super.key});
+  const TransactionStructPage({super.key});
 
   @override
   Widget build(BuildContext context) {

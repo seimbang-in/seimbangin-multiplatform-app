@@ -34,11 +34,11 @@ class Item {
     TextEditingController? nameController,
     TextEditingController? priceController,
     TextEditingController? quantityController,
-  })  : this.nameController =
+  })  : nameController =
             nameController ?? TextEditingController(text: name),
-        this.priceController =
+        priceController =
             priceController ?? TextEditingController(text: price),
-        this.quantityController =
+        quantityController =
             quantityController ?? TextEditingController(text: quantity);
 
   // Perbarui data dari controllers
@@ -81,9 +81,9 @@ class _TransactionsPageState extends State<TransactionsPage>
     with TickerProviderStateMixin {
   int _selectedIndexTab = 0;
   final List<String> _tabs = ['Income', 'Outcome'];
-  TextEditingController _transactNameController = TextEditingController();
-  TextEditingController _transactPriceController = TextEditingController();
-  TextEditingController _transactAmountController = TextEditingController();
+  final TextEditingController _transactNameController = TextEditingController();
+  final TextEditingController _transactPriceController = TextEditingController();
+  final TextEditingController _transactAmountController = TextEditingController();
 
   final List<Item> _outcomeItems = [];
 
