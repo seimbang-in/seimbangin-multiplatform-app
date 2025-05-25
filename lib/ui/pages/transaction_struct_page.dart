@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
+import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/ocr_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/pages/transactions_page.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatelessWidget {
