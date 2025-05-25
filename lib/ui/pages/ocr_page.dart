@@ -7,6 +7,9 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
+// Langkah 1: Buat enum untuk merepresentasikan state kamera dengan jelas
+enum CameraStatus { initial, loading, success, failure }
+
 class OcrPage extends StatefulWidget {
   const OcrPage({super.key});
 
@@ -15,102 +18,174 @@ class OcrPage extends StatefulWidget {
 }
 
 class _OcrPageState extends State<OcrPage> {
-  CameraController? cameraController;
-  List? cameras;
-  int? selectedCameraIndex;
-  XFile? capturedImage;
+  // Langkah 2: Gunakan variabel state yang baru
+  CameraStatus _cameraStatus = CameraStatus.initial;
+  CameraController? _cameraController;
+  String? _errorMessage;
+
   final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
+    // Atur UI status bar saat masuk halaman
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.black, // Warna status bar
-      statusBarIconBrightness:
-          Brightness.light, // Warna ikon status bar (Android)
-      statusBarBrightness: Brightness.light, // Warna ikon status bar (iOS)
+      statusBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.light,
     ));
-    availableCameras().then((value) {
-      cameras = value;
-      if (cameras!.isNotEmpty) {
-        selectedCameraIndex = 0;
-        initCamera(cameras![selectedCameraIndex!]).then((_) {});
-      } else {
-        print('No camera available!');
-      }
-    }).catchError((e) {
-      print(e.code);
-    });
+    // Panggil satu fungsi inisialisasi yang bersih
+    _initializeCamera();
   }
 
   @override
   void dispose() {
+    // Kembalikan UI status bar ke default saat keluar halaman
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    cameraController?.dispose();
+    _cameraController?.dispose();
     super.dispose();
   }
 
-// init camera function
-  Future initCamera(CameraDescription cameraDescription) async {
-    if (cameraController != null) {
-      await cameraController!.dispose();
-    }
-    cameraController =
-        CameraController(cameraDescription, ResolutionPreset.medium);
+  // Langkah 3: Gabungkan semua logika inisialisasi ke satu fungsi async
+  Future<void> _initializeCamera() async {
+    // Jangan lakukan apa pun jika widget sudah di-dispose
+    if (!mounted) return;
 
-    cameraController!.addListener(() {
-      if (mounted) setState(() {});
+    setState(() {
+      _cameraStatus = CameraStatus.loading;
     });
 
     try {
-      await cameraController!.initialize();
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        throw CameraException(
+            'No Camera Found', 'No camera is available on this device.');
+      }
+
+      final cameraDescription = cameras[0]; // Gunakan kamera belakang utama
+
+      // Hancurkan controller lama jika ada sebelum membuat yang baru
+      await _cameraController?.dispose();
+
+      _cameraController = CameraController(
+        cameraDescription,
+        ResolutionPreset.medium,
+        enableAudio: false, // Matikan audio jika tidak diperlukan
+      );
+
+      await _cameraController!.initialize();
+
+      if (mounted) {
+        setState(() {
+          _cameraStatus = CameraStatus.success;
+        });
+      }
+    } on CameraException catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = "Error: ${e.code}\n${e.description}";
+          _cameraStatus = CameraStatus.failure;
+        });
+      }
+      print("Camera Error: ${e.code} ${e.description}");
     } catch (e) {
-      print('Camera error $e');
+      if (mounted) {
+        setState(() {
+          _errorMessage = "An unexpected error occurred: $e";
+          _cameraStatus = CameraStatus.failure;
+        });
+      }
+      print("Unexpected Error: $e");
     }
-    if (mounted) setState(() {});
   }
 
-// take picture function
+  // Fungsi takePicture dan _selectFromGallery tetap sama, tetapi lebih aman
   Future<void> takePicture() async {
-    if (!cameraController!.value.isInitialized) return;
+    // Pemeriksaan state yang lebih aman
+    if (_cameraStatus != CameraStatus.success ||
+        _cameraController == null ||
+        !_cameraController!.value.isTakingPicture) {
+      return;
+    }
 
     try {
-      final XFile image = await cameraController!.takePicture();
-      routes.pushNamed(
-        RouteNames.ocrPreview,
-        extra: image.path,
-      );
+      final XFile image = await _cameraController!.takePicture();
+      if (mounted) {
+        routes.pushNamed(
+          RouteNames.ocrPreview,
+          extra: image.path,
+        );
+      }
     } catch (e) {
       print('Error taking picture: $e');
     }
   }
 
-  // select from gallery function
-
   Future<void> _selectFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1800,
-        maxHeight: 1800,
         imageQuality: 85,
       );
 
-      if (pickedFile != null) {
+      if (pickedFile != null && mounted) {
         routes.pushNamed(
           RouteNames.ocrPreview,
           extra: pickedFile.path,
         );
       }
-    } on PlatformException catch (e) {
-      print('Error picking image: $e');
     } catch (e) {
-      print('Error: $e');
+      print('Error picking image: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: textPrimaryColor,
+      body: _buildBody(),
+    );
+  }
+
+  // Langkah 4: Gunakan state enum untuk membangun UI yang sesuai
+  Widget _buildBody() {
+    switch (_cameraStatus) {
+      case CameraStatus.loading:
+      case CameraStatus.initial:
+        return const Center(
+            child: CircularProgressIndicator(color: Colors.white));
+      case CameraStatus.failure:
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Failed to initialize camera',
+                style: whiteTextStyle,
+              ),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: whiteTextStyle.copyWith(fontSize: 12.sp),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              SizedBox(height: 24.h),
+              PrimaryFilledButton(
+                title: 'Try Again',
+                onPressed: _initializeCamera,
+              ),
+            ],
+          ),
+        );
+      case CameraStatus.success:
+        return _buildCameraView();
+    }
+  }
+
+  // UI utama kamera hanya akan di-build saat state success
+  Widget _buildCameraView() {
     final screenSize = MediaQuery.of(context).size;
     final width = screenSize.width * 0.7;
     final height = (width * 2) / 2;
@@ -119,112 +194,100 @@ class _OcrPageState extends State<OcrPage> {
       width: width,
       height: height,
     );
-    return Scaffold(
-      backgroundColor: textPrimaryColor,
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: cameraScreen(),
-          ),
 
-          Positioned.fill(
-            child: CustomPaint(
-              painter: OverlayPainter(centerRect),
+    return Stack(
+      children: [
+        // Camera Preview
+        Positioned.fill(
+          child: AspectRatio(
+            aspectRatio: _cameraController!.value.aspectRatio,
+            child: CameraPreview(_cameraController!),
+          ),
+        ),
+
+        // Overlay
+        Positioned.fill(
+          child: CustomPaint(
+            painter: OverlayPainter(centerRect),
+          ),
+        ),
+
+        // Top buttons
+        Positioned(
+          top: 60.r,
+          left: 24.r,
+          child: CustomRoundedButton(
+            onPressed: () => routes.pushReplacementNamed(RouteNames.main),
+            widget: Icon(
+              Icons.chevron_left,
+              size: 32.r,
+              color: textSecondaryColor,
             ),
+            backgroundColor: backgroundWhiteColor,
           ),
+        ),
 
-          // Top buttons
-          Positioned(
-            top: 60.r,
-            left: 24.r,
-            child: CustomRoundedButton(
-              onPressed: () => routes.pushReplacementNamed(RouteNames.main),
-              widget: Icon(
-                Icons.chevron_left,
-                size: 32.r,
-                color: textSecondaryColor,
-              ),
-              backgroundColor: backgroundWhiteColor,
-            ),
-          ),
+        // App Logo
+        Positioned(
+          top: 60.r,
+          right: 24.r,
+          child: Image.asset('assets/ic_seimbangin-logo-logreg.png'),
+        ),
 
-          // App Logo
-          Positioned(
-            top: 60.r,
-            right: 24.r,
-            child: Image.asset(
-              'assets/ic_seimbangin-logo-logreg.png',
-            ),
-          ),
-
-          // Shutter Button
-          Align(
-            alignment: const Alignment(0, 0.35),
-            child: GestureDetector(
-              onTap: () => takePicture(), // Add camera capture logic
-              child: Container(
-                width: 80.r,
-                height: 80.r,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: textWhiteColor,
-                ),
-                child: Image.asset('assets/ic_camera.png'),
-              ),
-            ),
-          ),
-
-          // Bottom Container
-          Positioned(
-            bottom: 30.r,
-            left: 20.r,
-            right: 20.r,
+        // Shutter Button
+        Align(
+          alignment: const Alignment(0, 0.35),
+          child: GestureDetector(
+            onTap: takePicture,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 8).r,
+              width: 80.r,
+              height: 80.r,
               decoration: BoxDecoration(
+                shape: BoxShape.circle,
                 color: textWhiteColor,
-                borderRadius: BorderRadius.circular(24).r,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  PrimaryFilledButton(
-                    title: 'Select From Gallery',
-                    onPressed: () {
-                      _selectFromGallery();
-                    },
-                  ),
-                  SizedBox(height: 12.r),
-                  PrimaryFilledButton(
-                    title: 'Add Manual',
-                    backgroundColor: backgroundGreyColor,
-                    textColor: textPrimaryColor,
-                    onPressed: () {
-                      routes.pushNamed(RouteNames.transaction);
-                    },
-                  ),
-                ],
-              ),
+              child: Image.asset('assets/ic_camera.png'),
             ),
-          )
-        ],
-      ),
-    );
-  }
+          ),
+        ),
 
-  Widget cameraScreen() {
-    if (cameraController == null || !cameraController!.value.isInitialized) {
-      return const CircularProgressIndicator();
-    }
-    return AspectRatio(
-      aspectRatio: 0.8 / cameraController!.value.aspectRatio,
-      child: CameraPreview(cameraController!),
+        // Bottom Container
+        Positioned(
+          bottom: 30.r,
+          left: 20.r,
+          right: 20.r,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8).r,
+            decoration: BoxDecoration(
+              color: textWhiteColor,
+              borderRadius: BorderRadius.circular(24).r,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PrimaryFilledButton(
+                  title: 'Select From Gallery',
+                  onPressed: _selectFromGallery,
+                ),
+                SizedBox(height: 12.r),
+                PrimaryFilledButton(
+                  title: 'Add Manual',
+                  backgroundColor: backgroundGreyColor,
+                  textColor: textPrimaryColor,
+                  onPressed: () {
+                    routes.pushNamed(RouteNames.transaction);
+                  },
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }
 
+// Class OverlayPainter tidak perlu diubah
 class OverlayPainter extends CustomPainter {
   final Rect centerRect;
 
