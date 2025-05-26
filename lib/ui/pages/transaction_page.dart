@@ -216,58 +216,60 @@ class _TransactionsPageState extends State<TransactionsPage> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  children: [
-                    SizedBox(height: 21.h),
-                    const TransactionHeaderSection(),
-                    SizedBox(height: 40.r),
-                    TransactionTypeTabBarSection(
-                      selectedIndex: _selectedIndexTab,
-                      tabs: _tabs,
-                      onTabSelected: (index) {
-                        setState(() {
-                          _selectedIndexTab = index;
-                          _calculateTotalPrice(); // Hitung ulang total saat tab berganti
-                        });
-                      },
-                    ),
-                    SizedBox(height: 32.r),
-                    // KONTEN DINAMIS BERDASARKAN TAB
-                    if (_selectedIndexTab == 0)
-                      TransactionIncomeFormSection(
-                        nameController: _transactNameController,
-                        priceController: _transactPriceController,
-                        amountController: _transactAmountController,
-                        categories: incomeCategories,
-                        onCategorySelected: (category) {
-                          setState(() => selectedCategory = category);
+          return SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    children: [
+                      SizedBox(height: 21.h),
+                      const TransactionHeaderSection(),
+                      SizedBox(height: 40.r),
+                      TransactionTypeTabBarSection(
+                        selectedIndex: _selectedIndexTab,
+                        tabs: _tabs,
+                        onTabSelected: (index) {
+                          setState(() {
+                            _selectedIndexTab = index;
+                            _calculateTotalPrice(); // Hitung ulang total saat tab berganti
+                          });
                         },
-                        onFormChanged: _calculateTotalPrice,
-                      )
-                    else
-                      TransactionOutcomeFormSection(
-                        transactionNameController: _transactNameController,
-                        items: _outcomeItems,
-                        categories: outcomeCategories,
-                        onAddItem: _addItem,
-                        onItemChanged: _calculateTotalPrice,
                       ),
-                    SizedBox(height: 40.r), // Spasi agar tidak mentok footer
-                  ],
+                      SizedBox(height: 32.r),
+                      // KONTEN DINAMIS BERDASARKAN TAB
+                      if (_selectedIndexTab == 0)
+                        TransactionIncomeFormSection(
+                          nameController: _transactNameController,
+                          priceController: _transactPriceController,
+                          amountController: _transactAmountController,
+                          categories: incomeCategories,
+                          onCategorySelected: (category) {
+                            setState(() => selectedCategory = category);
+                          },
+                          onFormChanged: _calculateTotalPrice,
+                        )
+                      else
+                        TransactionOutcomeFormSection(
+                          transactionNameController: _transactNameController,
+                          items: _outcomeItems,
+                          categories: outcomeCategories,
+                          onAddItem: _addItem,
+                          onItemChanged: _calculateTotalPrice,
+                        ),
+                      SizedBox(height: 40.r), // Spasi agar tidak mentok footer
+                    ],
+                  ),
                 ),
-              ),
-              // FOOTER TETAP DI BAWAH
-              if (MediaQuery.of(context).viewInsets.bottom ==
-                  0) // Sembunyikan footer saat keyboard muncul
-                TransactionFooterSection(
-                  totalPrice: totalPrice,
-                  onAddTransaction: _submitTransaction,
-                )
-            ],
+                // FOOTER TETAP DI BAWAH
+                if (MediaQuery.of(context).viewInsets.bottom ==
+                    0) // Sembunyikan footer saat keyboard muncul
+                  TransactionFooterSection(
+                    totalPrice: totalPrice,
+                    onAddTransaction: _submitTransaction,
+                  )
+              ],
+            ),
           );
         },
       ),

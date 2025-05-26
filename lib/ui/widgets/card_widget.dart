@@ -102,7 +102,10 @@ class ArticleCard extends StatelessWidget {
 }
 
 class RecentTransactionCard extends StatelessWidget {
-  final Color backgroundIcon;
+  // 1. Ganti nama 'backgroundIcon' menjadi 'backgroundColor' agar lebih jelas
+  final Color backgroundColor;
+  // 2. Tambahkan parameter 'icon' yang bertipe Widget
+  final Widget icon;
   final String title;
   final String subtitle;
   final String amount;
@@ -111,7 +114,8 @@ class RecentTransactionCard extends StatelessWidget {
 
   const RecentTransactionCard({
     super.key,
-    required this.backgroundIcon,
+    required this.backgroundColor,
+    required this.icon, // Jadikan 'icon' sebagai parameter wajib
     required this.title,
     required this.subtitle,
     required this.amount,
@@ -131,15 +135,13 @@ class RecentTransactionCard extends StatelessWidget {
               width: 60.r,
               height: 60.r,
               decoration: BoxDecoration(
-                color: backgroundIcon,
+                // Gunakan parameter backgroundColor
+                color: backgroundColor,
                 borderRadius: BorderRadius.circular(25).r,
               ),
               child: Center(
-                child: Icon(
-                  Icons.emoji_food_beverage_outlined,
-                  color: backgroundWhiteColor,
-                  size: 30.r,
-                ),
+                // 3. Gunakan widget 'icon' yang diterima dari parameter
+                child: icon,
               ),
             ),
             SizedBox(width: 16.r),

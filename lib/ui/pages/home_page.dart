@@ -116,9 +116,7 @@ class _HomePageState extends State<HomePage>
                           ),
                           SizedBox(height: 20.r),
                           // SECTION 3: RECENT TRANSACTIONS
-                          HomeRecentTransactionsSection(
-                            getCategoryColorCallback: getCategoryColor,
-                          ),
+                          HomeRecentTransactionsSection(),
                           SizedBox(height: 100.r),
                           // Bagian Artikel (bisa jadi section selanjutnya)
                           // Text(
