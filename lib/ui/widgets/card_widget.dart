@@ -107,6 +107,7 @@ class RecentTransactionCard extends StatelessWidget {
   final String subtitle;
   final String amount;
   final VoidCallback? onTap;
+  final Color? amountColor;
 
   const RecentTransactionCard({
     super.key,
@@ -115,6 +116,7 @@ class RecentTransactionCard extends StatelessWidget {
     required this.subtitle,
     required this.amount,
     this.onTap,
+    this.amountColor,
   });
 
   @override
@@ -169,7 +171,8 @@ class RecentTransactionCard extends StatelessWidget {
             SizedBox(width: 16.r),
             Text(
               amount,
-              style: warningTextStyle.copyWith(
+              style: blackTextStyle.copyWith(
+                color: amountColor ?? textGreenColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 14.sp,
               ),

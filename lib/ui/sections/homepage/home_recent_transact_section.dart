@@ -54,6 +54,11 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                     categoryForIcon = transaction.items.first.category;
                   }
 
+                  // Tentukan warna berdasarkan tipe transaksi
+                  final Color amountColor = transaction.type == 0
+                      ? textGreenColor // Jika tipe 0 (Income), warna hijau
+                      : textWarningColor; // Jika tipe 1 (Outcome), warna merah/warning
+
                   return RecentTransactionCard(
                     onTap: () {},
                     backgroundIcon: getCategoryColorCallback(categoryForIcon),
@@ -64,6 +69,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                       symbol: 'Rp ',
                       decimalDigits: 0,
                     ).format(total)}",
+                    amountColor: amountColor,
                   );
                 }).toList(),
               );
@@ -82,10 +88,11 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                 children: [
                   RecentTransactionCard(
                     onTap: () {},
-                    backgroundIcon: backgroundGreenColor,
+                    backgroundIcon: backgroundGreyColor,
                     title: "Belum ada transaksi",
                     subtitle: "Hari ini",
                     amount: "Rp 0",
+                    amountColor: textSecondaryColor,
                   ),
                 ],
               );
