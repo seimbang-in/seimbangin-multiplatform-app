@@ -121,66 +121,61 @@ class RecentTransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: 60.r,
-            height: 60.r,
-            decoration: BoxDecoration(
-              color: backgroundIcon,
-              borderRadius: BorderRadius.circular(25).r,
-            ),
-            child: Stack(
-              children: [
-                Center(
-                  child: Icon(
-                    Icons.emoji_food_beverage,
-                    color: backgroundWhiteColor,
-                    size: 30.r,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.sp,
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0).r,
+        child: Row(
+          children: [
+            Container(
+              width: 60.r,
+              height: 60.r,
+              decoration: BoxDecoration(
+                color: backgroundIcon,
+                borderRadius: BorderRadius.circular(25).r,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.emoji_food_beverage_outlined,
+                  color: backgroundWhiteColor,
+                  size: 30.r,
                 ),
-                SizedBox(
-                  height: 4.r,
-                ),
-                Text(
-                  subtitle,
-                  style: blueTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10.sp,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.all(10).r,
-            child: Text(
+            SizedBox(width: 16.r),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  SizedBox(height: 4.r),
+                  Text(
+                    subtitle,
+                    style: blueTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16.r),
+            Text(
               amount,
               style: warningTextStyle.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 14.sp,
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -27,15 +27,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 4.r),
-        Text(
-          "Today",
-          style: blueTextStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 12.sp,
-          ),
-        ),
-        SizedBox(height: 10.r),
+        SizedBox(height: 14.r),
         BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, transactionState) {
             if (transactionState is TransactionLoading) {
