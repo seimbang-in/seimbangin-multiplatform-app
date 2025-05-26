@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/models/item_model.dart';
+import 'package:seimbangin_app/models/transaction_preview_model.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/transaction/transact_footer_section.dart';
 import 'package:seimbangin_app/ui/sections/transaction/transact_header_section.dart';
@@ -136,8 +138,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
   void _submitTransaction() {
+    // Validasi tetap dilakukan di sini
     if (_selectedIndexTab == 0) {
-      // Logic untuk submit Income
+      // Logic untuk validasi Income
       final name = _transactNameController.text.trim();
       final price = _transactPriceController.text.trim();
       final amount = _transactAmountController.text.trim();
@@ -151,20 +154,25 @@ class _TransactionsPageState extends State<TransactionsPage> {
         return;
       }
 
+      // Buat objek Item untuk Income
       final singleItem =
           Item(name: name, price: price, quantity: amount, category: category);
-      context.read<TransactionBloc>().add(TransactionButtonPressed(
-            description: singleItem.name,
-            name: singleItem.name,
-            type: 0,
-            items: [singleItem],
-          ));
+
+      // Buat data preview
+      final previewData = TransactionPreviewData(
+        transactionName: name,
+        transactionType: 0, // 0 untuk Income
+        totalAmount: totalPrice,
+        transactionDate: DateTime.now(),
+        items: [singleItem],
+      );
+
+      // Navigasi ke halaman review
+      routes.pushNamed(RouteNames.transactionStruct, extra: previewData);
     } else {
-      // Logic untuk submit Outcome
+      // Logic untuk validasi Outcome
       bool isValid = true;
-      if (_transactNameController.text.trim().isEmpty) {
-        isValid = false;
-      }
+      if (_transactNameController.text.trim().isEmpty) isValid = false;
       for (final item in _outcomeItems) {
         item.updateFromControllers();
         if (item.name.isEmpty ||
@@ -178,19 +186,23 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
       if (!isValid) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text(
-              'Please complete all outcome fields, including transaction name and all item details!'),
+          content: const Text('Please complete all outcome fields!'),
           backgroundColor: backgroundWarningColor,
         ));
         return;
       }
 
-      context.read<TransactionBloc>().add(TransactionButtonPressed(
-            description: _transactNameController.text.trim(),
-            name: _transactNameController.text.trim(),
-            type: 1,
-            items: _outcomeItems,
-          ));
+      // Buat data preview
+      final previewData = TransactionPreviewData(
+        transactionName: _transactNameController.text.trim(),
+        transactionType: 1, // 1 untuk Outcome
+        totalAmount: totalPrice,
+        transactionDate: DateTime.now(),
+        items: _outcomeItems,
+      );
+
+      // Navigasi ke halaman review
+      routes.pushNamed(RouteNames.transactionStruct, extra: previewData);
     }
   }
 

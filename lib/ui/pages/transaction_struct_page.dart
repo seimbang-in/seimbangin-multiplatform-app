@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/models/item_model.dart';
-import 'package:seimbangin_app/models/ocr_model.dart';
+import 'package:seimbangin_app/models/transaction_preview_model.dart'; // Impor model baru
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
+import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart'; // Gunakan dialog terpusat
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatelessWidget {
@@ -15,40 +14,25 @@ class TransactionStructPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //     final List<Map<String, dynamic>> transactions = [
-    //   {'name': 'Nasi Goreng', 'qty': 2, 'price': 25000},
-    //   {'name': 'Es Teh', 'qty': 1, 'price': 5000},
-    //   {'name': 'Ayam Bakar', 'qty': 1, 'price': 35000},
-    //   {'name': 'Sate Ayam', 'qty': 2, 'price': 30000},
-    // ];
+    // Menerima TransactionPreviewData, bukan OcrModel lagi
+    final previewData =
+        GoRouterState.of(context).extra as TransactionPreviewData;
 
-    final OcrModel ocrModel = GoRouterState.of(context).extra as OcrModel;
-    final List<Item> transactions = ocrModel.data.items.map((i) {
-      return Item(
-        name: i.itemName,
-        quantity: i.quantity.toString(),
-        price: i.price.toString(),
-        category: i.category,
-      );
-    }).toList();
+    final bool isOutcome = previewData.transactionType == 1;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              primaryColor,
-              backgroundWhiteColor,
-            ],
+            colors: [primaryColor, backgroundWhiteColor],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
@@ -59,13 +43,9 @@ class TransactionStructPage extends StatelessWidget {
                       widget: const Icon(Icons.chevron_left, size: 32),
                       backgroundColor: backgroundWhiteColor,
                     ),
-                    Text(
-                      'Transaction Details',
-                      style: whiteTextStyle.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
+                    Text('Transaction Details',
+                        style: whiteTextStyle.copyWith(
+                            fontWeight: FontWeight.w600, fontSize: 16)),
                     Image.asset('assets/ic_seimbangin-logo-logreg.png'),
                   ],
                 ),
@@ -79,77 +59,48 @@ class TransactionStructPage extends StatelessWidget {
                     color: backgroundWhiteColor,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 16,
-                        spreadRadius: 2,
-                      ),
+                          color: Colors.black12,
+                          blurRadius: 16,
+                          spreadRadius: 2)
                     ],
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(32),
-                    ),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(32)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: Text(
-                          'Transaction',
-                          style: blackTextStyle.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
+                          child: Text('Transaction',
+                              style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w600, fontSize: 16))),
                       Center(
-                        child: Text(
-                          ocrModel.data.store,
-                          style: blackTextStyle.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 29,
-                      ),
+                          child: Text(previewData.transactionName,
+                              style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 12))),
+                      const SizedBox(height: 29),
                       Row(
                         children: [
                           Text(
-                            DateFormat('dd/MM/yyyy').format(ocrModel.data.date),
-                            style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 8,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
+                              DateFormat('dd/MM/yyyy')
+                                  .format(previewData.transactionDate),
+                              style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 8)),
+                          const SizedBox(width: 5),
+                          Text('•',
+                              style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 8)),
+                          const SizedBox(width: 5),
                           Text(
-                            '•',
-                            style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 8,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            TimeOfDay.now().toString(),
-                            style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 8,
-                            ),
-                          ),
+                              DateFormat('HH:mm')
+                                  .format(previewData.transactionDate),
+                              style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500, fontSize: 8)),
                         ],
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Divider(),
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      const SizedBox(height: 8),
+                      const Divider(),
+                      const SizedBox(height: 12),
+                      // Tampilan dinamis untuk Income/Outcome
                       Row(
                         children: [
                           Container(
@@ -157,115 +108,95 @@ class TransactionStructPage extends StatelessWidget {
                             width: 14,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: backgroundWarningColor,
+                              color: isOutcome
+                                  ? backgroundWarningColor
+                                  : textGreenColor,
                             ),
                             child: Icon(
-                              Icons.arrow_upward_rounded,
+                              isOutcome
+                                  ? Icons.arrow_upward_rounded
+                                  : Icons.arrow_downward_rounded,
                               color: textWhiteColor,
-                              size: 6,
+                              size: 8,
                             ),
                           ),
-                          const SizedBox(
-                            width: 4,
-                          ),
+                          const SizedBox(width: 4),
                           Text(
-                            'Outcome',
-                            style: warningTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 10,
-                            ),
+                            isOutcome ? 'Outcome' : 'Income',
+                            style:
+                                (isOutcome ? warningTextStyle : greenTextStyle)
+                                    .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 10),
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
+                      const SizedBox(height: 12),
                       Container(
                         height: 32,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: buttonColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                            color: buttonColor,
+                            borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Total Outcome',
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
-                              ),
+                              Text(isOutcome ? 'Total Outcome' : 'Total Income',
+                                  style: whiteTextStyle.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12)),
                               Text(
                                 NumberFormat.currency(
-                                  locale: 'id',
-                                  symbol: 'Rp ',
-                                  decimalDigits: 0,
-                                ).format(ocrModel.data.total),
+                                        locale: 'id',
+                                        symbol: 'Rp ',
+                                        decimalDigits: 0)
+                                    .format(previewData.totalAmount),
                                 style: whiteTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
+                                    fontWeight: FontWeight.w500, fontSize: 12),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 18,
-                      ),
-                      Divider(),
-                      const SizedBox(
-                        height: 18,
-                      ),
-                      Text(
-                        'Detail Transactions',
-                        style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
+                      const SizedBox(height: 18),
+                      const Divider(),
+                      const SizedBox(height: 18),
+                      Text('Detail Transactions',
+                          style: blackTextStyle.copyWith(
+                              fontWeight: FontWeight.w600, fontSize: 12)),
                       Expanded(
                         child: ListView.separated(
                           shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: transactions.length,
-                          separatorBuilder: (context, index) => Divider(),
+                          itemCount: previewData.items.length,
+                          separatorBuilder: (context, index) => const Divider(),
                           itemBuilder: (context, index) {
-                            final item = transactions[index];
+                            final item = previewData.items[index];
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                item.name,
-                                style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 10,
-                                ),
-                              ),
+                              title: Text(item.name,
+                                  style: blackTextStyle.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 10)),
                               trailing: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    'Qty: ${item.quantity}',
-                                    style: greyTextStyle.copyWith(
-                                      fontSize: 10,
-                                    ),
-                                  ),
+                                  Text('Qty: ${item.quantity}',
+                                      style:
+                                          greyTextStyle.copyWith(fontSize: 10)),
                                   Text(
                                     NumberFormat.currency(
-                                      locale: 'id',
-                                      symbol: 'Rp ',
-                                      decimalDigits: 0,
-                                    ).format(int.parse(item.price)),
+                                            locale: 'id',
+                                            symbol: 'Rp ',
+                                            decimalDigits: 0)
+                                        .format(
+                                            double.tryParse(item.price) ?? 0),
                                     style: blackTextStyle.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: buttonColor,
-                                    ),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                        color: buttonColor),
                                   ),
                                 ],
                               ),
@@ -276,30 +207,30 @@ class TransactionStructPage extends StatelessWidget {
                       const SizedBox(height: 24),
                       BlocListener<TransactionBloc, TransactionState>(
                         listener: (context, state) {
-                          if (state is TransactionSuccess) {
-                            _dismissLoadingDialog(context);
+                          if (state is TransactionLoading) {
+                            AlertDialogWidget.showLoading(context,
+                                message: 'Saving Transaction...');
+                          } else if (state is TransactionSuccess) {
+                            AlertDialogWidget.dismiss(context);
                             routes.pushNamed(RouteNames.transactionSuccess);
-                          } else if (state is TransactionLoading) {
-                            _showLoadingDialog(context);
                           } else if (state is TransactionFailure) {
-                            _dismissLoadingDialog(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                            AlertDialogWidget.dismiss(context);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(state.message),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                                backgroundColor: Colors.red));
                           }
                         },
                         child: PrimaryFilledButton(
                           title: 'Save',
                           onPressed: () {
                             context.read<TransactionBloc>().add(
-                                TransactionButtonPressed(
-                                    description: "Outcome",
-                                    name: ocrModel.data.store,
-                                    type: 1,
-                                    items: transactions));
+                                  TransactionButtonPressed(
+                                    description: previewData.transactionName,
+                                    name: previewData.transactionName,
+                                    type: previewData.transactionType,
+                                    items: previewData.items,
+                                  ),
+                                );
                           },
                           backgroundColor: primaryColor,
                           textColor: textWhiteColor,
@@ -315,42 +246,5 @@ class TransactionStructPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        // backgroundColor: backgroundWhiteColor,
-        contentPadding: const EdgeInsets.all(24).r,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24).r,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircularProgressIndicator(
-              color: primaryColor,
-              strokeWidth: 4,
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              'Saving Transaction...',
-              style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _dismissLoadingDialog(BuildContext context) {
-    if (Navigator.of(context, rootNavigator: true).canPop()) {
-      Navigator.of(context, rootNavigator: true).pop();
-    }
   }
 }
