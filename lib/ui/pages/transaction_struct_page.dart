@@ -2,19 +2,78 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/models/transaction_preview_model.dart'; // Impor model baru
+import 'package:seimbangin_app/models/transaction_preview_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart'; // Gunakan dialog terpusat
+import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
-class TransactionStructPage extends StatelessWidget {
+class TransactionStructPage extends StatefulWidget {
   const TransactionStructPage({super.key});
 
   @override
+  State<TransactionStructPage> createState() => _TransactionStructPageState();
+}
+
+class _TransactionStructPageState extends State<TransactionStructPage> {
+  bool _isProcessing = false;
+  OverlayEntry? _overlayEntry;
+
+  @override
+  void dispose() {
+    // Pastikan overlay dihapus saat widget dispose
+    _removeLoadingOverlay();
+    super.dispose();
+  }
+
+  void _showLoadingOverlay() {
+    if (_overlayEntry != null) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Material(
+        color: Colors.black54,
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  color: primaryColor,
+                  strokeWidth: 4,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Saving Transaction...',
+                  style: blackTextStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _removeLoadingOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Menerima TransactionPreviewData, bukan OcrModel lagi
     final previewData =
         GoRouterState.of(context).extra as TransactionPreviewData;
 
@@ -64,7 +123,7 @@ class TransactionStructPage extends StatelessWidget {
                           spreadRadius: 2)
                     ],
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(32)),
+                        const BorderRadius.vertical(top: Radius.circular(32)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,30 +267,31 @@ class TransactionStructPage extends StatelessWidget {
                       BlocListener<TransactionBloc, TransactionState>(
                         listener: (context, state) {
                           if (state is TransactionLoading) {
-                            AlertDialogWidget.showLoading(context,
-                                message: 'Saving Transaction...');
+                            if (!_isProcessing) {
+                              _isProcessing = true;
+                              _showLoadingOverlay();
+                            }
                           } else if (state is TransactionSuccess) {
-                            AlertDialogWidget.dismiss(context);
-                            routes.pushNamed(RouteNames.transactionSuccess);
+                            _handleTransactionSuccess();
                           } else if (state is TransactionFailure) {
-                            AlertDialogWidget.dismiss(context);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(state.message),
-                                backgroundColor: Colors.red));
+                            _handleTransactionFailure(state.message);
                           }
                         },
                         child: PrimaryFilledButton(
                           title: 'Save',
-                          onPressed: () {
-                            context.read<TransactionBloc>().add(
-                                  TransactionButtonPressed(
-                                    description: previewData.transactionName,
-                                    name: previewData.transactionName,
-                                    type: previewData.transactionType,
-                                    items: previewData.items,
-                                  ),
-                                );
-                          },
+                          onPressed: _isProcessing
+                              ? null
+                              : () {
+                                  context.read<TransactionBloc>().add(
+                                        TransactionButtonPressed(
+                                          description:
+                                              previewData.transactionName,
+                                          name: previewData.transactionName,
+                                          type: previewData.transactionType,
+                                          items: previewData.items,
+                                        ),
+                                      );
+                                },
                           backgroundColor: primaryColor,
                           textColor: textWhiteColor,
                           width: double.infinity,
@@ -246,5 +306,35 @@ class TransactionStructPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleTransactionSuccess() async {
+    _isProcessing = false;
+    _removeLoadingOverlay();
+
+    // Tunggu frame berikutnya untuk memastikan overlay benar-benar dihapus
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    if (mounted) {
+      context.read<HomepageBloc>().add(HomepageStarted());
+      routes.pushReplacementNamed(RouteNames.main);
+    }
+  }
+
+  void _handleTransactionFailure(String message) async {
+    _isProcessing = false;
+    _removeLoadingOverlay();
+
+    // Tunggu frame berikutnya
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: backgroundWarningColor,
+        ),
+      );
+    }
   }
 }

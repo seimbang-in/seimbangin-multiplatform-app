@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// flutter_bloc dan AlertDialogWidget tidak lagi diperlukan di sini jika semua handling di halaman lain
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/transaction_preview_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
@@ -12,7 +13,6 @@ import 'package:seimbangin_app/ui/sections/transaction/transact_income_form_sect
 import 'package:seimbangin_app/ui/sections/transaction/transact_outcome_form_section.dart';
 import 'package:seimbangin_app/ui/sections/transaction/transact_type_bar_section.dart';
 import 'package:seimbangin_app/ui/sections/transactions_section.dart'; // Dibutuhkan untuk class Category
-import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -22,27 +22,21 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  // --- STATE MANAGEMENT ---
-  // Semua state dan controller tetap berada di halaman utama ini.
+  // --- STATE MANAGEMENT LOKAL ---
   int _selectedIndexTab = 0;
   final List<String> _tabs = ['Income', 'Outcome'];
 
-  // Controllers untuk tab Income & nama transaksi Outcome
   final TextEditingController _transactNameController = TextEditingController();
   final TextEditingController _transactPriceController =
       TextEditingController();
   final TextEditingController _transactAmountController =
       TextEditingController();
 
-  // List dinamis untuk item-item di tab Outcome
   final List<Item> _outcomeItems = [];
-
-  // State untuk kategori dan total harga
   String? selectedCategory;
   double totalPrice = 0.0;
 
-  // --- DATA STATIS ---
-  // (Anda bisa memindahkan ini ke file constants jika diinginkan)
+  // --- DATA STATIS KATEGORI ---
   final List<Category> incomeCategories = [
     Category(id: '1', title: 'salary', icon: 'assets/ic_salary.png'),
     Category(id: '2', title: 'bonus', icon: 'assets/ic_bonus.png'),
@@ -62,12 +56,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
     Category(id: '7', title: 'food', icon: 'assets/ic_food.png'),
   ];
 
-  // --- LIFECYCLE & LOGIC METHODS ---
+  // --- LIFECYCLE METHODS ---
   @override
   void initState() {
     super.initState();
-    // Tambahkan satu item kosong pertama kali untuk form Outcome
-    _addItem();
+    _addItem(); // Tambahkan satu item kosong awal untuk form Outcome
   }
 
   @override
@@ -76,77 +69,76 @@ class _TransactionsPageState extends State<TransactionsPage> {
     _transactPriceController.dispose();
     _transactAmountController.dispose();
     for (var item in _outcomeItems) {
-      item.dispose();
+      item.dispose(); // Pastikan controller di dalam Item juga di-dispose
     }
     super.dispose();
   }
 
+  // --- LOGIC METHODS LOKAL ---
   void _calculateTotalPrice() {
     double total = 0.0;
     if (_selectedIndexTab == 0) {
-      // Kalkulasi untuk tab Income
       final price = double.tryParse(_transactPriceController.text) ?? 0.0;
-      final amount = double.tryParse(_transactAmountController.text) ??
-          1.0; // Anggap 1 jika kosong
+      final amount = double.tryParse(_transactAmountController.text) ?? 1.0;
       total = price * amount;
     } else {
-      // Kalkulasi untuk tab Outcome
       for (var item in _outcomeItems) {
+        item.updateFromControllers(); // Pastikan nilai item terbaru sebelum kalkulasi
         final price = double.tryParse(item.priceController.text) ?? 0.0;
-        final qty = double.tryParse(item.quantityController.text) ??
-            1.0; // Anggap 1 jika kosong
+        final qty = double.tryParse(item.quantityController.text) ?? 1.0;
         total += price * qty;
       }
     }
-    setState(() {
-      totalPrice = total;
-    });
+    if (mounted) {
+      setState(() {
+        totalPrice = total;
+      });
+    }
   }
 
   void _addItem() {
-    setState(() {
-      _outcomeItems.add(
-        Item(
-          name: '',
-          category: '',
-          price: '',
-          quantity: '',
-        ),
-      );
-    });
+    if (mounted) {
+      setState(() {
+        _outcomeItems.add(
+          Item(name: '', category: '', price: '', quantity: ''),
+        );
+      });
+      _calculateTotalPrice(); // Hitung ulang total setelah item ditambahkan
+    }
   }
 
-  void _handleSuccessState() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Transaction added successfully!"),
-      backgroundColor: Colors.green,
-    ));
-
-    // Reset semua field ke kondisi awal
-    setState(() {
-      _transactNameController.clear();
-      _transactPriceController.clear();
-      _transactAmountController.clear();
-      selectedCategory = null;
-      totalPrice = 0;
-      for (var item in _outcomeItems) {
-        item.dispose();
-      }
-      _outcomeItems.clear();
-      _addItem(); // Tambahkan lagi satu item kosong untuk form outcome
-    });
+  void _resetForm() {
+    if (mounted) {
+      setState(() {
+        _transactNameController.clear();
+        _transactPriceController.clear();
+        _transactAmountController.clear();
+        selectedCategory = null;
+        totalPrice = 0.0;
+        // Dispose item lama dan buat list baru dengan satu item kosong
+        for (var item in _outcomeItems) {
+          item.dispose();
+        }
+        _outcomeItems.clear();
+        _addItem();
+        _selectedIndexTab = 0; // Kembali ke tab income sebagai default
+      });
+    }
   }
 
-  void _submitTransaction() {
-    // Validasi tetap dilakukan di sini
+  // Method ini sekarang hanya mempersiapkan data dan navigasi
+  void _prepareAndNavigateToReview() {
+    // Validasi data sebelum mengirim
     if (_selectedIndexTab == 0) {
-      // Logic untuk validasi Income
+      // Validasi Income
       final name = _transactNameController.text.trim();
       final price = _transactPriceController.text.trim();
       final amount = _transactAmountController.text.trim();
-      final category = selectedCategory;
 
-      if (name.isEmpty || price.isEmpty || amount.isEmpty || category == null) {
+      if (name.isEmpty ||
+          price.isEmpty ||
+          amount.isEmpty ||
+          selectedCategory == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text('Please complete all income fields!'),
           backgroundColor: backgroundWarningColor,
@@ -154,25 +146,36 @@ class _TransactionsPageState extends State<TransactionsPage> {
         return;
       }
 
-      // Buat objek Item untuk Income
-      final singleItem =
-          Item(name: name, price: price, quantity: amount, category: category);
+      final singleItem = Item(
+        name: name,
+        price: price,
+        quantity: amount,
+        category: selectedCategory!,
+      );
 
-      // Buat data preview
       final previewData = TransactionPreviewData(
         transactionName: name,
-        transactionType: 0, // 0 untuk Income
+        transactionType: 0,
         totalAmount: totalPrice,
         transactionDate: DateTime.now(),
         items: [singleItem],
       );
-
-      // Navigasi ke halaman review
-      routes.pushNamed(RouteNames.transactionStruct, extra: previewData);
+      routes
+          .pushNamed(RouteNames.transactionStruct, extra: previewData)
+          .then((value) {
+        // Optional: Reset form jika navigasi berhasil dan pengguna kembali (jika diperlukan)
+        // Atau jika TransactionStructPage mengembalikan sinyal sukses
+        if (value == true) {
+          // Asumsi 'true' dikembalikan jika sukses dari struct page
+          _resetForm();
+        }
+      });
     } else {
-      // Logic untuk validasi Outcome
+      // Validasi Outcome
       bool isValid = true;
-      if (_transactNameController.text.trim().isEmpty) isValid = false;
+      if (_transactNameController.text.trim().isEmpty) {
+        isValid = false;
+      }
       for (final item in _outcomeItems) {
         item.updateFromControllers();
         if (item.name.isEmpty ||
@@ -186,104 +189,102 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
       if (!isValid) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('Please complete all outcome fields!'),
+          content: const Text(
+              'Please complete all outcome fields, including transaction name and all item details!'),
           backgroundColor: backgroundWarningColor,
         ));
         return;
       }
 
-      // Buat data preview
       final previewData = TransactionPreviewData(
         transactionName: _transactNameController.text.trim(),
-        transactionType: 1, // 1 untuk Outcome
+        transactionType: 1,
         totalAmount: totalPrice,
         transactionDate: DateTime.now(),
         items: _outcomeItems,
       );
-
-      // Navigasi ke halaman review
-      routes.pushNamed(RouteNames.transactionStruct, extra: previewData);
+      routes
+          .pushNamed(RouteNames.transactionStruct, extra: previewData)
+          .then((value) {
+        if (value == true) {
+          _resetForm();
+        }
+      });
     }
   }
 
   // --- BUILD METHOD ---
   @override
   Widget build(BuildContext context) {
+    // Tidak ada lagi BlocConsumer di sini
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
-      body: BlocConsumer<TransactionBloc, TransactionState>(
-        listener: (context, state) {
-          if (state is TransactionLoading) {
-            AlertDialogWidget.showLoading(context,
-                message: 'Saving Transaction...');
-          } else if (state is TransactionSuccess) {
-            AlertDialogWidget.dismiss(context);
-            _handleSuccessState();
-          } else if (state is TransactionFailure) {
-            AlertDialogWidget.dismiss(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ));
-          }
-        },
-        builder: (context, state) {
-          return SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    children: [
-                      SizedBox(height: 21.h),
-                      const TransactionHeaderSection(),
-                      SizedBox(height: 40.r),
-                      TransactionTypeTabBarSection(
-                        selectedIndex: _selectedIndexTab,
-                        tabs: _tabs,
-                        onTabSelected: (index) {
-                          setState(() {
-                            _selectedIndexTab = index;
-                            _calculateTotalPrice(); // Hitung ulang total saat tab berganti
-                          });
-                        },
-                      ),
-                      SizedBox(height: 32.r),
-                      // KONTEN DINAMIS BERDASARKAN TAB
-                      if (_selectedIndexTab == 0)
-                        TransactionIncomeFormSection(
-                          nameController: _transactNameController,
-                          priceController: _transactPriceController,
-                          amountController: _transactAmountController,
-                          categories: incomeCategories,
-                          onCategorySelected: (category) {
-                            setState(() => selectedCategory = category);
-                          },
-                          onFormChanged: _calculateTotalPrice,
-                        )
-                      else
-                        TransactionOutcomeFormSection(
-                          transactionNameController: _transactNameController,
-                          items: _outcomeItems,
-                          categories: outcomeCategories,
-                          onAddItem: _addItem,
-                          onItemChanged: _calculateTotalPrice,
-                        ),
-                      SizedBox(height: 40.r), // Spasi agar tidak mentok footer
-                    ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                children: [
+                  SizedBox(height: 21.h),
+                  const TransactionHeaderSection(), // Section untuk header
+                  SizedBox(height: 40.r),
+                  TransactionTypeTabBarSection(
+                    // Section untuk tab bar
+                    selectedIndex: _selectedIndexTab,
+                    tabs: _tabs,
+                    onTabSelected: (index) {
+                      if (mounted) {
+                        setState(() {
+                          _selectedIndexTab = index;
+                          // Reset nama transaksi umum saat ganti tab
+                          // Jika nama transaksi outcome tidak ingin di-reset,
+                          // Anda bisa memisahkan controller atau menambahkan logika.
+                          _transactNameController.clear();
+                          _calculateTotalPrice();
+                        });
+                      }
+                    },
                   ),
-                ),
-                // FOOTER TETAP DI BAWAH
-                if (MediaQuery.of(context).viewInsets.bottom ==
-                    0) // Sembunyikan footer saat keyboard muncul
-                  TransactionFooterSection(
-                    totalPrice: totalPrice,
-                    onAddTransaction: _submitTransaction,
-                  )
-              ],
+                  SizedBox(height: 32.r),
+                  // Konten dinamis berdasarkan tab
+                  if (_selectedIndexTab == 0)
+                    TransactionIncomeFormSection(
+                      // Section untuk form income
+                      nameController: _transactNameController,
+                      priceController: _transactPriceController,
+                      amountController: _transactAmountController,
+                      categories: incomeCategories,
+                      onCategorySelected: (category) {
+                        if (mounted) {
+                          setState(() => selectedCategory = category);
+                        }
+                      },
+                      onFormChanged: _calculateTotalPrice,
+                    )
+                  else
+                    TransactionOutcomeFormSection(
+                      // Section untuk form outcome
+                      transactionNameController: _transactNameController,
+                      items: _outcomeItems,
+                      categories: outcomeCategories,
+                      onAddItem: _addItem,
+                      onItemChanged: _calculateTotalPrice,
+                    ),
+                  SizedBox(height: 40.r),
+                ],
+              ),
             ),
-          );
-        },
+            // Footer tetap di bawah dan tidak terpengaruh keyboard
+            if (MediaQuery.of(context).viewInsets.bottom == 0)
+              TransactionFooterSection(
+                // Section untuk footer
+                totalPrice: totalPrice,
+                onAddTransaction:
+                    _prepareAndNavigateToReview, // Panggil method baru
+              )
+          ],
+        ),
       ),
     );
   }
