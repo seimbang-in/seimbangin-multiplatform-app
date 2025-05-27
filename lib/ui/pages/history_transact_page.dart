@@ -56,18 +56,18 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
             SizedBox(
               height: 20.r,
             ),
-            RecentTransactionCard(
-              backgroundIcon: backgroundGreenColor,
-              title: "Food",
-              subtitle: "12:00 WIB",
-              amount: "-Rp 12.000",
-            ),
-            RecentTransactionCard(
-              backgroundIcon: backgroundGreenColor,
-              title: "Food",
-              subtitle: "18:00 WIB",
-              amount: "-Rp 18.000",
-            ),
+            // RecentTransactionCard(
+            //   backgroundColor: backgroundGreenColor,
+            //   title: "Food",
+            //   subtitle: "12:00 WIB",
+            //   amount: "-Rp 12.000",
+            // ),
+            // RecentTransactionCard(
+            //   backgroundIcon: backgroundGreenColor,
+            //   title: "Food",
+            //   subtitle: "18:00 WIB",
+            //   amount: "-Rp 18.000",
+            // ),
           ],
         ),
       ),

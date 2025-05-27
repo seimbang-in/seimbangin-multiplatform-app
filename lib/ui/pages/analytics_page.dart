@@ -141,16 +141,16 @@ class _AnalyticsPageState extends State<AnalyticsPage>
                 SizedBox(
                   height: 10,
                 ),
-                RecentTransactionCard(
-                    backgroundIcon: buttonColor,
-                    title: "Mr.B",
-                    subtitle: "12:00 Wib",
-                    amount: "-Rp 12.000"),
-                RecentTransactionCard(
-                    backgroundIcon: buttonColor,
-                    title: "Zona Bakso",
-                    subtitle: "18:00 Wib",
-                    amount: "-Rp 18.000"),
+                // RecentTransactionCard(
+                //     backgroundIcon: buttonColor,
+                //     title: "Mr.B",
+                //     subtitle: "12:00 Wib",
+                //     amount: "-Rp 12.000"),
+                // RecentTransactionCard(
+                //     backgroundIcon: buttonColor,
+                //     title: "Zona Bakso",
+                //     subtitle: "18:00 Wib",
+                //     amount: "-Rp 18.000"),
               ],
             ),
           ),

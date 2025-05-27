@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,7 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
-// Langkah 1: Buat enum untuk merepresentasikan state kamera dengan jelas
+// Enum untuk merepresentasikan state kamera dengan jelas
 enum CameraStatus { initial, loading, success, failure }
 
 class OcrPage extends StatefulWidget {
@@ -18,12 +19,16 @@ class OcrPage extends StatefulWidget {
 }
 
 class _OcrPageState extends State<OcrPage> {
-  // Langkah 2: Gunakan variabel state yang baru
+  // Variabel State
   CameraStatus _cameraStatus = CameraStatus.initial;
   CameraController? _cameraController;
   String? _errorMessage;
-
   final ImagePicker _picker = ImagePicker();
+
+  // State untuk fitur tambahan
+  List<CameraDescription> _cameras = [];
+  int _selectedCameraIndex = 0;
+  FlashMode _currentFlashMode = FlashMode.off;
 
   @override
   void initState() {
@@ -33,7 +38,7 @@ class _OcrPageState extends State<OcrPage> {
       statusBarColor: Colors.black,
       statusBarIconBrightness: Brightness.light,
     ));
-    // Panggil satu fungsi inisialisasi yang bersih
+    // Panggil fungsi inisialisasi kamera
     _initializeCamera();
   }
 
@@ -45,9 +50,10 @@ class _OcrPageState extends State<OcrPage> {
     super.dispose();
   }
 
-  // Langkah 3: Gabungkan semua logika inisialisasi ke satu fungsi async
-  Future<void> _initializeCamera() async {
-    // Jangan lakukan apa pun jika widget sudah di-dispose
+  // --- FUNGSI-FUNGSI LOGIKA KAMERA ---
+
+  /// Menginisialisasi controller kamera dengan indeks kamera yang dipilih.
+  Future<void> _initializeCamera([int cameraIndex = 0]) async {
     if (!mounted) return;
 
     setState(() {
@@ -55,24 +61,32 @@ class _OcrPageState extends State<OcrPage> {
     });
 
     try {
-      final cameras = await availableCameras();
-      if (cameras.isEmpty) {
-        throw CameraException(
-            'No Camera Found', 'No camera is available on this device.');
+      // Ambil daftar kamera hanya jika list masih kosong
+      if (_cameras.isEmpty) {
+        _cameras = await availableCameras();
+        if (_cameras.isEmpty) {
+          throw CameraException(
+              'No Camera Found', 'No camera is available on this device.');
+        }
       }
 
-      final cameraDescription = cameras[0]; // Gunakan kamera belakang utama
+      // Pastikan index yang dipilih valid
+      _selectedCameraIndex = cameraIndex < _cameras.length ? cameraIndex : 0;
+      final cameraDescription = _cameras[_selectedCameraIndex];
 
-      // Hancurkan controller lama jika ada sebelum membuat yang baru
+      // Hancurkan controller lama jika ada untuk melepaskan resource
       await _cameraController?.dispose();
 
       _cameraController = CameraController(
         cameraDescription,
-        ResolutionPreset.medium,
-        enableAudio: false, // Matikan audio jika tidak diperlukan
+        ResolutionPreset.high,
+        enableAudio: false,
       );
 
+      // Inisialisasi controller baru
       await _cameraController!.initialize();
+      // Atur mode flash sesuai dengan state saat ini
+      await _cameraController!.setFlashMode(_currentFlashMode);
 
       if (mounted) {
         setState(() {
@@ -86,7 +100,6 @@ class _OcrPageState extends State<OcrPage> {
           _cameraStatus = CameraStatus.failure;
         });
       }
-      print("Camera Error: ${e.code} ${e.description}");
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -94,16 +107,46 @@ class _OcrPageState extends State<OcrPage> {
           _cameraStatus = CameraStatus.failure;
         });
       }
-      print("Unexpected Error: $e");
     }
   }
 
-  // Fungsi takePicture dan _selectFromGallery tetap sama, tetapi lebih aman
+  /// Mengganti kamera antara depan dan belakang.
+  void _switchCamera() {
+    if (_cameras.length > 1) {
+      // Hitung indeks kamera berikutnya, akan berputar kembali ke 0 jika sudah di akhir.
+      final nextCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
+      _initializeCamera(nextCameraIndex);
+    }
+  }
+
+  /// Mengubah mode flash antara on (torch) dan off.
+  Future<void> _toggleFlash() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized)
+      return;
+
+    final newFlashMode =
+        _currentFlashMode == FlashMode.off ? FlashMode.torch : FlashMode.off;
+
+    try {
+      await _cameraController!.setFlashMode(newFlashMode);
+      if (mounted) {
+        setState(() {
+          _currentFlashMode = newFlashMode;
+        });
+      }
+    } catch (e) {
+      print("Error setting flash mode: $e");
+    }
+  }
+
+  /// Mengambil gambar dari kamera.
   Future<void> takePicture() async {
-    // Pemeriksaan state yang lebih aman
     if (_cameraStatus != CameraStatus.success ||
         _cameraController == null ||
-        !_cameraController!.value.isTakingPicture) {
+        !_cameraController!.value.isInitialized) {
+      return;
+    }
+    if (_cameraController!.value.isTakingPicture) {
       return;
     }
 
@@ -120,6 +163,7 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
+  /// Memilih gambar dari galeri.
   Future<void> _selectFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -138,6 +182,7 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
+  // --- UI BUILD METHODS ---
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +191,7 @@ class _OcrPageState extends State<OcrPage> {
     );
   }
 
-  // Langkah 4: Gunakan state enum untuk membangun UI yang sesuai
+  /// Membangun UI berdasarkan state kamera saat ini.
   Widget _buildBody() {
     switch (_cameraStatus) {
       case CameraStatus.loading:
@@ -158,18 +203,13 @@ class _OcrPageState extends State<OcrPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Failed to initialize camera',
-                style: whiteTextStyle,
-              ),
+              Text('Failed to initialize camera', style: whiteTextStyle),
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    _errorMessage!,
-                    style: whiteTextStyle.copyWith(fontSize: 12.sp),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(_errorMessage!,
+                      style: whiteTextStyle.copyWith(fontSize: 12.sp),
+                      textAlign: TextAlign.center),
                 ),
               SizedBox(height: 24.h),
               PrimaryFilledButton(
@@ -184,7 +224,7 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  // UI utama kamera hanya akan di-build saat state success
+  /// Membangun UI utama saat kamera berhasil diinisialisasi.
   Widget _buildCameraView() {
     final screenSize = MediaQuery.of(context).size;
     final width = screenSize.width * 0.7;
@@ -199,17 +239,17 @@ class _OcrPageState extends State<OcrPage> {
       children: [
         // Camera Preview
         Positioned.fill(
-          child: AspectRatio(
-            aspectRatio: _cameraController!.value.aspectRatio,
-            child: CameraPreview(_cameraController!),
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1 / _cameraController!.value.aspectRatio,
+              child: CameraPreview(_cameraController!),
+            ),
           ),
         ),
 
         // Overlay
         Positioned.fill(
-          child: CustomPaint(
-            painter: OverlayPainter(centerRect),
-          ),
+          child: CustomPaint(painter: OverlayPainter(centerRect)),
         ),
 
         // Top buttons
@@ -218,40 +258,77 @@ class _OcrPageState extends State<OcrPage> {
           left: 24.r,
           child: CustomRoundedButton(
             onPressed: () => routes.pushReplacementNamed(RouteNames.main),
-            widget: Icon(
-              Icons.chevron_left,
-              size: 32.r,
-              color: textSecondaryColor,
-            ),
+            widget:
+                Icon(Icons.chevron_left, size: 32.r, color: textSecondaryColor),
             backgroundColor: backgroundWhiteColor,
           ),
         ),
-
-        // App Logo
         Positioned(
           top: 60.r,
           right: 24.r,
           child: Image.asset('assets/ic_seimbangin-logo-logreg.png'),
         ),
 
-        // Shutter Button
+        // Kontrol Kamera: Ganti Kamera, Shutter, Flash
         Align(
           alignment: const Alignment(0, 0.35),
-          child: GestureDetector(
-            onTap: takePicture,
-            child: Container(
-              width: 80.r,
-              height: 80.r,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: textWhiteColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Tombol Ganti Kamera (kiri)
+              if (_cameras.length > 1) // Hanya tampilkan jika ada > 1 kamera
+                GestureDetector(
+                  onTap: _switchCamera,
+                  child: Container(
+                    width: 60.r,
+                    height: 60.r,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: textWhiteColor,
+                    ),
+                    child: Image.asset(
+                      'assets/ic_switch_cam.png',
+                    ),
+                  ),
+                )
+              else // Beri ruang kosong agar shutter tetap di tengah
+                SizedBox(width: 36.r),
+
+              // Tombol Shutter (tengah)
+              GestureDetector(
+                onTap: takePicture,
+                child: Container(
+                  width: 80.r,
+                  height: 80.r,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: textWhiteColor,
+                  ),
+                  child: Image.asset('assets/ic_camera.png'),
+                ),
               ),
-              child: Image.asset('assets/ic_camera.png'),
-            ),
+
+              // Tombol Flash (kanan)
+              GestureDetector(
+                onTap: _toggleFlash,
+                child: Container(
+                  width: 60.r,
+                  height: 60.r,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: textWhiteColor,
+                  ),
+                  child: Image.asset(
+                    'assets/ic_flash.png',
+                  ),
+                ),
+              )
+            ],
           ),
         ),
 
-        // Bottom Container
+        // Bottom Container (Pilih dari galeri / manual)
         Positioned(
           bottom: 30.r,
           left: 20.r,
@@ -266,9 +343,8 @@ class _OcrPageState extends State<OcrPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 PrimaryFilledButton(
-                  title: 'Select From Gallery',
-                  onPressed: _selectFromGallery,
-                ),
+                    title: 'Select From Gallery',
+                    onPressed: _selectFromGallery),
                 SizedBox(height: 12.r),
                 PrimaryFilledButton(
                   title: 'Add Manual',
@@ -290,7 +366,6 @@ class _OcrPageState extends State<OcrPage> {
 // Class OverlayPainter tidak perlu diubah
 class OverlayPainter extends CustomPainter {
   final Rect centerRect;
-
   OverlayPainter(this.centerRect);
 
   @override
@@ -301,9 +376,7 @@ class OverlayPainter extends CustomPainter {
 
     final path = Path()
       ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..addRRect(
-        RRect.fromRectAndRadius(centerRect, const Radius.circular(12)),
-      )
+      ..addRRect(RRect.fromRectAndRadius(centerRect, const Radius.circular(12)))
       ..fillType = PathFillType.evenOdd;
 
     canvas.drawPath(path, paint);

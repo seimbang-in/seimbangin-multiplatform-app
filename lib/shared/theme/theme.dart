@@ -23,6 +23,19 @@ Color textButtonColor = const Color(0xFF0048FF);
 Color textWarningColor = const Color(0xFFEA1763);
 Color textGreenColor = const Color(0xFF20E828);
 
+// Button Color
+Color buttonEducationColor = const Color(0xFF86D3FF);
+Color buttonShoppingColor = const Color(0xFF2885FF);
+Color buttonInternetColor = const Color(0xFF01DDB0);
+Color buttonTransportationColor = const Color(0xFFA377FF);
+Color buttonHousingColor = const Color(0xFFFFF694);
+Color buttonFoodColor = const Color(0xFFC1E45B);
+Color buttonSalaryColor = const Color(0xFFFFEA01);
+Color buttonFreelanceColor = const Color(0xFFFFEA01);
+Color buttonGiftColor = const Color(0xFFFFA600);
+Color buttonBonusColor = const Color(0xFFFFA600);
+Color buttonHealthColor = const Color(0xFFFF3D00);
+
 // Text Themes
 TextStyle blackTextStyle = GoogleFonts.plusJakartaSans(
   color: textPrimaryColor,

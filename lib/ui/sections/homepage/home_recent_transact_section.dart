@@ -8,12 +8,44 @@ import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 
 class HomeRecentTransactionsSection extends StatelessWidget {
-  final Color Function(String) getCategoryColorCallback;
+  const HomeRecentTransactionsSection({super.key});
 
-  const HomeRecentTransactionsSection({
-    super.key,
-    required this.getCategoryColorCallback,
-  });
+  // --- HELPER FUNCTION BARU ---
+  // Fungsi ini mengambil nama kategori dan mengembalikan data UI-nya (warna dan path ikon).
+  // Menggunakan Record `(Color, String)` untuk mengembalikan dua nilai sekaligus.
+  (Color, String) _getCategoryUIData(String category) {
+    switch (category.toLowerCase()) {
+      // Income Categories
+      case 'salary':
+        return (buttonSalaryColor, 'assets/ic_salary.png');
+      case 'freelance':
+        return (buttonFreelanceColor, 'assets/ic_freelance.png');
+      case 'bonus':
+        return (buttonBonusColor, 'assets/ic_bonus.png');
+      case 'gift':
+        return (buttonBonusColor, 'assets/ic_gift.png');
+
+      // Outcome Categories
+      case 'food':
+        return (buttonFoodColor, 'assets/ic_food.png');
+      case 'transportation':
+      case 'transport':
+        return (buttonTransportationColor, 'assets/ic_transportation.png');
+      case 'shopping':
+        return (buttonShoppingColor, 'assets/ic_shopping.png');
+      case 'health':
+        return (buttonHealthColor, 'assets/ic_health.png');
+      case 'education':
+        return (buttonEducationColor, 'assets/ic_education.png');
+
+      // Default jika kategori tidak ditemukan
+      default:
+        return (
+          buttonInternetColor,
+          'assets/ic_bonus.png'
+        ); // Pastikan Anda punya ikon default
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +59,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 4.r),
-        Text(
-          "Today",
-          style: blueTextStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 12.sp,
-          ),
-        ),
-        SizedBox(height: 10.r),
+        SizedBox(height: 14.r),
         BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, transactionState) {
             if (transactionState is TransactionLoading) {
@@ -62,9 +86,28 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                     categoryForIcon = transaction.items.first.category;
                   }
 
+                  final Color amountColor =
+                      transaction.type == 0 ? textGreenColor : textWarningColor;
+
+                  // --- LOGIKA DINAMIS DITERAPKAN DI SINI ---
+                  // 1. Panggil helper function untuk mendapatkan data UI
+                  final categoryUI = _getCategoryUIData(categoryForIcon);
+                  final Color bgColor =
+                      categoryUI.$1; // Ambil warna dari record
+                  final String iconPath =
+                      categoryUI.$2; // Ambil path ikon dari record
+
                   return RecentTransactionCard(
                     onTap: () {},
-                    backgroundIcon: getCategoryColorCallback(categoryForIcon),
+                    // 2. Teruskan data dinamis ke card
+                    backgroundColor: bgColor,
+                    icon: Image.asset(
+                      iconPath,
+                      width: 30.r,
+                      height: 30.r,
+                      // Anda bisa memberi warna pada aset gambar jika itu adalah ikon monokrom
+                      // color: Colors.white,
+                    ),
                     title: transaction.name,
                     subtitle: "$timeString WIB",
                     amount: "$prefix${NumberFormat.currency(
@@ -72,6 +115,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                       symbol: 'Rp ',
                       decimalDigits: 0,
                     ).format(total)}",
+                    amountColor: amountColor,
                   );
                 }).toList(),
               );
@@ -90,10 +134,13 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                 children: [
                   RecentTransactionCard(
                     onTap: () {},
-                    backgroundIcon: backgroundGreenColor,
+                    backgroundColor: backgroundGreyColor,
+                    icon: Icon(Icons.wallet_outlined,
+                        size: 30.r, color: textSecondaryColor),
                     title: "Belum ada transaksi",
                     subtitle: "Hari ini",
                     amount: "Rp 0",
+                    amountColor: textSecondaryColor,
                   ),
                 ],
               );

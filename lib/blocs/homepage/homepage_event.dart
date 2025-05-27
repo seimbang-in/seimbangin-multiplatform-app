@@ -5,6 +5,12 @@ sealed class HomepageEvent {}
 
 class HomepageStarted extends HomepageEvent {}
 
+// Event baru untuk refresh
+class HomepageRefresh extends HomepageEvent {}
+
+// Event untuk refresh dengan loading indicator
+class HomepageRefreshWithLoading extends HomepageEvent {}
+
 class UpdateFinancialProfile extends HomepageEvent {
   final int currentSavings;
   final int debt;

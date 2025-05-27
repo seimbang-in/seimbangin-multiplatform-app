@@ -102,85 +102,85 @@ class ArticleCard extends StatelessWidget {
 }
 
 class RecentTransactionCard extends StatelessWidget {
-  final Color backgroundIcon;
+  // 1. Ganti nama 'backgroundIcon' menjadi 'backgroundColor' agar lebih jelas
+  final Color backgroundColor;
+  // 2. Tambahkan parameter 'icon' yang bertipe Widget
+  final Widget icon;
   final String title;
   final String subtitle;
   final String amount;
   final VoidCallback? onTap;
+  final Color? amountColor;
 
   const RecentTransactionCard({
     super.key,
-    required this.backgroundIcon,
+    required this.backgroundColor,
+    required this.icon, // Jadikan 'icon' sebagai parameter wajib
     required this.title,
     required this.subtitle,
     required this.amount,
     this.onTap,
+    this.amountColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: 60.r,
-            height: 60.r,
-            decoration: BoxDecoration(
-              color: backgroundIcon,
-              borderRadius: BorderRadius.circular(25).r,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0).r,
+        child: Row(
+          children: [
+            Container(
+              width: 60.r,
+              height: 60.r,
+              decoration: BoxDecoration(
+                // Gunakan parameter backgroundColor
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(25).r,
+              ),
+              child: Center(
+                // 3. Gunakan widget 'icon' yang diterima dari parameter
+                child: icon,
+              ),
             ),
-            child: Stack(
-              children: [
-                Center(
-                  child: Icon(
-                    Icons.emoji_food_beverage,
-                    color: backgroundWhiteColor,
-                    size: 30.r,
+            SizedBox(width: 16.r),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                    ),
                   ),
-                )
-              ],
+                  SizedBox(height: 4.r),
+                  Text(
+                    subtitle,
+                    style: blueTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 10.sp,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20).r,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.sp,
-                  ),
-                ),
-                SizedBox(
-                  height: 4.r,
-                ),
-                Text(
-                  subtitle,
-                  style: blueTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10.sp,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.all(10).r,
-            child: Text(
+            SizedBox(width: 16.r),
+            Text(
               amount,
-              style: warningTextStyle.copyWith(
+              style: blackTextStyle.copyWith(
+                color: amountColor ?? textGreenColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 14.sp,
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
