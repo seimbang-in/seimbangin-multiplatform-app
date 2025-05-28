@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/models/transaction_model.dart'
-    as model; // Gunakan alias untuk menghindari konflik nama
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -18,19 +16,39 @@ class HistoryTransactPage extends StatefulWidget {
 }
 
 class _HistoryTransactPageState extends State<HistoryTransactPage> {
-  int _selectedIndex = 0;
-  final List<String> _tabs = ['All', 'Week', '1 Month', '6 Month'];
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    // Sama seperti di HomePage, kita perlu memastikan data transaksi tersedia.
-    // Kita panggil event untuk mengambil semua data histori (misal: limit 200).
-    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 200));
+    _scrollController.addListener(_onScroll);
+    // Panggil event untuk memuat data halaman pertama
+    context.read<TransactionBloc>().add(FetchHistoryTransactions());
   }
 
-  // Logika dari HomeRecentTransactionsSection kita pindahkan ke sini
-  // untuk menentukan warna dan ikon secara dinamis.
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<TransactionBloc>().add(FetchHistoryTransactions());
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    // Trigger saat 80% scroll tercapai untuk memuat data lebih awal
+    return currentScroll >= (maxScroll * 0.8);
+  }
+
+  // Fungsi ini tetap ada untuk konsistensi UI
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
       case 'salary':
@@ -57,187 +75,138 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
     }
   }
 
-  // Fungsi filter berdasarkan tab tetap kita pertahankan.
-  List<model.Data> _filterTransactions(List<model.Data> transactions) {
-    final now = DateTime.now();
-    switch (_selectedIndex) {
-      case 1: // Week
-        final weekAgo = now.subtract(const Duration(days: 7));
-        return transactions
-            .where((t) => DateTime.parse(t.createdAt!).isAfter(weekAgo))
-            .toList();
-      case 2: // 1 Month
-        final monthAgo = now.subtract(const Duration(days: 30));
-        return transactions
-            .where((t) => DateTime.parse(t.createdAt!).isAfter(monthAgo))
-            .toList();
-      case 3: // 6 Month
-        final sixMonthsAgo = now.subtract(const Duration(days: 180));
-        return transactions
-            .where((t) => DateTime.parse(t.createdAt!).isAfter(sixMonthsAgo))
-            .toList();
-      case 0: // All
-      default:
-        return transactions;
-    }
+  // Fungsi refresh untuk pull-to-refresh
+  Future<void> _onRefresh() async {
+    // Kita perlu event baru yang membawa parameter `isRefresh: true`
+    // atau cara lain untuk mereset state di BLoC.
+    // Untuk saat ini, kita panggil ulang event fetch awal.
+    // NOTE: Ini akan berfungsi, tetapi untuk penyempurnaan,
+    // BLoC bisa dibuat lebih canggih untuk handle event refresh secara eksplisit.
+    context.read<TransactionBloc>().add(FetchHistoryTransactions());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.r),
-          children: [
-            SizedBox(height: 21.r),
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomRoundedButton(
-                  onPressed: () => routes.replaceNamed(RouteNames.main),
-                  widget: Icon(Icons.chevron_left, size: 32.r),
-                  backgroundColor: backgroundWhiteColor,
-                ),
-                Text(
-                  'History Transaction',
-                  style: blackTextStyle.copyWith(
-                      fontSize: 18.sp, fontWeight: FontWeight.bold),
-                ),
-                Image.asset('assets/ic_seimbangin-logo-logreg.png'),
-              ],
-            ),
-            SizedBox(height: 32.r),
-            // Tab Bar
-            _buildCustomTabBar(),
-            SizedBox(height: 20.r),
-            // Daftar Transaksi
-            _buildTransactionList(),
-          ],
-        ),
-      ),
-    );
-  }
+      appBar: AppBar(
+        // 1. Membuat AppBar lebih tinggi
+        scrolledUnderElevation: 0,
+        backgroundColor: backgroundWhiteColor,
+        elevation: 0,
+        automaticallyImplyLeading:
+            false, // Kita akan handle tombol kembali secara manual
 
-  Widget _buildCustomTabBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundGreyColor,
-        borderRadius: BorderRadius.circular(24.r),
+        // 2. Memberi padding pada tombol kembali di kiri
+        leadingWidth: 80.r, // Beri ruang lebih untuk tombol
+        leading: Padding(
+          padding: EdgeInsets.only(left: 24.r),
+          child: CustomRoundedButton(
+            onPressed: () => routes.replaceNamed(RouteNames.main),
+            widget: Icon(Icons.chevron_left, size: 32.r),
+            backgroundColor: backgroundWhiteColor,
+          ),
+        ),
+
+        // Title tetap di tengah
+        title: Text(
+          'History Transaction',
+          style: blackTextStyle.copyWith(
+              fontSize: 18.sp, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+
+        // 3. Memberi padding pada logo di kanan
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 24.r),
+            child: Image.asset('assets/ic_seimbangin-logo-logreg.png'),
+          ),
+        ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(_tabs.length, (index) {
-          final isSelected = _selectedIndex == index;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _selectedIndex = index),
-              child: Container(
-                margin: EdgeInsets.all(4.r),
-                decoration: BoxDecoration(
-                  color: isSelected ? buttonColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 14.r),
-                child: Center(
-                  child: Text(
-                    _tabs[index],
-                    style: blackTextStyle.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? textWhiteColor : textSecondaryColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
+      body: _buildTransactionList(),
     );
   }
 
   Widget _buildTransactionList() {
-    // Gunakan BlocBuilder untuk membangun UI berdasarkan state dari TransactionBloc
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        if (state is TransactionGetSuccess) {
-          // Urutkan semua transaksi dari yang terbaru
-          final sortedTransactions = List.of(state.transaction.data);
-          sortedTransactions.sort((a, b) => DateTime.parse(b.createdAt!)
-              .compareTo(DateTime.parse(a.createdAt!)));
-
-          // Terapkan filter berdasarkan tab yang aktif
-          final filteredTransactions = _filterTransactions(sortedTransactions);
-
-          if (filteredTransactions.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 50.r),
-                child: Text('No transactions for this period.',
-                    style: greyTextStyle.copyWith(fontSize: 14.sp)),
-              ),
-            );
-          }
-
-          // Tampilkan daftar transaksi yang sudah difilter
-          return Column(
-            children: filteredTransactions.map((transaction) {
-              // --- LOGIKA UI DARI HOMERECENTTRANSACTIONSECTION DITERAPKAN DI SINI ---
-              String categoryForIcon = transaction.category;
-              if (transaction.items.isNotEmpty) {
-                categoryForIcon = transaction.items.first.category;
-              }
-
-              final categoryUI = _getCategoryUIData(categoryForIcon);
-              final Color bgColor = categoryUI.$1;
-              final String iconPath = categoryUI.$2;
-
-              final total = int.tryParse(transaction.amount) ?? 0;
-              final prefix = transaction.type == 0 ? '+' : '-';
-              final amountColor =
-                  transaction.type == 0 ? textGreenColor : textWarningColor;
-              final date = DateFormat('d MMMM yyyy, HH:mm')
-                  .format(DateTime.parse(transaction.createdAt!));
-
-              return Padding(
-                padding: EdgeInsets.only(bottom: 16.r),
-                child: RecentTransactionCard(
-                  onTap: () {},
-                  backgroundColor: bgColor,
-                  icon: Image.asset(iconPath, width: 30.r, height: 30.r),
-                  title: transaction.name,
-                  subtitle: date,
-                  amount: "$prefix${NumberFormat.currency(
-                    locale: 'id',
-                    symbol: 'Rp ',
-                    decimalDigits: 0,
-                  ).format(total)}",
-                  amountColor: amountColor,
-                ),
-              );
-            }).toList(),
-          );
+        // State awal saat loading pertama kali
+        if (state is TransactionLoading && state is! HistoryLoadSuccess) {
+          return const Center(child: CircularProgressIndicator());
         }
 
+        // State jika gagal memuat
         if (state is TransactionFailure) {
           return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Text(state.message,
-                  style: warningTextStyle, textAlign: TextAlign.center),
+              child: Text('Failed to fetch transactions: ${state.message}'));
+        }
+
+        // State sukses utama untuk menampilkan list
+        if (state is HistoryLoadSuccess) {
+          if (state.transactions.isEmpty) {
+            return const Center(child: Text('No transactions found.'));
+          }
+
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 20.r),
+              itemCount: state.hasReachedMax
+                  ? state.transactions.length
+                  : state.transactions.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                // Item terakhir adalah loading indicator (jika ada data lagi)
+                if (index >= state.transactions.length) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
+                // Tampilkan kartu transaksi
+                final transaction = state.transactions[index];
+                String categoryForIcon = transaction.category ?? 'others';
+                if (transaction.items != null &&
+                    transaction.items!.isNotEmpty) {
+                  categoryForIcon =
+                      transaction.items!.first.category ?? 'others';
+                }
+
+                final categoryUI = _getCategoryUIData(categoryForIcon);
+                final Color bgColor = categoryUI.$1;
+                final String iconPath = categoryUI.$2;
+
+                final total = int.tryParse(transaction.amount ?? '0') ?? 0;
+                final prefix = transaction.type == 0 ? '+' : '-';
+                final amountColor =
+                    transaction.type == 0 ? textGreenColor : textWarningColor;
+                final date = DateFormat('d MMMM yyyy, HH:mm')
+                    .format(DateTime.parse(transaction.createdAt!));
+
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 16.r),
+                  child: RecentTransactionCard(
+                    onTap: () {},
+                    backgroundColor: bgColor,
+                    icon: Image.asset(iconPath, width: 30.r, height: 30.r),
+                    title: transaction.name!,
+                    subtitle: date,
+                    amount:
+                        "$prefix${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(total)}",
+                    amountColor: amountColor,
+                  ),
+                );
+              },
             ),
           );
         }
 
-        // Default state (loading atau initial)
-        return const Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 50.0),
-            child: CircularProgressIndicator(),
-          ),
-        );
+        // State default jika belum ada apa-apa (misal, TransactionInitial)
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
