@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart'; // Tetap dibutuhkan jika header menggunakannya
+import 'package:image_picker/image_picker.dart'; // Tetap dibutuhkan jika header menggunakannya
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/routes/routes.dart'; // Pastikan import RouteNames
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart';
-import 'package:seimbangin_app/ui/sections/profile/profile_form_section.dart';
+import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart'; // Untuk logout
 import 'package:seimbangin_app/ui/sections/profile/profile_header_section.dart';
-
-// Enum untuk mengelola state field mana yang sedang diedit.
-enum EditableProfileField { none, username, fullName, email, phone }
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,20 +21,32 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomepageBloc, HomepageState>(
-      builder: (context, state) {
-        if (state is HomePageSuccess) {
-          // Teruskan data user ke widget konten yang sebenarnya
-          return _ProfilePageContent(user: state.user);
-        }
-        // Tampilkan loading jika data user belum siap
-        return const Center(child: CircularProgressIndicator());
-      },
+    // Selalu tampilkan SystemUIOverlayStyle di atas Scaffold
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor:
+            secondaryColor, // Warna status bar saat di halaman profil
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: BlocBuilder<HomepageBloc, HomepageState>(
+          builder: (context, state) {
+            if (state is HomePageSuccess) {
+              return _ProfilePageContent(user: state.user);
+            }
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
     );
   }
 }
 
-// Widget ini bertanggung jawab untuk state dan logika halaman profil
+// Widget konten untuk ProfilePage
 class _ProfilePageContent extends StatefulWidget {
   final User user;
   const _ProfilePageContent({required this.user});
@@ -47,70 +56,7 @@ class _ProfilePageContent extends StatefulWidget {
 }
 
 class __ProfilePageContentState extends State<_ProfilePageContent> {
-  // --- STATE ---
   XFile? _imageFile;
-  EditableProfileField _editingField = EditableProfileField.none;
-
-  late TextEditingController _usernameController;
-  late TextEditingController _fullNameController;
-  late TextEditingController _emailController;
-  late TextEditingController _phoneController;
-
-  // --- LIFECYCLE ---
-  @override
-  void initState() {
-    super.initState();
-    _usernameController =
-        TextEditingController(text: widget.user.data.username);
-    _fullNameController =
-        TextEditingController(text: widget.user.data.fullName);
-    _emailController = TextEditingController(text: widget.user.data.email);
-    _phoneController =
-        TextEditingController(text: widget.user.data.phoneNumber ?? '');
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _fullNameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  // --- LOGIC METHODS ---
-  void _toggleEditMode(EditableProfileField field) {
-    setState(() {
-      if (_editingField == field) {
-        // TODO: Panggil BLoC/API untuk update profile di sini
-        print(
-            "Saving changes for ${field.name} with value: ${_getControllerForField(field).text}");
-        _editingField = EditableProfileField.none; // Kembali ke mode view
-      } else {
-        if (_editingField != EditableProfileField.none) {
-          // TODO: Logika untuk menyimpan field sebelumnya jika diperlukan
-          print("Saving previous field: ${_editingField.name}");
-        }
-        _editingField = field; // Masuk ke mode edit untuk field yang baru
-      }
-    });
-  }
-
-  // Helper untuk mendapatkan controller yang sesuai
-  TextEditingController _getControllerForField(EditableProfileField field) {
-    switch (field) {
-      case EditableProfileField.username:
-        return _usernameController;
-      case EditableProfileField.fullName:
-        return _fullNameController;
-      case EditableProfileField.email:
-        return _emailController;
-      case EditableProfileField.phone:
-        return _phoneController;
-      case EditableProfileField.none:
-        return TextEditingController(); // Seharusnya tidak terjadi
-    }
-  }
 
   Future<void> _editImage() async {
     final picker = ImagePicker();
@@ -133,55 +79,116 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
       );
       if (croppedFile != null) {
         setState(() => _imageFile = XFile(croppedFile.path));
+        // TODO: Tambahkan logika untuk upload _imageFile ke backend dan update BLoC
+        // Misalnya: context.read<ProfileBloc>().add(UpdateProfilePictureEvent(_imageFile!));
+        // Untuk saat ini, hanya update tampilan lokal.
       }
     }
   }
 
   Future<void> _showLogoutDialog() async {
-    // Implementasi dialog logout Anda di sini
+    // Implementasi dialog logout Anda
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Logout',
+            style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
+        content:
+            Text('Are you sure you want to logout?', style: blackTextStyle),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel', style: greyTextStyle),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: Panggil BLoC untuk logout
+              // context.read<AuthBloc>().add(LogoutEvent());
+              Navigator.of(context).pop();
+              routes.goNamed(RouteNames.login);
+            },
+            child: Text('Logout', style: warningTextStyle),
+          ),
+        ],
+      ),
+    );
   }
 
-  // --- BUILD METHOD ---
-  @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: secondaryColor,
-        statusBarIconBrightness: Brightness.light,
-      ),
-      child: Scaffold(
-        backgroundColor: backgroundWhiteColor,
-        body: ListView(
-          padding: EdgeInsets.zero,
+  // Helper widget untuk membuat container button
+  Widget _buildOptionContainer({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 18.r),
+        margin: EdgeInsets.only(bottom: 16.r), // Jarak antar container
+        decoration: BoxDecoration(
+          color: backgroundGreyColor,
+          borderRadius: BorderRadius.circular(24.r),
+        ),
+        child: Row(
           children: [
-            // SECTION 1: HEADER
-            ProfileHeaderSection(
-              user: widget.user,
-              imageFile: _imageFile,
-              onEditImage: _editImage,
+            Icon(icon, color: textSecondaryColor, size: 24.r),
+            SizedBox(width: 12.r),
+            Expanded(
+              child: Text(
+                title,
+                style: blackTextStyle.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-            SizedBox(height: 20.r),
-
-            // SECTION 2: FORM
-            ProfileFormSection(
-              user: widget.user,
-              editingField: _editingField,
-              onToggleEditMode: _toggleEditMode,
-              usernameController: _usernameController,
-              fullNameController: _fullNameController,
-              emailController: _emailController,
-              phoneController: _phoneController,
-            ),
-            SizedBox(height: 40.h),
-
-            // SECTION 3: ACTION
-            ProfileActionSection(
-              onLogout: _showLogoutDialog,
-            ),
-            const SizedBox(height: 40),
+            Icon(Icons.chevron_right, color: textSecondaryColor, size: 24.r),
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        ProfileHeaderSection(
+          user: widget.user,
+          imageFile: _imageFile,
+          onEditImage: _editImage,
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 30.r),
+          child: Column(
+            children: [
+              _buildOptionContainer(
+                title: 'Edit Profile',
+                icon: Icons.person_outline,
+                onTap: () {
+                  // Kirim data user ke halaman EditProfilePage
+                  routes.pushNamed(RouteNames.profileEdit, extra: widget.user);
+                },
+              ),
+              _buildOptionContainer(
+                title: 'Edit Financial Profile',
+                icon: Icons.account_balance_wallet_outlined,
+                onTap: () {
+                  // Arahkan ke halaman profil finansial yang sudah ada
+                  routes.pushNamed(RouteNames.financialProfile);
+                },
+              ),
+              SizedBox(height: 24.r), // Beri jarak sebelum tombol logout
+              ProfileActionSection(
+                onLogout: _showLogoutDialog, // Fungsi logout
+              ),
+              SizedBox(height: 40.r), // Padding bawah
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

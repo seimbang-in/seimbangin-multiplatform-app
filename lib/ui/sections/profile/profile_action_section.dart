@@ -9,13 +9,10 @@ class ProfileActionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24).r,
-      child: PrimaryFilledButton(
-        title: 'Log Out',
-        onPressed: onLogout,
-        backgroundColor: backgroundWarningColor,
-      ),
+    return PrimaryFilledButton(
+      title: 'Log Out',
+      onPressed: onLogout,
+      backgroundColor: backgroundWarningColor,
     );
   }
 }
