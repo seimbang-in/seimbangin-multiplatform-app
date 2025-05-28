@@ -61,7 +61,6 @@ class _OcrPageState extends State<OcrPage> {
     });
 
     try {
-      // Ambil daftar kamera hanya jika list masih kosong
       if (_cameras.isEmpty) {
         _cameras = await availableCameras();
         if (_cameras.isEmpty) {
@@ -70,11 +69,9 @@ class _OcrPageState extends State<OcrPage> {
         }
       }
 
-      // Pastikan index yang dipilih valid
       _selectedCameraIndex = cameraIndex < _cameras.length ? cameraIndex : 0;
       final cameraDescription = _cameras[_selectedCameraIndex];
 
-      // Hancurkan controller lama jika ada untuk melepaskan resource
       await _cameraController?.dispose();
 
       _cameraController = CameraController(
@@ -83,9 +80,7 @@ class _OcrPageState extends State<OcrPage> {
         enableAudio: false,
       );
 
-      // Inisialisasi controller baru
       await _cameraController!.initialize();
-      // Atur mode flash sesuai dengan state saat ini
       await _cameraController!.setFlashMode(_currentFlashMode);
 
       if (mounted) {
@@ -113,7 +108,6 @@ class _OcrPageState extends State<OcrPage> {
   /// Mengganti kamera antara depan dan belakang.
   void _switchCamera() {
     if (_cameras.length > 1) {
-      // Hitung indeks kamera berikutnya, akan berputar kembali ke 0 jika sudah di akhir.
       final nextCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
       _initializeCamera(nextCameraIndex);
     }
@@ -151,7 +145,18 @@ class _OcrPageState extends State<OcrPage> {
     }
 
     try {
+      // 1. Ambil gambar
       final XFile image = await _cameraController!.takePicture();
+
+      // -- PERUBAHAN DI SINI --
+      // 2. Cek jika flash sedang menyala, lalu matikan.
+      // Kita panggil _toggleFlash() agar state juga ikut terupdate.
+      if (_currentFlashMode == FlashMode.torch) {
+        await _toggleFlash();
+      }
+      // -- AKHIR DARI PERUBAHAN --
+
+      // 3. Pindah ke halaman preview setelah semua proses selesai
       if (mounted) {
         routes.pushNamed(
           RouteNames.ocrPreview,
