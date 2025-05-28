@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/models/transaction_model.dart' as model;
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
 import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
 import 'package:seimbangin_app/ui/pages/financial_profile_page.dart';
@@ -14,6 +15,7 @@ import 'package:seimbangin_app/ui/pages/profile_edit_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
 import 'package:seimbangin_app/ui/pages/register_page.dart';
 import 'package:seimbangin_app/ui/pages/splash_page.dart';
+import 'package:seimbangin_app/ui/pages/transaction_detail_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_struct_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_success.dart';
 import 'package:seimbangin_app/ui/pages/transaction_page.dart';
@@ -104,6 +106,23 @@ final routes = GoRouter(
               path: 'transaction',
               name: RouteNames.transaction,
               builder: (context, state) => const TransactionsPage(),
+            ),
+            GoRoute(
+              path: 'transactionDetail', // Anda bisa memilih path yang sesuai
+              name: RouteNames
+                  .transactionDetail, // Definisikan nama rute ini di name_route.dart
+              builder: (context, state) {
+                // Ambil objek model.Data dari parameter 'extra'
+                final transactionData = state.extra as model.Data?;
+                if (transactionData == null) {
+                  // Handle jika data tidak ada (sebagai pengaman)
+                  return Scaffold(
+                    body: Center(
+                        child: Text("Error: Transaction data not provided.")),
+                  );
+                }
+                return TransactionDetailPage(transactionData: transactionData);
+              },
             ),
             GoRoute(
               path: 'transactionStruct',

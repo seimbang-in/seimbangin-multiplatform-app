@@ -6,13 +6,14 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
+// Jika Anda perlu casting eksplisit ke model.Data, uncomment baris di bawah
+// import 'package:seimbangin_app/models/transaction_model.dart' as model;
 
 class HomeRecentTransactionsSection extends StatelessWidget {
   const HomeRecentTransactionsSection({super.key});
 
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
-      // Income Categories
       case 'salary':
         return (buttonSalaryColor, 'assets/ic_salary.png');
       case 'freelance':
@@ -21,8 +22,8 @@ class HomeRecentTransactionsSection extends StatelessWidget {
         return (buttonBonusColor, 'assets/ic_bonus.png');
       case 'gift':
         return (buttonBonusColor, 'assets/ic_gift.png');
-
-      // Outcome Categories
+      case 'parent':
+        return (buttonGiftColor, 'assets/ic_parents.png');
       case 'food':
         return (buttonFoodColor, 'assets/ic_food.png');
       case 'transportation':
@@ -34,13 +35,12 @@ class HomeRecentTransactionsSection extends StatelessWidget {
         return (buttonHealthColor, 'assets/ic_health.png');
       case 'education':
         return (buttonEducationColor, 'assets/ic_education.png');
-
-      // Default jika kategori tidak ditemukan
+      case 'housing':
+        return (buttonHousingColor, 'assets/ic_housing.png');
+      case 'internet':
+        return (buttonInternetColor, 'assets/ic_internet.png');
       default:
-        return (
-          buttonInternetColor,
-          'assets/ic_bonus.png'
-        ); // Pastikan Anda punya ikon default
+        return (buttonInternetColor, 'assets/ic_bonus.png');
     }
   }
 
@@ -59,7 +59,12 @@ class HomeRecentTransactionsSection extends StatelessWidget {
         SizedBox(height: 14.r),
         BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, transactionState) {
-            if (transactionState is TransactionLoading) {
+            // Kondisi loading yang lebih baik: tampilkan jika state bukan sukses sebelumnya
+            bool isLoading = transactionState is TransactionLoading &&
+                !(transactionState is TransactionGetSuccess ||
+                    transactionState is HistoryLoadSuccess);
+
+            if (isLoading) {
               return Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.r),
@@ -79,40 +84,40 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                   final total = int.tryParse(transaction.amount) ?? 0;
                   final prefix = transaction.type == 0 ? '+' : '-';
                   String categoryForIcon = transaction.category;
-                  if (transaction.items.isNotEmpty) {
+                  if (transaction.items.isNotEmpty &&
+                      transaction.items.first.category != null) {
                     categoryForIcon = transaction.items.first.category;
                   }
 
                   final Color amountColor =
                       transaction.type == 0 ? textGreenColor : textWarningColor;
-
-                  // --- LOGIKA DINAMIS DITERAPKAN DI SINI ---
-                  // 1. Panggil helper function untuk mendapatkan data UI
                   final categoryUI = _getCategoryUIData(categoryForIcon);
-                  final Color bgColor =
-                      categoryUI.$1; // Ambil warna dari record
-                  final String iconPath =
-                      categoryUI.$2; // Ambil path ikon dari record
+                  final Color bgColor = categoryUI.$1;
+                  final String iconPath = categoryUI.$2;
 
-                  return RecentTransactionCard(
-                    onTap: () {},
-                    // 2. Teruskan data dinamis ke card
-                    backgroundColor: bgColor,
-                    icon: Image.asset(
-                      iconPath,
-                      width: 30.r,
-                      height: 30.r,
-                      // Anda bisa memberi warna pada aset gambar jika itu adalah ikon monokrom
-                      // color: Colors.white,
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 12.r),
+                    child: RecentTransactionCard(
+                      onTap: () {
+                        // Navigasi ke halaman detail dengan mengirim objek 'transaction'
+                        routes.pushNamed(RouteNames.transactionDetail,
+                            extra: transaction);
+                      },
+                      backgroundColor: bgColor,
+                      icon: Image.asset(
+                        iconPath,
+                        width: 30.r,
+                        height: 30.r,
+                      ),
+                      title: transaction.name,
+                      subtitle: "$timeString WIB",
+                      amount: "$prefix${NumberFormat.currency(
+                        locale: 'id',
+                        symbol: 'Rp ',
+                        decimalDigits: 0,
+                      ).format(total)}",
+                      amountColor: amountColor,
                     ),
-                    title: transaction.name,
-                    subtitle: "$timeString WIB",
-                    amount: "$prefix${NumberFormat.currency(
-                      locale: 'id',
-                      symbol: 'Rp ',
-                      decimalDigits: 0,
-                    ).format(total)}",
-                    amountColor: amountColor,
                   );
                 }).toList(),
               );
@@ -121,25 +126,29 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 20.r),
                 child: Center(
                   child: Text(
-                    "Tidak dapat memuat transaksi terbaru.",
+                    "Cannot load recent transactions.",
                     style: greyTextStyle.copyWith(fontSize: 14.sp),
                   ),
                 ),
               );
             } else {
-              return Column(
-                children: [
-                  RecentTransactionCard(
-                    onTap: () {},
-                    backgroundColor: backgroundGreyColor,
-                    icon: Icon(Icons.wallet_outlined,
-                        size: 30.r, color: textSecondaryColor),
-                    title: "Belum ada transaksi",
-                    subtitle: "Hari ini",
-                    amount: "Rp 0",
-                    amountColor: textSecondaryColor,
-                  ),
-                ],
+              // Termasuk TransactionInitial atau TransactionGetSuccess tapi data kosong
+              return Padding(
+                padding: EdgeInsets.only(bottom: 12.r),
+                child: RecentTransactionCard(
+                  // --- PERBAIKAN DI SINI ---
+                  // Kartu "No transactions" seharusnya tidak mengarah ke detail
+                  // atau jika iya, tidak mengirim state yang salah.
+                  // Paling aman adalah tidak memberinya aksi onTap.
+                  onTap: null, // atau onTap: () {},
+                  backgroundColor: backgroundGreyColor,
+                  icon: Icon(Icons.wallet_outlined,
+                      size: 30.r, color: textSecondaryColor),
+                  title: "No transactions yet",
+                  subtitle: "Today",
+                  amount: "Rp 0",
+                  amountColor: textSecondaryColor,
+                ),
               );
             }
           },
