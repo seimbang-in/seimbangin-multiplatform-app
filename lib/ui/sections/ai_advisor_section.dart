@@ -9,6 +9,7 @@ class AiAdvisorSection extends StatelessWidget {
   final Advice advice;
   final bool isAdviceExist;
   final VoidCallback financialProfileButtonOntap;
+
   const AiAdvisorSection({
     super.key,
     required this.advice,
@@ -18,7 +19,14 @@ class AiAdvisorSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String placeholderFromApi =
+        "Please complete your financial profile first";
+
+    final bool hasRealAdvice =
+        isAdviceExist && advice.data.trim() != placeholderFromApi;
+
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
             colors: [primaryColor, secondaryColor],
@@ -26,59 +34,64 @@ class AiAdvisorSection extends StatelessWidget {
             end: Alignment.topLeft),
         borderRadius: BorderRadius.circular(24).r,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(30),
-            child: Row(
-              children: [
-                Flexible(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      isAdviceExist
-                          ? advice.data
-                          : "Please fill in your financial profile data here first to get Financial AI Advice",
-                      style: whiteTextStyle.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.sp,
-                      ),
-                      softWrap: true,
-                    ),
-                    SizedBox(
-                      height: 30.r,
-                    ),
-                    isAdviceExist
-                        ? AdvisorButton(onPressedEvent: () {
-                            routes.pushNamed(RouteNames.chatAdvisor);
-                          })
-                        : SizedBox.shrink(),
-                  ],
-                )),
-                SizedBox(
-                  width: 10,
-                ),
-                if (!isAdviceExist)
-                  GestureDetector(
-                    onTap: financialProfileButtonOntap,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: backgroundWhiteColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Icon(Icons.error_outline,
-                          color: primaryColor, size: 30),
-                    ),
-                  )
-              ],
+      padding: const EdgeInsets.all(24),
+      child: hasRealAdvice
+          ? _buildLayoutWithAdvice(context)
+          : _buildLayoutWithoutAdvice(context),
+    );
+  }
+
+  Widget _buildLayoutWithAdvice(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          advice.data,
+          style: whiteTextStyle.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 14.sp,
+          ),
+          softWrap: true,
+        ),
+        SizedBox(height: 20.r),
+        AdvisorButton(onPressedEvent: () {
+          routes.pushNamed(RouteNames.chatAdvisor);
+        }),
+      ],
+    );
+  }
+
+  Widget _buildLayoutWithoutAdvice(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            "Please fill in your financial profile data here first to get Financial AI Advice",
+            style: whiteTextStyle.copyWith(
+              fontWeight: FontWeight.w500,
+              fontSize: 14.sp,
             ),
-          )
-        ],
-      ),
+            softWrap: true,
+          ),
+        ),
+        SizedBox(width: 16.r),
+        GestureDetector(
+          onTap: financialProfileButtonOntap,
+          child: Container(
+            width: 50.r,
+            height: 50.r,
+            decoration: BoxDecoration(
+              color: backgroundWhiteColor,
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Image.asset(
+              'assets/ic_alert_financialprof.png',
+              width: 24.r,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
