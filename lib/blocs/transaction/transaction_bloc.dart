@@ -19,25 +19,32 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       TransactionButtonPressed event, Emitter<TransactionState> emit) async {
     try {
       emit(TransactionLoading("Loading..."));
-      final response = await transactionService.addTransaction(
+      await transactionService.addTransaction(
           event.items, event.type, event.description, event.name);
       emit(TransactionSuccess("Transaction successful"));
-      return response;
     } catch (e) {
       emit(TransactionFailure("Failed to add transaction: $e"));
     }
   }
 
-  Future<Transaction> _getTransaction(
+  Future<void> _getTransaction(
       GetRecentTransactionsEvent event, Emitter<TransactionState> emit) async {
     try {
       emit(TransactionLoading("Loading..."));
+      // --- LOGGING POINT 3 ---
+      print(
+          '[TransactionBloc] Memanggil transactionService.getTransaction()...');
       final response = await transactionService.getTransaction(event.limit);
+      print(
+          '[TransactionBloc] Selesai memanggil transactionService.getTransaction().');
+      // ------------------------
+
       emit(TransactionGetSuccess(response));
-      return response;
+      print('[TransactionBloc] Berhasil emit TransactionGetSuccess.');
     } catch (e) {
+      print('[TransactionBloc] Terjadi error saat get transaction: $e');
       emit(TransactionFailure("Failed to get transaction: $e"));
-      throw Exception("Failed to get transaction: $e");
+      // JANGAN throw Exception di sini, biarkan BLoC menangani error dengan state
     }
   }
 }

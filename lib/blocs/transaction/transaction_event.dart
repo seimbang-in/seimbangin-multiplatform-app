@@ -20,5 +20,5 @@ class TransactionButtonPressed extends TransactionEvent {
 class GetRecentTransactionsEvent extends TransactionEvent {
   final int limit;
 
-  GetRecentTransactionsEvent({this.limit = 2}); // Default 2 transaksi terbaru
+  GetRecentTransactionsEvent({this.limit = 3}); // Default 2 transaksi terbaru
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
+import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart'; // <-- 1. TAMBAHKAN IMPORT
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
@@ -21,8 +22,8 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    // Memanggil event untuk memuat data user saat MainPage pertama kali dibuat
     context.read<HomepageBloc>().add(HomepageStarted());
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 5));
   }
 
   List<PersistentTabConfig> _tabs() => [
@@ -71,7 +72,6 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         PersistentTabConfig(
-          // Gunakan BlocProvider.value karena HomepageBloc sudah disediakan di atasnya
           screen: BlocProvider.value(
             value: BlocProvider.of<HomepageBloc>(context),
             child: const ProfilePage(),
@@ -93,7 +93,6 @@ class _MainPageState extends State<MainPage> {
     return BlocBuilder<HomepageBloc, HomepageState>(
       builder: (context, state) {
         if (state is HomePageSuccess) {
-          // Jika data sukses dimuat, tampilkan halaman utama dengan BottomNavBar
           return PersistentTabView(
             tabs: _tabs(),
             navBarHeight: 70.r,
@@ -111,7 +110,6 @@ class _MainPageState extends State<MainPage> {
         }
 
         if (state is HomePageFailure) {
-          // Jika gagal, tampilkan halaman error
           return Scaffold(
             backgroundColor: backgroundWhiteColor,
             body: Center(
@@ -123,7 +121,6 @@ class _MainPageState extends State<MainPage> {
                     style: blackTextStyle.copyWith(fontSize: 16.sp),
                   ),
                   SizedBox(height: 16.h),
-                  // Ganti dengan PrimaryFilledButton jika ada
                   ElevatedButton(
                     onPressed: () {
                       context.read<HomepageBloc>().add(HomepageStarted());
@@ -136,7 +133,6 @@ class _MainPageState extends State<MainPage> {
           );
         }
 
-        // Selama loading atau state awal, tampilkan full-screen loading
         return Scaffold(
           backgroundColor: backgroundWhiteColor,
           body: Center(
