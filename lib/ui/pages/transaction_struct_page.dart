@@ -1,3 +1,5 @@
+import 'dart:async'; // Import untuk Future
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +9,7 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/models/transaction_preview_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
+// import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart'; // Dihapus karena kembali ke Overlay
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatefulWidget {
@@ -19,18 +21,18 @@ class TransactionStructPage extends StatefulWidget {
 
 class _TransactionStructPageState extends State<TransactionStructPage> {
   bool _isProcessing = false;
+  // Mengembalikan penggunaan OverlayEntry sesuai permintaan
   OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
-    // Pastikan overlay dihapus saat widget dispose
     _removeLoadingOverlay();
     super.dispose();
   }
 
+  // Mengembalikan fungsi untuk menampilkan loading overlay
   void _showLoadingOverlay() {
     if (_overlayEntry != null) return;
-
     _overlayEntry = OverlayEntry(
       builder: (context) => Material(
         color: Colors.black54,
@@ -63,10 +65,10 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
         ),
       ),
     );
-
     Overlay.of(context).insert(_overlayEntry!);
   }
 
+  // Mengembalikan fungsi untuk menghapus loading overlay
   void _removeLoadingOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -76,9 +78,10 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
   Widget build(BuildContext context) {
     final previewData =
         GoRouterState.of(context).extra as TransactionPreviewData;
-
     final bool isOutcome = previewData.transactionType == 1;
 
+    // Seluruh UI build method tidak ada perubahan, karena logikanya sudah benar.
+    // Perubahan utama ada di fungsi handler di bawah.
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -159,7 +162,6 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       const SizedBox(height: 8),
                       const Divider(),
                       const SizedBox(height: 12),
-                      // Tampilan dinamis untuk Income/Outcome
                       Row(
                         children: [
                           Container(
@@ -274,6 +276,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           } else if (state is TransactionSuccess) {
                             _handleTransactionSuccess();
                           } else if (state is TransactionFailure) {
+                            // Di model Anda tidak ada 'message', yang ada 'error'
                             _handleTransactionFailure(state.message);
                           }
                         },
@@ -308,27 +311,52 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
     );
   }
 
+  // --- FUNGSI INI DIPERBAIKI DENGAN LOGIKA TUNGGU / AWAIT ---
   void _handleTransactionSuccess() async {
-    _isProcessing = false;
-    _removeLoadingOverlay();
+    // Biarkan loading overlay tetap tampil untuk menandakan proses refresh
+    print('Transaction saved successfully. Refreshing homepage data...');
 
-    // Tunggu frame berikutnya untuk memastikan overlay benar-benar dihapus
-    await Future.delayed(const Duration(milliseconds: 50));
+    // 1. Kirim event untuk me-refresh data di HomePage
+    context.read<HomepageBloc>().add(HomepageStarted());
+    // (Opsional tapi direkomendasikan) Kirim event untuk refresh recent transaction
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 5));
 
+    // 2. TUNGGU sampai proses refresh di kedua BLoC selesai
+    try {
+      await Future.wait([
+        // Tunggu HomepageBloc selesai
+        context.read<HomepageBloc>().stream.firstWhere(
+            (state) => state is HomePageSuccess || state is HomePageFailure),
+        // Tunggu TransactionBloc selesai memuat data recent
+        context.read<TransactionBloc>().stream.firstWhere((state) =>
+            state is TransactionGetSuccess || state is TransactionFailure),
+      ]);
+      print('Homepage data refresh complete.');
+    } catch (e) {
+      print("Error while awaiting data refresh: $e");
+    }
+
+    // 3. Setelah data dijamin terbaru, baru hapus overlay
     if (mounted) {
-      context.read<HomepageBloc>().add(HomepageStarted());
+      _removeLoadingOverlay();
+      setState(() {
+        _isProcessing = false;
+      });
+    }
+
+    // 4. Terakhir, navigasi ke halaman utama
+    if (mounted) {
       routes.pushReplacementNamed(RouteNames.main);
     }
   }
 
-  void _handleTransactionFailure(String message) async {
-    _isProcessing = false;
-    _removeLoadingOverlay();
-
-    // Tunggu frame berikutnya
-    await Future.delayed(const Duration(milliseconds: 50));
-
+  // --- FUNGSI INI DISESUAIKAN UNTUK MENGGUNAKAN _removeLoadingOverlay ---
+  void _handleTransactionFailure(String message) {
     if (mounted) {
+      _removeLoadingOverlay();
+      setState(() {
+        _isProcessing = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
