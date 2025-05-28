@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
-import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class AiAdvisorSection extends StatelessWidget {
   final Advice advice;
@@ -53,10 +51,6 @@ class AiAdvisorSection extends StatelessWidget {
           ),
           softWrap: true,
         ),
-        SizedBox(height: 20.r),
-        AdvisorButton(onPressedEvent: () {
-          routes.pushNamed(RouteNames.chatAdvisor);
-        }),
       ],
     );
   }

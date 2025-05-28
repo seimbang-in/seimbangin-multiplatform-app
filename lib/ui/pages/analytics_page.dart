@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/donut_chart_model.dart';
-import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
 import 'package:seimbangin_app/ui/widgets/bar_widget.dart';
@@ -61,6 +60,7 @@ class _AnalyticsPageState extends State<AnalyticsPage>
       backgroundColor: backgroundWhiteColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         toolbarHeight: 70.r,
         title: Text(
@@ -71,16 +71,6 @@ class _AnalyticsPageState extends State<AnalyticsPage>
           ),
         ),
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-            size: 32,
-          ),
-          color: Colors.black,
-          onPressed: () {
-            routes.pushNamed(RouteNames.home);
-          },
-        ),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 16),
