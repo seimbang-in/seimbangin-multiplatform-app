@@ -7,7 +7,6 @@ import 'package:seimbangin_app/services/transaction_service.dart';
 part 'transaction_event.dart';
 part 'transaction_state.dart';
 
-// Konstanta untuk jumlah data yang dimuat per halaman
 const int _TRANSACTION_LIMIT = 15;
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
@@ -17,75 +16,80 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       : super(TransactionInitial()) {
     on<TransactionButtonPressed>(_addTransaction);
     on<GetRecentTransactionsEvent>(_getRecentTransaction);
-    // Daftarkan handler untuk event baru lazy load
     on<FetchHistoryTransactions>(_onFetchHistory);
   }
 
   Future<void> _addTransaction(
       TransactionButtonPressed event, Emitter<TransactionState> emit) async {
     try {
+      print(
+          '[TransactionBloc] _addTransaction: Event received. Emitting TransactionLoading.');
       emit(TransactionLoading("Loading..."));
+
+      print(
+          '[TransactionBloc] _addTransaction: Calling transactionService.addTransaction...');
       await transactionService.addTransaction(
           event.items, event.type, event.description, event.name);
+      print(
+          '[TransactionBloc] _addTransaction: transactionService.addTransaction successful. Emitting TransactionSuccess.');
       emit(TransactionSuccess("Transaction successful"));
     } catch (e) {
+      print(
+          '[TransactionBloc] _addTransaction: Error caught: $e. Emitting TransactionFailure.');
       emit(TransactionFailure("Failed to add transaction: $e"));
     }
   }
 
-  // Handler ini tetap ada untuk kebutuhan homepage (recent transactions)
   Future<void> _getRecentTransaction(
       GetRecentTransactionsEvent event, Emitter<TransactionState> emit) async {
     try {
+      // print('[TransactionBloc] _getRecentTransaction: Emitting TransactionLoading.');
       emit(TransactionLoading("Loading..."));
-      // Selalu ambil halaman pertama untuk recent
       final response =
           await transactionService.getTransaction(limit: event.limit, page: 1);
+      // print('[TransactionBloc] _getRecentTransaction: Data received. Emitting TransactionGetSuccess.');
       emit(TransactionGetSuccess(response));
     } catch (e) {
+      // print('[TransactionBloc] _getRecentTransaction: Error caught: $e. Emitting TransactionFailure.');
       emit(TransactionFailure("Failed to get transaction: $e"));
     }
   }
 
-  // Handler baru khusus untuk lazy load di halaman histori
   Future<void> _onFetchHistory(
       FetchHistoryTransactions event, Emitter<TransactionState> emit) async {
     final currentState = state;
 
-    // Jika state saat ini adalah HistoryLoadSuccess dan sudah mencapai data maksimal,
-    // maka hentikan proses untuk menghindari pemanggilan API yang tidak perlu.
     if (currentState is HistoryLoadSuccess && currentState.hasReachedMax) {
       return;
     }
 
     try {
-      // Jika ini adalah pemanggilan pertama kali (state bukan HistoryLoadSuccess)
       if (currentState is! HistoryLoadSuccess) {
-        emit(TransactionLoading(
-            "Loading...")); // Tampilkan loading besar di tengah layar
+        // print('[TransactionBloc] _onFetchHistory: Initial fetch. Emitting TransactionLoading.');
+        emit(TransactionLoading("Loading..."));
         final response = await transactionService.getTransaction(
             limit: _TRANSACTION_LIMIT, page: 1);
-        // Emit state sukses dengan data halaman pertama
+        // print('[TransactionBloc] _onFetchHistory: Initial data received. Emitting HistoryLoadSuccess.');
         return emit(HistoryLoadSuccess(
           transactions: response.data,
           hasReachedMax: !response.meta.hasNextPage,
         ));
       }
 
-      // Jika ini adalah pemanggilan berikutnya (saat user scroll ke bawah)
-      // Hitung halaman berikutnya berdasarkan jumlah data yang sudah ada
       final nextPage =
           (currentState.transactions.length ~/ _TRANSACTION_LIMIT) + 1;
+      // print('[TransactionBloc] _onFetchHistory: Fetching next page ($nextPage).');
 
       final response = await transactionService.getTransaction(
           limit: _TRANSACTION_LIMIT, page: nextPage);
+      // print('[TransactionBloc] _onFetchHistory: Next page data received. Emitting HistoryLoadSuccess.');
 
-      // Emit state sukses baru dengan menggabungkan data lama dan data baru
       emit(HistoryLoadSuccess(
         transactions: currentState.transactions + response.data,
         hasReachedMax: !response.meta.hasNextPage,
       ));
     } catch (e) {
+      // print('[TransactionBloc] _onFetchHistory: Error caught: $e. Emitting TransactionFailure.');
       emit(TransactionFailure("Failed to load history: $e"));
     }
   }

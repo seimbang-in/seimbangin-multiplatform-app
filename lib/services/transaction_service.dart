@@ -8,35 +8,79 @@ import 'package:seimbangin_app/utils/token.dart';
 class TransactionService {
   Future<void> addTransaction(
       List<Item> items, int type, String description, String name) async {
-    // ... (tidak ada perubahan di sini)
+    final String? token = await Token.getToken();
+    if (token == null) {
+      print('[TransactionService] ADD TRANSACTION - Error: Token is null.');
+      throw Exception('Error: Authentication token is missing.');
+    }
+
+    final Map<String, dynamic> payloadMap = {
+      'type': type,
+      'description': description,
+      'name': name,
+      'items': items.map((item) => item.toJson()).toList(),
+    };
+    final String jsonPayload = jsonEncode(payloadMap);
+
+    print('---------------------------------------------------');
+    print('[TransactionService] Attempting to Add Transaction');
+    print('[TransactionService] Endpoint: ${Constant.addTransactionEndpoint}');
+    print('[TransactionService] ADD TRANSACTION PAYLOAD: $jsonPayload');
+    print('---------------------------------------------------');
+
+    try {
+      final response = await http.post(
+        Uri.parse(Constant.addTransactionEndpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonPayload,
+      );
+
+      print(
+          '[TransactionService] ADD TRANSACTION - Response Status Code: ${response.statusCode}');
+      print(
+          '[TransactionService] ADD TRANSACTION - Response Body: ${response.body}');
+      print('---------------------------------------------------');
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+            'Failed to add transaction. Status: ${response.statusCode}, Body: ${response.body}');
+      }
+    } catch (e) {
+      print(
+          '[TransactionService] ADD TRANSACTION - Error during HTTP call: $e');
+      print('---------------------------------------------------');
+      throw Exception('Error during addTransaction HTTP call: $e');
+    }
   }
 
-  // --- PERUBAHAN DI SINI ---
-  // Tambahkan parameter 'page'
   Future<Transaction> getTransaction(
       {required int limit, required int page}) async {
-    try {
-      final String? token = await Token.getToken();
-      // Tambahkan parameter 'page' ke URL endpoint
-      final url = '${Constant.getTransactionEndpoint}?limit=$limit&page=$page';
+    final String? token = await Token.getToken();
+    if (token == null) {
+      print('[TransactionService] GET TRANSACTION - Error: Token is null.');
+      throw Exception(
+          'Error: Authentication token is missing for getTransaction.');
+    }
+    final url = '${Constant.getTransactionEndpoint}?limit=$limit&page=$page';
 
+    try {
       final response = await http.get(Uri.parse(url), headers: {
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      print('Requesting URL: $url');
-      print('response status code : ${response.statusCode}');
-      print('response body : ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         return Transaction.fromJson(data);
       } else {
-        throw Exception('Failed to load transaction: ${response.statusCode}');
+        throw Exception(
+            'Failed to load transaction (GET): ${response.statusCode}, Body: ${response.body}');
       }
     } catch (e) {
-      print(e.toString());
-      throw Exception('Failed to load transaction: $e');
+      throw Exception('Failed to load transaction (GET): $e');
     }
   }
 }

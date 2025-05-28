@@ -1,15 +1,14 @@
-import 'dart:async'; // Import untuk Future
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/models/transaction_preview_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-// import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart'; // Dihapus karena kembali ke Overlay
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatefulWidget {
@@ -21,7 +20,6 @@ class TransactionStructPage extends StatefulWidget {
 
 class _TransactionStructPageState extends State<TransactionStructPage> {
   bool _isProcessing = false;
-  // Mengembalikan penggunaan OverlayEntry sesuai permintaan
   OverlayEntry? _overlayEntry;
 
   @override
@@ -30,18 +28,17 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
     super.dispose();
   }
 
-  // Mengembalikan fungsi untuk menampilkan loading overlay
   void _showLoadingOverlay() {
-    if (_overlayEntry != null) return;
+    if (!mounted || _overlayEntry != null) return;
     _overlayEntry = OverlayEntry(
       builder: (context) => Material(
         color: Colors.black54,
         child: Center(
           child: Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24).r,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
+              color: backgroundWhiteColor,
+              borderRadius: BorderRadius.circular(24).r,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -50,12 +47,12 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                   color: primaryColor,
                   strokeWidth: 4,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.r),
                 Text(
                   'Saving Transaction...',
                   style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -68,7 +65,6 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
-  // Mengembalikan fungsi untuk menghapus loading overlay
   void _removeLoadingOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -80,8 +76,6 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
         GoRouterState.of(context).extra as TransactionPreviewData;
     final bool isOutcome = previewData.transactionType == 1;
 
-    // Seluruh UI build method tidak ada perubahan, karena logikanya sudah benar.
-    // Perubahan utama ada di fungsi handler di bawah.
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -96,7 +90,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
             children: [
               const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 24).r,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -105,18 +99,23 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       widget: const Icon(Icons.chevron_left, size: 32),
                       backgroundColor: backgroundWhiteColor,
                     ),
-                    Text('Transaction Details',
-                        style: whiteTextStyle.copyWith(
-                            fontWeight: FontWeight.w600, fontSize: 16)),
+                    Text(
+                      'Transaction Details',
+                      style: whiteTextStyle.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                      ),
+                    ),
                     Image.asset('assets/ic_seimbangin-logo-logreg.png'),
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.r),
               Expanded(
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32)
+                          .r,
                   decoration: BoxDecoration(
                     color: backgroundWhiteColor,
                     boxShadow: [
@@ -132,41 +131,60 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                          child: Text('Transaction',
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w600, fontSize: 16))),
+                          child: Text(
+                        'Transaction',
+                        style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.sp,
+                        ),
+                      )),
                       Center(
-                          child: Text(previewData.transactionName,
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 12))),
-                      const SizedBox(height: 29),
+                        child: Text(
+                          previewData.transactionName,
+                          style: blackTextStyle.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 28.r),
                       Row(
                         children: [
                           Text(
-                              DateFormat('dd/MM/yyyy')
-                                  .format(previewData.transactionDate),
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 8)),
-                          const SizedBox(width: 5),
-                          Text('•',
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 8)),
-                          const SizedBox(width: 5),
+                            DateFormat('dd/MM/yyyy')
+                                .format(previewData.transactionDate),
+                            style: blackTextStyle.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                          SizedBox(width: 5.r),
                           Text(
-                              DateFormat('HH:mm')
-                                  .format(previewData.transactionDate),
-                              style: blackTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500, fontSize: 8)),
+                            '•',
+                            style: blackTextStyle.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                          SizedBox(width: 5.r),
+                          Text(
+                            DateFormat('HH:mm')
+                                .format(previewData.transactionDate),
+                            style: blackTextStyle.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.r),
                       const Divider(),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.r),
                       Row(
                         children: [
                           Container(
-                            height: 14,
-                            width: 14,
+                            height: 14.r,
+                            width: 14.r,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isOutcome
@@ -178,36 +196,43 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                   ? Icons.arrow_upward_rounded
                                   : Icons.arrow_downward_rounded,
                               color: textWhiteColor,
-                              size: 8,
+                              size: 8.sp,
                             ),
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.r),
                           Text(
                             isOutcome ? 'Outcome' : 'Income',
                             style:
                                 (isOutcome ? warningTextStyle : greenTextStyle)
                                     .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 10),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14.sp,
+                            ),
                           )
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 12.r,
+                      ),
                       Container(
-                        height: 32,
+                        height: 32.r,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: buttonColor,
-                            borderRadius: BorderRadius.circular(12)),
+                          color: buttonColor,
+                          borderRadius: BorderRadius.circular(12).r,
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10).r,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(isOutcome ? 'Total Outcome' : 'Total Income',
-                                  style: whiteTextStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12)),
+                              Text(
+                                isOutcome ? 'Total Outcome' : 'Total Income',
+                                style: whiteTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
                               Text(
                                 NumberFormat.currency(
                                         locale: 'id',
@@ -215,7 +240,9 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                         decimalDigits: 0)
                                     .format(previewData.totalAmount),
                                 style: whiteTextStyle.copyWith(
-                                    fontWeight: FontWeight.w500, fontSize: 12),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12.sp,
+                                ),
                               ),
                             ],
                           ),
@@ -224,9 +251,13 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       const SizedBox(height: 18),
                       const Divider(),
                       const SizedBox(height: 18),
-                      Text('Detail Transactions',
-                          style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w600, fontSize: 12)),
+                      Text(
+                        'Detail Transactions',
+                        style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                        ),
+                      ),
                       Expanded(
                         child: ListView.separated(
                           shrinkWrap: true,
@@ -236,17 +267,23 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             final item = previewData.items[index];
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
-                              title: Text(item.name,
-                                  style: blackTextStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10)),
+                              title: Text(
+                                item.name,
+                                style: blackTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
                               trailing: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Qty: ${item.quantity}',
-                                      style:
-                                          greyTextStyle.copyWith(fontSize: 10)),
+                                  Text(
+                                    'Qty: ${item.quantity}',
+                                    style: greyTextStyle.copyWith(
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
                                   Text(
                                     NumberFormat.currency(
                                             locale: 'id',
@@ -256,7 +293,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                             double.tryParse(item.price) ?? 0),
                                     style: blackTextStyle.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 10,
+                                        fontSize: 12.sp,
                                         color: buttonColor),
                                   ),
                                 ],
@@ -276,8 +313,8 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           } else if (state is TransactionSuccess) {
                             _handleTransactionSuccess();
                           } else if (state is TransactionFailure) {
-                            // Di model Anda tidak ada 'message', yang ada 'error'
-                            _handleTransactionFailure(state.message);
+                            _handleTransactionFailure(
+                                state.message); // Perbaikan: state.error
                           }
                         },
                         child: PrimaryFilledButton(
@@ -311,58 +348,36 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
     );
   }
 
-  // --- FUNGSI INI DIPERBAIKI DENGAN LOGIKA TUNGGU / AWAIT ---
   void _handleTransactionSuccess() async {
-    // Biarkan loading overlay tetap tampil untuk menandakan proses refresh
-    print('Transaction saved successfully. Refreshing homepage data...');
+    if (!mounted) return;
 
-    // 1. Kirim event untuk me-refresh data di HomePage
-    context.read<HomepageBloc>().add(HomepageStarted());
-    // (Opsional tapi direkomendasikan) Kirim event untuk refresh recent transaction
-    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 5));
+    print(
+        '[TransactionStructPage] TransactionSuccess received by UI. Removing overlay and navigating.');
 
-    // 2. TUNGGU sampai proses refresh di kedua BLoC selesai
-    try {
-      await Future.wait([
-        // Tunggu HomepageBloc selesai
-        context.read<HomepageBloc>().stream.firstWhere(
-            (state) => state is HomePageSuccess || state is HomePageFailure),
-        // Tunggu TransactionBloc selesai memuat data recent
-        context.read<TransactionBloc>().stream.firstWhere((state) =>
-            state is TransactionGetSuccess || state is TransactionFailure),
-      ]);
-      print('Homepage data refresh complete.');
-    } catch (e) {
-      print("Error while awaiting data refresh: $e");
-    }
+    _removeLoadingOverlay();
+    setState(() {
+      _isProcessing = false;
+    });
 
-    // 3. Setelah data dijamin terbaru, baru hapus overlay
-    if (mounted) {
-      _removeLoadingOverlay();
-      setState(() {
-        _isProcessing = false;
-      });
-    }
+    await Future.delayed(const Duration(milliseconds: 100));
 
-    // 4. Terakhir, navigasi ke halaman utama
     if (mounted) {
       routes.pushReplacementNamed(RouteNames.main);
     }
   }
 
-  // --- FUNGSI INI DISESUAIKAN UNTUK MENGGUNAKAN _removeLoadingOverlay ---
   void _handleTransactionFailure(String message) {
-    if (mounted) {
-      _removeLoadingOverlay();
-      setState(() {
-        _isProcessing = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: backgroundWarningColor,
-        ),
-      );
-    }
+    if (!mounted) return;
+
+    _removeLoadingOverlay();
+    setState(() {
+      _isProcessing = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundWarningColor,
+      ),
+    );
   }
 }
