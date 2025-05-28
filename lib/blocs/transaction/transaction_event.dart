@@ -17,8 +17,11 @@ class TransactionButtonPressed extends TransactionEvent {
   });
 }
 
+// Event lama untuk homepage tetap ada
 class GetRecentTransactionsEvent extends TransactionEvent {
   final int limit;
-
-  GetRecentTransactionsEvent({this.limit = 2}); // Default 2 transaksi terbaru
+  GetRecentTransactionsEvent({required this.limit});
 }
+
+// --- EVENT BARU UNTUK LAZY LOAD ---
+class FetchHistoryTransactions extends TransactionEvent {}

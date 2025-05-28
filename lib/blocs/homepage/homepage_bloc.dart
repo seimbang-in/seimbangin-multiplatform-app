@@ -20,18 +20,30 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     Emitter<HomepageState> emit,
   ) async {
     try {
-      // Cek jika data sudah ada
-      if (state is! HomePageSuccess) {
-        emit(HomePageLoading('Memuat data...'));
-        final userData = await userService.getUserProfile();
-        final adviceData = await userService.getUserAdvice();
-        emit(HomePageSuccess(
-          message: 'Data berhasil dimuat',
-          user: userData,
-          advice: adviceData,
-        ));
-      }
+      // Selalu emit loading setiap kali event ini dipanggil
+      emit(HomePageLoading('Memuat data...'));
+      print('[HomepageBloc] Memulai pemanggilan service...');
+
+      // --- LOGGING POINT 1 ---
+      print('[HomepageBloc] Memanggil userService.getUserProfile()...');
+      final userData = await userService.getUserProfile();
+      print('[HomepageBloc] Selesai memanggil userService.getUserProfile().');
+      // ------------------------
+
+      // --- LOGGING POINT 2 ---
+      print('[HomepageBloc] Memanggil userService.getUserAdvice()...');
+      final adviceData = await userService.getUserAdvice();
+      print('[HomepageBloc] Selesai memanggil userService.getUserAdvice().');
+      // ------------------------
+
+      emit(HomePageSuccess(
+        message: 'Data berhasil dimuat',
+        user: userData,
+        advice: adviceData,
+      ));
+      print('[HomepageBloc] Berhasil emit HomePageSuccess.');
     } catch (e) {
+      print('[HomepageBloc] Terjadi error saat memuat data: $e');
       emit(HomePageFailure('Gagal memuat data: ${e.toString()}'));
     }
   }
@@ -45,11 +57,11 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       await userService.updateUserProfile(event.currentSavings, event.debt,
           event.financialGoals, event.riskManagement);
       emit(financialProfileSuccess(message: "Data berhasil diperbarui"));
+      // Panggil event untuk refresh data setelah sukses update
       add(HomepageStarted());
     } catch (e) {
+      print('[HomepageBloc] Terjadi error saat update profile: $e');
       emit(financialProfileFailure("Gagal memperbarui data: ${e.toString()}"));
-    } finally {
-      add(HomepageStarted());
     }
   }
 }

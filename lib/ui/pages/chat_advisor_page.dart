@@ -56,7 +56,7 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
         centerTitle: true,
         toolbarHeight: 70.r,
         title: Text(
-          'AI Advisor',
+          'Blu: Your AI Advisor',
           style: blackTextStyle.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,

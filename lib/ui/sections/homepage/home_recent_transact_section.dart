@@ -10,9 +10,6 @@ import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 class HomeRecentTransactionsSection extends StatelessWidget {
   const HomeRecentTransactionsSection({super.key});
 
-  // --- HELPER FUNCTION BARU ---
-  // Fungsi ini mengambil nama kategori dan mengembalikan data UI-nya (warna dan path ikon).
-  // Menggunakan Record `(Color, String)` untuk mengembalikan dua nilai sekaligus.
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
       // Income Categories
@@ -76,7 +73,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                   .compareTo(DateTime.parse(a.createdAt)));
 
               return Column(
-                children: transactions.take(5).map((transaction) {
+                children: transactions.take(3).map((transaction) {
                   final createdAt = DateTime.parse(transaction.createdAt);
                   final timeString = DateFormat('HH:mm').format(createdAt);
                   final total = int.tryParse(transaction.amount) ?? 0;
