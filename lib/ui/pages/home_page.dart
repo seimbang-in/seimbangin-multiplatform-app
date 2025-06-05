@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logger/logger.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
@@ -23,49 +24,66 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  var logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<HomepageBloc>().add(HomepageStarted());
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(
+        limit: 5)); // Atur limit sesuai kebutuhan awal
+  }
 
   Future<void> _onRefresh() async {
     context.read<HomepageBloc>().add(HomepageStarted());
-    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 5));
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 3));
 
-    await Future.wait([
-      context.read<HomepageBloc>().stream.firstWhere(
-          (state) => state is HomePageSuccess || state is HomePageFailure),
-      context.read<TransactionBloc>().stream.firstWhere((state) =>
-          state is TransactionGetSuccess || state is TransactionFailure),
-    ]);
+    try {
+      await Future.wait([
+        context.read<HomepageBloc>().stream.firstWhere(
+            (state) => state is HomePageSuccess || state is HomePageFailure),
+        context.read<TransactionBloc>().stream.firstWhere((state) =>
+            state is TransactionGetSuccess || state is TransactionFailure),
+      ]);
+    } catch (e) {
+      logger.e("Error waiting for BLoC refresh: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<TransactionBloc, TransactionState>(
-      listenWhen: (previousState, currentState) {
-        return currentState is TransactionSuccess &&
-            previousState is! TransactionSuccess;
-      },
-      listener: (context, state) {
-        print(
-            '[BlocListener] TransactionSuccess terdeteksi! Me-refresh homepage...');
-        context.read<HomepageBloc>().add(HomepageStarted());
-        context
-            .read<TransactionBloc>()
-            .add(GetRecentTransactionsEvent(limit: 3));
-      },
-      child: BlocBuilder<HomepageBloc, HomepageState>(
-        builder: (context, state) {
-          if (state is HomePageLoading) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (state is HomePageSuccess) {
-            final user = state.user;
-            return Scaffold(
-              backgroundColor: backgroundWhiteColor,
-              body: RefreshIndicator(
+    return Scaffold(
+      backgroundColor: backgroundWhiteColor,
+      body: BlocListener<TransactionBloc, TransactionState>(
+        listenWhen: (previousState, currentState) {
+          return currentState is TransactionSuccess &&
+              previousState is! TransactionSuccess;
+        },
+        listener: (context, state) {
+          logger.i(
+              '[BlocListener HomePage] TransactionSuccess terdeteksi! Me-refresh homepage...');
+
+          context.read<HomepageBloc>().add(HomepageStarted());
+          context
+              .read<TransactionBloc>()
+              .add(GetRecentTransactionsEvent(limit: 3));
+        },
+        child: BlocBuilder<HomepageBloc, HomepageState>(
+          builder: (context, homepageState) {
+            if (homepageState is HomePageLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: primaryColor,
+                ),
+              );
+            }
+            if (homepageState is HomePageSuccess) {
+              final user = homepageState.user;
+
+              return RefreshIndicator(
+                color: primaryColor,
                 onRefresh: _onRefresh,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -121,9 +139,10 @@ class _HomePageState extends State<HomePage>
                               AiAdvisorSection(
                                 financialProfileButtonOntap: () => routes
                                     .pushNamed(RouteNames.financialProfile),
-                                advice: state.advice,
+                                advice: homepageState.advice,
                                 isAdviceExist:
-                                    state.user.data.financeProfile != null,
+                                    homepageState.user.data.financeProfile !=
+                                        null,
                               ),
                               SizedBox(height: 20.r),
                               HomeRecentTransactionsSection(),
@@ -135,12 +154,36 @@ class _HomePageState extends State<HomePage>
                     ),
                   ],
                 ),
-              ),
-            );
-          }
-          // Fallback jika state gagal atau lainnya
-          return const Scaffold(body: SizedBox.shrink());
-        },
+              );
+            }
+            if (homepageState is HomePageFailure) {
+              // UI untuk state gagal
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0).r,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Gagal memuat data: ${homepageState.error}',
+                        textAlign: TextAlign.center,
+                        style: blackTextStyle.copyWith(fontSize: 16.sp),
+                      ),
+                      SizedBox(height: 20.h),
+                      ElevatedButton(
+                        onPressed: _onRefresh,
+                        child: const Text('Coba Lagi'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            // Fallback jika ada state yang tidak terduga
+            return const Center(
+                child: Text("Terjadi kesalahan tidak dikenal."));
+          },
+        ),
       ),
     );
   }
