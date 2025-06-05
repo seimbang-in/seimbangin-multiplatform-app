@@ -30,9 +30,15 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
-    context.read<HomepageBloc>().add(HomepageStarted());
-    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(
-        limit: 5)); // Atur limit sesuai kebutuhan awal
+    if (context.read<HomepageBloc>().state is! HomePageSuccess) {
+      context.read<HomepageBloc>().add(HomepageStarted());
+    }
+    if (context.read<TransactionBloc>().state is! TransactionGetSuccess &&
+        context.read<TransactionBloc>().state is! HistoryLoadSuccess) {
+      context.read<TransactionBloc>().add(
+            GetRecentTransactionsEvent(limit: 3),
+          );
+    }
   }
 
   Future<void> _onRefresh() async {
@@ -54,8 +60,9 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return Scaffold(
-      backgroundColor: backgroundWhiteColor,
+      backgroundColor: secondaryColor,
       body: BlocListener<TransactionBloc, TransactionState>(
         listenWhen: (previousState, currentState) {
           return currentState is TransactionSuccess &&
@@ -64,7 +71,6 @@ class _HomePageState extends State<HomePage>
         listener: (context, state) {
           logger.i(
               '[BlocListener HomePage] TransactionSuccess terdeteksi! Me-refresh homepage...');
-
           context.read<HomepageBloc>().add(HomepageStarted());
           context
               .read<TransactionBloc>()
@@ -107,8 +113,8 @@ class _HomePageState extends State<HomePage>
                         decoration: BoxDecoration(
                           color: backgroundWhiteColor,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.r),
-                            topRight: Radius.circular(30.r),
+                            topLeft: Radius.circular(32.r),
+                            topRight: Radius.circular(32.r),
                           ),
                         ),
                         child: Padding(
@@ -157,7 +163,6 @@ class _HomePageState extends State<HomePage>
               );
             }
             if (homepageState is HomePageFailure) {
-              // UI untuk state gagal
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0).r,
@@ -179,9 +184,9 @@ class _HomePageState extends State<HomePage>
                 ),
               );
             }
-            // Fallback jika ada state yang tidak terduga
             return const Center(
-                child: Text("Terjadi kesalahan tidak dikenal."));
+              child: Text("Terjadi kesalahan tidak dikenal."),
+            );
           },
         ),
       ),

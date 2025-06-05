@@ -6,8 +6,6 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
-// Jika Anda perlu casting eksplisit ke model.Data, uncomment baris di bawah
-// import 'package:seimbangin_app/models/transaction_model.dart' as model;
 
 class HomeRecentTransactionsSection extends StatelessWidget {
   const HomeRecentTransactionsSection({super.key});
@@ -59,7 +57,6 @@ class HomeRecentTransactionsSection extends StatelessWidget {
         SizedBox(height: 14.r),
         BlocBuilder<TransactionBloc, TransactionState>(
           builder: (context, transactionState) {
-            // Kondisi loading yang lebih baik: tampilkan jika state bukan sukses sebelumnya
             bool isLoading = transactionState is TransactionLoading &&
                 !(transactionState is TransactionGetSuccess ||
                     transactionState is HistoryLoadSuccess);
@@ -79,7 +76,8 @@ class HomeRecentTransactionsSection extends StatelessWidget {
 
               return Column(
                 children: transactions.take(3).map((transaction) {
-                  final createdAt = DateTime.parse(transaction.createdAt);
+                  final createdAt =
+                      DateTime.parse(transaction.createdAt).toLocal();
                   final timeString = DateFormat('HH:mm').format(createdAt);
                   final total = int.tryParse(transaction.amount) ?? 0;
                   final prefix = transaction.type == 0 ? '+' : '-';
@@ -99,7 +97,6 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 12.r),
                     child: RecentTransactionCard(
                       onTap: () {
-                        // Navigasi ke halaman detail dengan mengirim objek 'transaction'
                         routes.pushNamed(RouteNames.transactionDetail,
                             extra: transaction);
                       },
@@ -110,7 +107,7 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                         height: 30.r,
                       ),
                       title: transaction.name,
-                      subtitle: "$timeString WIB",
+                      subtitle: timeString,
                       amount: "$prefix${NumberFormat.currency(
                         locale: 'id',
                         symbol: 'Rp ',
