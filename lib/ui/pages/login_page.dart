@@ -20,10 +20,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // --- STATE AND CONTROLLERS ---
   bool isObscure = true;
-  bool _isPhoneValid = true;
+  bool _isIdentifierValid = true;
   bool _isPassValid = true;
   bool _isFormSubmitted = false;
-  final TextEditingController phoneNumController = TextEditingController();
+  final TextEditingController identifierController = TextEditingController();
   final AuthService authService =
       AuthService(); // Tidak digunakan di contoh ini
   final TextEditingController passwordController = TextEditingController();
@@ -32,20 +32,21 @@ class _LoginPageState extends State<LoginPage> {
   void _validateForm() {
     setState(() {
       _isFormSubmitted = true;
-      _isPhoneValid = phoneNumController.text.isNotEmpty;
+      _isIdentifierValid = identifierController.text.isNotEmpty;
       _isPassValid = passwordController.text.isNotEmpty;
     });
   }
 
   bool get _isFormValid =>
-      phoneNumController.text.isNotEmpty && passwordController.text.isNotEmpty;
+      identifierController.text.isNotEmpty &&
+      passwordController.text.isNotEmpty;
 
   void _onLoginPressed() {
     _validateForm();
     if (_isFormValid) {
       context.read<LoginBloc>().add(
             LoginButtonPressed(
-              identifier: phoneNumController.text,
+              identifier: identifierController.text,
               password: passwordController.text,
             ),
           );
@@ -58,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    phoneNumController.dispose();
+    identifierController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -76,11 +77,11 @@ class _LoginPageState extends State<LoginPage> {
           }
 
           if (state is LoginSuccess) {
-            phoneNumController.clear();
+            identifierController.clear();
             passwordController.clear();
             setState(() {
               _isFormSubmitted = false;
-              _isPhoneValid = true;
+              _isIdentifierValid = true;
               _isPassValid = true;
             });
             routes.pushNamed(RouteNames.main);
@@ -103,10 +104,10 @@ class _LoginPageState extends State<LoginPage> {
 
               // SECTION 2: FORM
               LoginFormSection(
-                phoneController: phoneNumController,
+                phoneController: identifierController,
                 passwordController: passwordController,
                 isObscure: isObscure,
-                isPhoneValid: _isPhoneValid,
+                isPhoneValid: _isIdentifierValid,
                 isPassValid: _isPassValid,
                 isFormSubmitted: _isFormSubmitted,
                 onToggleObscure: () {

@@ -35,8 +35,8 @@ class LoginFormSection extends StatelessWidget {
             fillColor: isFormSubmitted && !isPhoneValid
                 ? backgroundPinkColor
                 : backgroundGreyColor,
-            prefixIcon: Icon(Icons.phone, size: 18.r),
-            hintText: 'Phone Number',
+            prefixIcon: Icon(Icons.person, size: 18.r),
+            hintText: 'Username, Phone Number, Email',
             errorText: isFormSubmitted && !isPhoneValid
                 ? '*Phone number cannot be empty'
                 : null,
@@ -57,7 +57,7 @@ class LoginFormSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24).r,
                 borderSide: BorderSide.none),
           ),
-          keyboardType: TextInputType.phone,
+          keyboardType: TextInputType.text,
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
