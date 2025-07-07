@@ -33,12 +33,12 @@ class _OcrPageState extends State<OcrPage> {
   @override
   void initState() {
     super.initState();
-    // Atur UI status bar saat masuk halaman
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
       statusBarIconBrightness: Brightness.light,
     ));
-    // Panggil fungsi inisialisasi kamera
+
     _initializeCamera();
   }
 
@@ -49,8 +49,6 @@ class _OcrPageState extends State<OcrPage> {
     _cameraController?.dispose();
     super.dispose();
   }
-
-  // --- FUNGSI-FUNGSI LOGIKA KAMERA ---
 
   /// Menginisialisasi controller kamera dengan indeks kamera yang dipilih.
   Future<void> _initializeCamera([int cameraIndex = 0]) async {
@@ -145,20 +143,14 @@ class _OcrPageState extends State<OcrPage> {
     }
 
     try {
-      // 1. Ambil gambar
       final XFile image = await _cameraController!.takePicture();
 
-      // -- PERUBAHAN DI SINI --
-      // 2. Cek jika flash sedang menyala, lalu matikan.
-      // Kita panggil _toggleFlash() agar state juga ikut terupdate.
       if (_currentFlashMode == FlashMode.torch) {
         await _toggleFlash();
       }
-      // -- AKHIR DARI PERUBAHAN --
 
-      // 3. Pindah ke halaman preview setelah semua proses selesai
       if (mounted) {
-        routes.pushNamed(
+        routes.pushReplacementNamed(
           RouteNames.ocrPreview,
           extra: image.path,
         );
@@ -177,7 +169,7 @@ class _OcrPageState extends State<OcrPage> {
       );
 
       if (pickedFile != null && mounted) {
-        routes.pushNamed(
+        routes.pushReplacementNamed(
           RouteNames.ocrPreview,
           extra: pickedFile.path,
         );
@@ -187,7 +179,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  // --- UI BUILD METHODS ---
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,7 +220,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  /// Membangun UI utama saat kamera berhasil diinisialisasi.
   Widget _buildCameraView() {
     final screenSize = MediaQuery.of(context).size;
     final width = screenSize.width * 0.7;
@@ -297,7 +287,7 @@ class _OcrPageState extends State<OcrPage> {
                     ),
                   ),
                 )
-              else // Beri ruang kosong agar shutter tetap di tengah
+              else
                 SizedBox(width: 36.r),
 
               // Tombol Shutter (tengah)
@@ -356,7 +346,7 @@ class _OcrPageState extends State<OcrPage> {
                   backgroundColor: backgroundGreyColor,
                   textColor: textPrimaryColor,
                   onPressed: () {
-                    routes.pushNamed(RouteNames.transaction);
+                    routes.pushReplacementNamed(RouteNames.transaction);
                   },
                 ),
               ],

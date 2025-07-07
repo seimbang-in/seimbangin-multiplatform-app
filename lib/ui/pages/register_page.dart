@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
@@ -109,45 +110,51 @@ class _RegisterPageState extends State<RegisterPage> {
               .showSnackBar(SnackBar(content: Text(state.error)));
         }
       },
-      child: Scaffold(
-        backgroundColor: backgroundWhiteColor,
-        body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            children: [
-              // SECTION 1: HEADER
-              RegisterHeaderSection(
-                onBack: () => routes.replaceNamed(RouteNames.login),
-              ),
-              SizedBox(height: 45.r),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: statusBarPrimaryColor,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          backgroundColor: backgroundWhiteColor,
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              children: [
+                // SECTION 1: HEADER
+                RegisterHeaderSection(
+                  onBack: () => routes.replaceNamed(RouteNames.login),
+                ),
+                SizedBox(height: 45.r),
 
-              // SECTION 2: FORM
-              RegisterFormSection(
-                fullNameController: fullNameController,
-                usernameController: usernameController,
-                emailController: emailController,
-                phoneController: phoneNumberController,
-                passwordController: passwordController,
-                fullNameError: _fullNameError,
-                usernameError: _usernameError,
-                emailError: _emailError,
-                phoneError: _phoneError,
-                passwordError: _passwordError,
-                isObscure: isObscure,
-                onToggleObscure: () {
-                  setState(() {
-                    isObscure = !isObscure;
-                  });
-                },
-              ),
-              SizedBox(height: 42.r),
+                // SECTION 2: FORM
+                RegisterFormSection(
+                  fullNameController: fullNameController,
+                  usernameController: usernameController,
+                  emailController: emailController,
+                  phoneController: phoneNumberController,
+                  passwordController: passwordController,
+                  fullNameError: _fullNameError,
+                  usernameError: _usernameError,
+                  emailError: _emailError,
+                  phoneError: _phoneError,
+                  passwordError: _passwordError,
+                  isObscure: isObscure,
+                  onToggleObscure: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                ),
+                SizedBox(height: 42.r),
 
-              // SECTION 3: ACTION
-              RegisterActionSection(
-                onCreateAccount: _onCreateAccountPressed,
-              ),
-              SizedBox(height: 62.r),
-            ],
+                // SECTION 3: ACTION
+                RegisterActionSection(
+                  onCreateAccount: _onCreateAccountPressed,
+                ),
+                SizedBox(height: 62.r),
+              ],
+            ),
           ),
         ),
       ),

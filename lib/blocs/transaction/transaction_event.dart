@@ -23,5 +23,8 @@ class GetRecentTransactionsEvent extends TransactionEvent {
   GetRecentTransactionsEvent({required this.limit});
 }
 
-// --- EVENT BARU UNTUK LAZY LOAD ---
-class FetchHistoryTransactions extends TransactionEvent {}
+class FetchHistoryTransactions extends TransactionEvent {
+  // Tambahkan properti ini untuk menangani pull-to-refresh
+  final bool isRefresh;
+  FetchHistoryTransactions({this.isRefresh = false});
+}

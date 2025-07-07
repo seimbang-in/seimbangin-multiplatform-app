@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/login_service.dart';
@@ -20,10 +22,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // --- STATE AND CONTROLLERS ---
   bool isObscure = true;
-  bool _isPhoneValid = true;
+  bool _isIdentifierValid = true;
   bool _isPassValid = true;
   bool _isFormSubmitted = false;
-  final TextEditingController phoneNumController = TextEditingController();
+  final TextEditingController identifierController = TextEditingController();
   final AuthService authService =
       AuthService(); // Tidak digunakan di contoh ini
   final TextEditingController passwordController = TextEditingController();
@@ -32,20 +34,21 @@ class _LoginPageState extends State<LoginPage> {
   void _validateForm() {
     setState(() {
       _isFormSubmitted = true;
-      _isPhoneValid = phoneNumController.text.isNotEmpty;
+      _isIdentifierValid = identifierController.text.isNotEmpty;
       _isPassValid = passwordController.text.isNotEmpty;
     });
   }
 
   bool get _isFormValid =>
-      phoneNumController.text.isNotEmpty && passwordController.text.isNotEmpty;
+      identifierController.text.isNotEmpty &&
+      passwordController.text.isNotEmpty;
 
   void _onLoginPressed() {
     _validateForm();
     if (_isFormValid) {
       context.read<LoginBloc>().add(
             LoginButtonPressed(
-              identifier: phoneNumController.text,
+              identifier: identifierController.text,
               password: passwordController.text,
             ),
           );
@@ -58,75 +61,83 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    phoneNumController.dispose();
+    identifierController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundWhiteColor,
-      body: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          if (state is LoginLoading) {
-            AlertDialogWidget.showLoading(context, message: 'Logging In...');
-          } else if (state is LoginSuccess || state is LoginFailure) {
-            AlertDialogWidget.dismiss(context);
-          }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusBarPrimaryColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginLoading) {
+              AlertDialogWidget.showLoading(context, message: 'Logging In...');
+            } else if (state is LoginSuccess || state is LoginFailure) {
+              AlertDialogWidget.dismiss(context);
+            }
 
-          if (state is LoginSuccess) {
-            phoneNumController.clear();
-            passwordController.clear();
-            setState(() {
-              _isFormSubmitted = false;
-              _isPhoneValid = true;
-              _isPassValid = true;
-            });
-            routes.pushNamed(RouteNames.main);
-          } else if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: backgroundWarningColor,
-              ),
-            );
-          }
-        },
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24).r,
-            children: [
-              // SECTION 1: HEADER
-              const LoginHeaderSection(),
-              SizedBox(height: 45.h),
+            if (state is LoginSuccess) {
+              identifierController.clear();
+              passwordController.clear();
+              setState(() {
+                _isFormSubmitted = false;
+                _isIdentifierValid = true;
+                _isPassValid = true;
+              });
 
-              // SECTION 2: FORM
-              LoginFormSection(
-                phoneController: phoneNumController,
-                passwordController: passwordController,
-                isObscure: isObscure,
-                isPhoneValid: _isPhoneValid,
-                isPassValid: _isPassValid,
-                isFormSubmitted: _isFormSubmitted,
-                onToggleObscure: () {
-                  setState(() {
-                    isObscure = !isObscure;
-                  });
-                },
-              ),
-              SizedBox(height: 42.h),
+              context.read<HomepageBloc>().add(HomepageStarted());
+              routes.pushNamed(RouteNames.main);
+            } else if (state is LoginFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error),
+                  backgroundColor: backgroundWarningColor,
+                ),
+              );
+            }
+          },
+          child: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 24).r,
+              children: [
+                // SECTION 1: HEADER
+                const LoginHeaderSection(),
+                SizedBox(height: 45.h),
 
-              // SECTION 3: FOOTER
-              LoginFooterSection(
-                onLogin: _onLoginPressed,
-                onGoogleSignIn: () {
-                  // TODO: Implement Google Sign-In logic
-                },
-                onRegister: _onRegisterPressed,
-              ),
-              SizedBox(height: 42.h),
-            ],
+                // SECTION 2: FORM
+                LoginFormSection(
+                  phoneController: identifierController,
+                  passwordController: passwordController,
+                  isObscure: isObscure,
+                  isPhoneValid: _isIdentifierValid,
+                  isPassValid: _isPassValid,
+                  isFormSubmitted: _isFormSubmitted,
+                  onToggleObscure: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                ),
+                SizedBox(height: 42.h),
+
+                // SECTION 3: FOOTER
+                LoginFooterSection(
+                  onLogin: _onLoginPressed,
+                  onGoogleSignIn: () {
+                    // TODO: Implement Google Sign-In logic
+                  },
+                  onRegister: _onRegisterPressed,
+                ),
+                SizedBox(height: 42.h),
+              ],
+            ),
           ),
         ),
       ),

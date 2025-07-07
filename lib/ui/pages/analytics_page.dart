@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/donut_chart_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -55,93 +56,99 @@ class _AnalyticsPageState extends State<AnalyticsPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: backgroundWhiteColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        toolbarHeight: 70.r,
-        title: Text(
-          'Analytics',
-          style: blackTextStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 20.sp,
-          ),
-        ),
-        elevation: 0,
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            child: Image.asset(
-              'assets/ic_seimbangin-logo-logreg.png',
-              width: 50,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusBarPrimaryColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: backgroundWhiteColor,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          toolbarHeight: 70.r,
+          title: Text(
+            'Analytics',
+            style: blackTextStyle.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
             ),
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AnalyticsTabBar(
-                  tabController: _mainTabController,
-                  tabTitles: mainTabTitles,
-                ),
-                Visibility(
-                  visible: selectedMainTab == 1 || selectedMainTab == 2,
-                  child: AnalyticsTabBar(
-                    tabController: _secondaryTabController,
-                    tabTitles: secondaryTabTitles,
+          elevation: 0,
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 16),
+              child: Image.asset(
+                'assets/ic_seimbangin-logo-logreg.png',
+                width: 50,
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AnalyticsTabBar(
+                    tabController: _mainTabController,
+                    tabTitles: mainTabTitles,
                   ),
-                ),
-                if (selectedMainTab == 0) ...[
-                  CurrentBalanceSection(
-                    balance: "Rp 2.500.000",
+                  Visibility(
+                    visible: selectedMainTab == 1 || selectedMainTab == 2,
+                    child: AnalyticsTabBar(
+                      tabController: _secondaryTabController,
+                      tabTitles: secondaryTabTitles,
+                    ),
+                  ),
+                  if (selectedMainTab == 0) ...[
+                    CurrentBalanceSection(
+                      balance: "Rp 2.500.000",
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    DateAndPeriodSelector(
+                        month: "agustus",
+                        day: "17",
+                        selectedDropdown: selectedDropdown,
+                        onDropdownChanged: (value) => {
+                              setState(() {
+                                selectedDropdown = value!;
+                              })
+                            }),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    AnalyticsBarChart(),
+                  ],
+                  if (selectedMainTab == 1 || selectedMainTab == 2)
+                    AnalyticsDonutChart(sections: incomeData),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  RecentTransactionSection(
+                    subtitle: "today",
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  DateAndPeriodSelector(
-                      month: "agustus",
-                      day: "17",
-                      selectedDropdown: selectedDropdown,
-                      onDropdownChanged: (value) => {
-                            setState(() {
-                              selectedDropdown = value!;
-                            })
-                          }),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  AnalyticsBarChart(),
+                  // RecentTransactionCard(
+                  //     backgroundIcon: buttonColor,
+                  //     title: "Mr.B",
+                  //     subtitle: "12:00 Wib",
+                  //     amount: "-Rp 12.000"),
+                  // RecentTransactionCard(
+                  //     backgroundIcon: buttonColor,
+                  //     title: "Zona Bakso",
+                  //     subtitle: "18:00 Wib",
+                  //     amount: "-Rp 18.000"),
                 ],
-                if (selectedMainTab == 1 || selectedMainTab == 2)
-                  AnalyticsDonutChart(sections: incomeData),
-                SizedBox(
-                  height: 30,
-                ),
-                RecentTransactionSection(
-                  subtitle: "today",
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                // RecentTransactionCard(
-                //     backgroundIcon: buttonColor,
-                //     title: "Mr.B",
-                //     subtitle: "12:00 Wib",
-                //     amount: "-Rp 12.000"),
-                // RecentTransactionCard(
-                //     backgroundIcon: buttonColor,
-                //     title: "Zona Bakso",
-                //     subtitle: "18:00 Wib",
-                //     amount: "-Rp 18.000"),
-              ],
+              ),
             ),
           ),
         ),

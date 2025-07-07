@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart'; // Untuk format waktu yang lebih baik
 import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
-import 'package:seimbangin_app/models/chat_message_model.dart';
+import 'package:seimbangin_app/models/chat_message_model.dart'; // Pastikan path ini benar
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class ChatAdvisorPage extends StatefulWidget {
@@ -12,39 +13,77 @@ class ChatAdvisorPage extends StatefulWidget {
 }
 
 class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
-  // int _selectedIndex = 2;
-  bool _hasChats = false;
   final TextEditingController _messageController = TextEditingController();
-
+  final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
+  bool _hasChats = false; // Untuk menampilkan welcome screen atau chat
 
   @override
   void initState() {
     super.initState();
   }
 
+  // void _addInitialAssistantMessage(String message) {
+  //   if (!mounted) return;
+  //   setState(() {
+  //     _messages.add(ChatMessage(
+  //       messageContent: message,
+  //       messageType: "assistant",
+  //       time: DateFormat('HH:mm').format(DateTime.now()),
+  //     ));
+  //     _hasChats = true;
+  //   });
+  //   _scrollToBottom();
+  // }
+
   @override
   void dispose() {
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _handleSendMessage() {
-    if (_messageController.text.isNotEmpty) {
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            messageContent: _messageController.text,
-            messageType: "user",
-            time: "${DateTime.now().hour}:${DateTime.now().minute}",
-          ),
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
         );
-        _hasChats = true;
-        context.read<ChatbotBloc>().add(
-              ChatBotReply(_messageController.text),
-            );
-        _messageController.clear();
-      });
+      }
+    });
+  }
+
+  void _handleSendMessage() {
+    if (_messageController.text.trim().isNotEmpty) {
+      final userMessage = ChatMessage(
+        messageContent: _messageController.text.trim(),
+        messageType: "user",
+        time: DateFormat('HH:mm').format(DateTime.now()),
+      );
+
+      // Pesan loading sementara
+      final loadingMessage = ChatMessage(
+        messageContent: "...",
+        messageType: "loading",
+        time: "",
+      );
+
+      if (mounted) {
+        setState(() {
+          _messages.add(userMessage);
+          _messages.add(loadingMessage);
+          _hasChats = true;
+        });
+      }
+
+      // Kirim event ke BLoC
+      context
+          .read<ChatbotBloc>()
+          .add(ChatBotReply(_messageController.text.trim()));
+      _messageController.clear();
+      _scrollToBottom();
     }
   }
 
@@ -52,7 +91,8 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: backgroundWhiteColor,
+        surfaceTintColor: backgroundWhiteColor,
         centerTitle: true,
         toolbarHeight: 70.r,
         title: Text(
@@ -63,123 +103,61 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
           ),
         ),
         automaticallyImplyLeading: false,
-        elevation: 0,
+        elevation: 0.5,
         actions: [
           Container(
-            margin: EdgeInsets.only(right: 24),
+            margin: EdgeInsets.only(right: 24.r),
             child: Image.asset(
               'assets/ic_seimbangin-logo-logreg.png',
-              width: 50,
+              width: 40.w,
+              height: 40.h,
             ),
           ),
         ],
       ),
       backgroundColor: backgroundWhiteColor,
-      body: BlocConsumer<ChatbotBloc, ChatbotState>(
+      body: BlocListener<ChatbotBloc, ChatbotState>(
         listener: (context, state) {
           if (state is ChatbotSuccess) {
-            _dismissLoadingDialog(context);
-            setState(() {
-              print("Current State: $state");
-              _messages.add(
-                ChatMessage(
-                  messageContent: state.reply,
-                  messageType: "assistant",
-                  time: "${DateTime.now().hour}:${DateTime.now().minute}",
+            if (mounted) {
+              setState(() {
+                _messages.removeWhere((msg) => msg.messageType == "loading");
+
+                _messages.add(
+                  ChatMessage(
+                    messageContent: state.reply,
+                    messageType: "assistant",
+                    time: DateFormat('HH:mm').format(DateTime.now()),
+                  ),
+                );
+              });
+              _scrollToBottom();
+            }
+          } else if (state is ChatbotFailure) {
+            if (mounted) {
+              setState(() {
+                _messages.removeWhere((msg) => msg.messageType == "loading");
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
                 ),
               );
-            });
-          } else if (state is ChatbotLoading) {
-            _showLoadingDialog(context);
-          } else if (state is ChatbotFailure) {
-            _dismissLoadingDialog(context);
-            print("Current State: $state");
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
+              _scrollToBottom();
+            }
           }
         },
-        builder: (context, state) {
-          return SafeArea(
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Expanded(
-                      child: _hasChats
-                          ? _buildChatMessages()
-                          : _buildWelcomeScreen(),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 150.h,
-                            margin: const EdgeInsets.all(32).r,
-                            decoration: BoxDecoration(
-                              color: backgroundGreyColor, // Warna abu-abu
-                              borderRadius: BorderRadius.circular(20)
-                                  .r, // Radius melingkar
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ).r,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: _messageController,
-                                    maxLines: null,
-                                    decoration: InputDecoration(
-                                      hintText: "Ask with Advisor...",
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(top: 8).r,
-                                      hintStyle: greyTextStyle.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12.sp,
-                                      ),
-                                    ),
-                                    style: blackTextStyle.copyWith(
-                                      fontSize: 16.sp,
-                                      color: Colors.black, // Warna teks
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                  ],
-                ),
-                Positioned(
-                  bottom: MediaQuery.of(context).size.width * 0.14,
-                  right: MediaQuery.of(context).size.width * 0.1,
-                  child: IconButton(
-                    onPressed: () {
-                      _handleSendMessage();
-                    },
-                    icon: Image.asset(
-                      'assets/pesawat-icon.png',
-                      width: 24.r,
-                      height: 24.r,
-                    ),
-                    iconSize: 32.r, // Ukuran area klik
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: _hasChats ? _buildChatMessages() : _buildWelcomeScreen(),
+              ),
+              _buildMessageInputField(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -189,21 +167,22 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                'assets/img_mascot-login.png',
-                width: 200.w,
-              ),
-            ],
-          ),
+          Image.asset('assets/img_mascot-login.png', width: 200.w),
           SizedBox(height: 16.h),
           Text(
-            "Hi, Nice to meet you",
+            "Hi, Nice to meet you!",
             style: blackTextStyle.copyWith(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40.w),
+            child: Text(
+              "I'm Blu, your financial AI advisor. Ask me anything about your finances!",
+              textAlign: TextAlign.center,
+              style: greyTextStyle.copyWith(fontSize: 14.sp),
             ),
           ),
         ],
@@ -213,104 +192,97 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
 
   Widget _buildChatMessages() {
     return ListView.builder(
+      controller: _scrollController,
       itemCount: _messages.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16).r,
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.only(
-            left: _messages[index].messageType == "user" ? 80 : 0,
-            right: _messages[index].messageType == "user" ? 0 : 80,
-          ).r,
-          margin: const EdgeInsets.symmetric(vertical: 8).r,
-          child: Column(
-            crossAxisAlignment: _messages[index].messageType == "user"
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16).r,
-                decoration: BoxDecoration(
-                  color: _messages[index].messageType == "user"
-                      ? Colors.blue
-                      : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(20).r,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (_messages[index].messageType != "user")
-                      Container(
-                        width: 40.w,
-                        height: 40.h,
-                        margin: const EdgeInsets.only(right: 8).r,
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "A-I",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                    Flexible(
-                      child: Text(_messages[index].messageContent,
-                          style: whiteTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: _messages[index].messageType == "user"
-                                ? Colors.white
-                                : Colors.black,
-                          )),
-                    ),
-                  ],
-                ),
+        final message = _messages[index];
+        final isUserMessage = message.messageType == "user";
+
+        if (message.messageType == "loading") {
+          return _buildTypingIndicator();
+        }
+
+        return Align(
+          alignment:
+              isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.75),
+            padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 14.r),
+            margin: EdgeInsets.symmetric(vertical: 4.r),
+            decoration: BoxDecoration(
+              color: isUserMessage ? primaryColor : backgroundGreyColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18.r),
+                topRight: Radius.circular(18.r),
+                bottomLeft: isUserMessage
+                    ? Radius.circular(18.r)
+                    : Radius.circular(4.r),
+                bottomRight: isUserMessage
+                    ? Radius.circular(4.r)
+                    : Radius.circular(18.r),
               ),
-              if (_messages[index].messageType == "user")
-                Padding(
-                  padding: const EdgeInsets.only(top: 4, right: 8).r,
-                  child: Text(
-                    _messages[index].time,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+            ),
+            child: Column(
+              crossAxisAlignment: isUserMessage
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message.messageContent,
+                  style: (isUserMessage ? whiteTextStyle : blackTextStyle)
+                      .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  message.time,
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    color: isUserMessage
+                        ? textWhiteColor.withOpacity(0.7)
+                        : textSecondaryColor.withOpacity(0.7),
                   ),
                 ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        // backgroundColor: backgroundWhiteColor,
-        contentPadding: const EdgeInsets.all(24).r,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24).r,
+  Widget _buildTypingIndicator() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.r, horizontal: 0.r),
+        padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 14.r),
+        decoration: BoxDecoration(
+          color: backgroundGreyColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(18.r),
+            topRight: Radius.circular(18.r),
+            bottomLeft: Radius.circular(4.r),
+            bottomRight: Radius.circular(18.r),
+          ),
         ),
-        content: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(
-              color: primaryColor,
-              strokeWidth: 4,
+            SizedBox(
+              width: 20.w,
+              height: 20.h,
+              child: CircularProgressIndicator(
+                  strokeWidth: 2, color: primaryColor),
             ),
-            SizedBox(height: 16.h),
+            SizedBox(width: 8.w),
             Text(
-              'Loading Chat...',
-              style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
+              "Blu is typing...",
+              style: greyTextStyle.copyWith(
+                fontSize: 14.sp,
+                fontStyle: FontStyle.italic,
               ),
             ),
           ],
@@ -319,9 +291,62 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
     );
   }
 
-  void _dismissLoadingDialog(BuildContext context) {
-    if (Navigator.of(context, rootNavigator: true).canPop()) {
-      Navigator.of(context, rootNavigator: true).pop();
-    }
+  Widget _buildMessageInputField() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 8.r),
+      decoration: BoxDecoration(
+        color: backgroundWhiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundGreyColor,
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+              child: TextField(
+                controller: _messageController,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                decoration: InputDecoration(
+                  hintText: "Type your messages...",
+                  border: InputBorder.none,
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  hintStyle: greyTextStyle.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                style: blackTextStyle.copyWith(fontSize: 14.sp),
+                onSubmitted: (text) => _handleSendMessage(),
+              ),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          IconButton(
+            onPressed: _handleSendMessage,
+            icon: Image.asset(
+              'assets/pesawat-icon.png',
+              width: 24.r,
+              height: 24.r,
+              color: primaryColor,
+            ),
+            iconSize: 28.r,
+            visualDensity: VisualDensity.compact,
+          ),
+        ],
+      ),
+    );
   }
 }

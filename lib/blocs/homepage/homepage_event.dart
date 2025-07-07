@@ -5,6 +5,8 @@ sealed class HomepageEvent {}
 
 class HomepageStarted extends HomepageEvent {}
 
+class _FetchAiAdvice extends HomepageEvent {}
+
 // Event baru untuk refresh
 class HomepageRefresh extends HomepageEvent {}
 
