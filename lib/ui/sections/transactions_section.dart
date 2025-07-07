@@ -5,13 +5,12 @@ import 'package:seimbangin_app/shared/theme/theme.dart';
 class AddTransactionIncomeSection extends StatelessWidget {
   late TextEditingController transactNameController = TextEditingController();
   late TextEditingController transactPriceController = TextEditingController();
-  late TextEditingController transactAmountController = TextEditingController();
+
   final ValueChanged onChangePressed;
   AddTransactionIncomeSection(
       {super.key,
       required this.transactNameController,
       required this.transactPriceController,
-      required this.transactAmountController,
       required this.onChangePressed});
 
   @override
@@ -23,7 +22,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: backgroundGreyColor,
-            hintText: 'Transaction Name',
+            hintText: 'Name',
             hintStyle: greyTextStyle.copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
@@ -53,7 +52,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: backgroundGreyColor,
-            hintText: 'Enter The Price',
+            hintText: 'Amount',
             hintStyle: greyTextStyle.copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
@@ -77,34 +76,6 @@ class AddTransactionIncomeSection extends StatelessWidget {
         ),
         SizedBox(
           height: 16.r,
-        ),
-        TextField(
-          controller: transactAmountController,
-          onChanged: onChangePressed,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: backgroundGreyColor,
-            hintText: 'Amount',
-            hintStyle: greyTextStyle.copyWith(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24).r,
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(24).r,
-              borderSide: BorderSide(
-                color: textBlueColor,
-              ),
-            ),
-          ),
-          keyboardType: TextInputType.number,
-          style: blackTextStyle.copyWith(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-          ),
         ),
       ],
     );

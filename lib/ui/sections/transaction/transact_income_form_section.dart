@@ -27,7 +27,6 @@ class TransactionIncomeFormSection extends StatelessWidget {
         AddTransactionIncomeSection(
           transactNameController: nameController,
           transactPriceController: priceController,
-          transactAmountController: amountController,
           onChangePressed: (total) {
             onFormChanged();
           },

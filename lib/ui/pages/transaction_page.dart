@@ -22,7 +22,6 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  // --- STATE MANAGEMENT LOKAL ---
   int _selectedIndexTab = 0;
   final List<String> _tabs = ['Income', 'Outcome'];
 
@@ -37,7 +36,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   double totalPrice = 0.0;
 
   // --- DATA STATIS KATEGORI ---
-  // --- PERUBAHAN UTAMA: KATEGORI DISESUAIKAN DENGAN MODEL ---
+
   final List<Category> incomeCategories = [
     Category(id: 'inc1', title: 'salary', icon: 'assets/ic_salary.png'),
     Category(id: 'inc2', title: 'freelance', icon: 'assets/ic_freelance.png'),
@@ -58,7 +57,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
     Category(id: 'out6', title: 'health', icon: 'assets/ic_health.png'),
     Category(id: 'out7', title: 'education', icon: 'assets/ic_education.png'),
   ];
-  // --- AKHIR PERUBAHAN ---
 
   // --- LIFECYCLE METHODS ---
   @override
@@ -107,7 +105,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
           Item(name: '', category: '', price: '', quantity: ''),
         );
       });
-      _calculateTotalPrice(); // Hitung ulang total setelah item ditambahkan
+      _calculateTotalPrice();
     }
   }
 
@@ -119,18 +117,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
         _transactAmountController.clear();
         selectedCategory = null;
         totalPrice = 0.0;
-        // Dispose item lama dan buat list baru dengan satu item kosong
+
         for (var item in _outcomeItems) {
           item.dispose();
         }
         _outcomeItems.clear();
         _addItem();
-        _selectedIndexTab = 0; // Kembali ke tab income sebagai default
+        _selectedIndexTab = 0;
       });
     }
   }
 
-  // Method ini sekarang hanya mempersiapkan data dan navigasi
   void _prepareAndNavigateToReview() {
     // Validasi data sebelum mengirim
     if (_selectedIndexTab == 0) {
@@ -220,7 +217,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
   // --- BUILD METHOD ---
   @override
   Widget build(BuildContext context) {
-    // Tidak ada lagi BlocConsumer di sini
     return Scaffold(
       backgroundColor: backgroundWhiteColor,
       body: SafeArea(
@@ -241,9 +237,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       if (mounted) {
                         setState(() {
                           _selectedIndexTab = index;
-                          // Reset nama transaksi umum saat ganti tab
-                          // Jika nama transaksi outcome tidak ingin di-reset,
-                          // Anda bisa memisahkan controller atau menambahkan logika.
+
                           _transactNameController.clear();
                           _calculateTotalPrice();
                         });
@@ -251,7 +245,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     },
                   ),
                   SizedBox(height: 32.r),
-                  // Konten dinamis berdasarkan tab
+
                   if (_selectedIndexTab == 0)
                     TransactionIncomeFormSection(
                       // Section untuk form income
