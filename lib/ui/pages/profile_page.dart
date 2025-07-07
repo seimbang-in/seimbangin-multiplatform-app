@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_cropper/image_cropper.dart'; // Tetap dibutuhkan jika header menggunakannya
-import 'package:image_picker/image_picker.dart'; // Tetap dibutuhkan jika header menggunakannya
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
+import 'package:seimbangin_app/blocs/logout/logout_bloc.dart';
 import 'package:seimbangin_app/models/user_model.dart';
-import 'package:seimbangin_app/routes/routes.dart'; // Pastikan import RouteNames
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart'; // Untuk logout
+import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_header_section.dart';
-import 'package:seimbangin_app/utils/token.dart';
+import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -27,25 +23,50 @@ class _ProfilePageState extends State<ProfilePage> {
         statusBarColor: secondaryColor,
         statusBarIconBrightness: Brightness.light,
       ),
-      child: Scaffold(
-        backgroundColor: backgroundWhiteColor,
-        body: BlocBuilder<HomepageBloc, HomepageState>(
-          builder: (context, state) {
-            if (state is HomePageSuccess) {
-              return _ProfilePageContent(user: state.user);
-            }
+      child: BlocListener<LogoutBloc, LogoutState>(
+        listener: (context, state) {
+          if (state is! LogoutLoading) {
+            AlertDialogWidget.dismiss(context);
+          }
 
-            return const Center(
-              child: CircularProgressIndicator(),
+          if (state is LogoutLoading) {
+            AlertDialogWidget.showLoading(context, message: "Logging out...");
+          } else if (state is LogoutSuccess) {
+            routes.goNamed(RouteNames.login);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Logout berhasil!'),
+                backgroundColor: Colors.green,
+              ),
             );
-          },
+          } else if (state is LogoutFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.error),
+                backgroundColor: backgroundWarningColor,
+              ),
+            );
+
+            routes.goNamed(RouteNames.login);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: backgroundWhiteColor,
+          body: BlocBuilder<HomepageBloc, HomepageState>(
+            builder: (context, state) {
+              if (state is HomePageSuccess) {
+                return _ProfilePageContent(user: state.user);
+              }
+              // Tampilkan loading jika data user belum siap
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-// Widget konten untuk ProfilePage
 class _ProfilePageContent extends StatefulWidget {
   final User user;
   const _ProfilePageContent({required this.user});
@@ -78,9 +99,7 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
       );
       if (croppedFile != null) {
         setState(() => _imageFile = XFile(croppedFile.path));
-        // TODO: Tambahkan logika untuk upload _imageFile ke backend dan update BLoC
-        // Misalnya: context.read<ProfileBloc>().add(UpdateProfilePictureEvent(_imageFile!));
-        // Untuk saat ini, hanya update tampilan lokal.
+        // TODO: Tambahkan logika untuk upload _imageFile ke backend
       }
     }
   }
@@ -88,23 +107,21 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
   Future<void> _showLogoutDialog() async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text('Logout',
             style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
         content:
             Text('Are you sure you want to logout?', style: blackTextStyle),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text('Cancel', style: greyTextStyle),
           ),
           TextButton(
-            onPressed: () async {
-              await Token.clearToken();
-              // context.read<AuthBloc>().add(LogoutEvent());
-              //TODO implement logout from backend
-              Navigator.of(context).pop();
-              routes.goNamed(RouteNames.login);
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+
+              context.read<LogoutBloc>().add(LogoutButtonPressed());
             },
             child: Text('Logout', style: warningTextStyle),
           ),

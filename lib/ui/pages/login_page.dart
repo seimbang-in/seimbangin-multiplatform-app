@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/login_service.dart';
@@ -90,6 +91,8 @@ class _LoginPageState extends State<LoginPage> {
                 _isIdentifierValid = true;
                 _isPassValid = true;
               });
+
+              context.read<HomepageBloc>().add(HomepageStarted());
               routes.pushNamed(RouteNames.main);
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(

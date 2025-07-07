@@ -2,6 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Constant {
   static String loginEndpoint = '${dotenv.env['BASE_URL']}/auth/login';
+  static String logoutEndpoint = '${dotenv.env['BASE_URL']}/auth/logout';
   static String registerEndpoint = '${dotenv.env['BASE_URL']}/auth/register';
   static String getUserProfileEndpoint =
       '${dotenv.env['BASE_URL']}/user/profile';

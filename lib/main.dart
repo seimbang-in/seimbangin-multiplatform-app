@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seimbangin_app/blocs/chatbot/chatbot_bloc.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
+import 'package:seimbangin_app/blocs/logout/logout_bloc.dart';
 import 'package:seimbangin_app/blocs/ocr/ocr_bloc.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
 import 'package:seimbangin_app/blocs/statistics/statistics_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/services/chatbot_service.dart';
 import 'package:seimbangin_app/services/login_service.dart';
+import 'package:seimbangin_app/services/logout_service.dart';
 import 'package:seimbangin_app/services/ocr_service.dart';
 import 'package:seimbangin_app/services/statistics_service.dart';
 import 'package:seimbangin_app/services/transaction_service.dart';
@@ -41,6 +43,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => LoginBloc(authService: AuthService()),
+        ),
+        BlocProvider(
+          create: (context) => LogoutBloc(logoutService: LogoutService()),
         ),
         BlocProvider(
           create: (context) => RegisterBloc(authService: AuthService()),
