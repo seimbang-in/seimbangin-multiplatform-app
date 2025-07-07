@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
@@ -66,68 +67,74 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundWhiteColor,
-      body: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          if (state is LoginLoading) {
-            AlertDialogWidget.showLoading(context, message: 'Logging In...');
-          } else if (state is LoginSuccess || state is LoginFailure) {
-            AlertDialogWidget.dismiss(context);
-          }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusBarPrimaryColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: BlocListener<LoginBloc, LoginState>(
+          listener: (context, state) {
+            if (state is LoginLoading) {
+              AlertDialogWidget.showLoading(context, message: 'Logging In...');
+            } else if (state is LoginSuccess || state is LoginFailure) {
+              AlertDialogWidget.dismiss(context);
+            }
 
-          if (state is LoginSuccess) {
-            identifierController.clear();
-            passwordController.clear();
-            setState(() {
-              _isFormSubmitted = false;
-              _isIdentifierValid = true;
-              _isPassValid = true;
-            });
-            routes.pushNamed(RouteNames.main);
-          } else if (state is LoginFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: backgroundWarningColor,
-              ),
-            );
-          }
-        },
-        child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24).r,
-            children: [
-              // SECTION 1: HEADER
-              const LoginHeaderSection(),
-              SizedBox(height: 45.h),
+            if (state is LoginSuccess) {
+              identifierController.clear();
+              passwordController.clear();
+              setState(() {
+                _isFormSubmitted = false;
+                _isIdentifierValid = true;
+                _isPassValid = true;
+              });
+              routes.pushNamed(RouteNames.main);
+            } else if (state is LoginFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.error),
+                  backgroundColor: backgroundWarningColor,
+                ),
+              );
+            }
+          },
+          child: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 24).r,
+              children: [
+                // SECTION 1: HEADER
+                const LoginHeaderSection(),
+                SizedBox(height: 45.h),
 
-              // SECTION 2: FORM
-              LoginFormSection(
-                phoneController: identifierController,
-                passwordController: passwordController,
-                isObscure: isObscure,
-                isPhoneValid: _isIdentifierValid,
-                isPassValid: _isPassValid,
-                isFormSubmitted: _isFormSubmitted,
-                onToggleObscure: () {
-                  setState(() {
-                    isObscure = !isObscure;
-                  });
-                },
-              ),
-              SizedBox(height: 42.h),
+                // SECTION 2: FORM
+                LoginFormSection(
+                  phoneController: identifierController,
+                  passwordController: passwordController,
+                  isObscure: isObscure,
+                  isPhoneValid: _isIdentifierValid,
+                  isPassValid: _isPassValid,
+                  isFormSubmitted: _isFormSubmitted,
+                  onToggleObscure: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                ),
+                SizedBox(height: 42.h),
 
-              // SECTION 3: FOOTER
-              LoginFooterSection(
-                onLogin: _onLoginPressed,
-                onGoogleSignIn: () {
-                  // TODO: Implement Google Sign-In logic
-                },
-                onRegister: _onRegisterPressed,
-              ),
-              SizedBox(height: 42.h),
-            ],
+                // SECTION 3: FOOTER
+                LoginFooterSection(
+                  onLogin: _onLoginPressed,
+                  onGoogleSignIn: () {
+                    // TODO: Implement Google Sign-In logic
+                  },
+                  onRegister: _onRegisterPressed,
+                ),
+                SizedBox(height: 42.h),
+              ],
+            ),
           ),
         ),
       ),

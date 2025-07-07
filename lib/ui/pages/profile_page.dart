@@ -10,6 +10,7 @@ import 'package:seimbangin_app/routes/routes.dart'; // Pastikan import RouteName
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart'; // Untuk logout
 import 'package:seimbangin_app/ui/sections/profile/profile_header_section.dart';
+import 'package:seimbangin_app/utils/token.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,11 +22,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    // Selalu tampilkan SystemUIOverlayStyle di atas Scaffold
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor:
-            secondaryColor, // Warna status bar saat di halaman profil
+        statusBarColor: secondaryColor,
         statusBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
@@ -87,7 +86,6 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
   }
 
   Future<void> _showLogoutDialog() async {
-    // Implementasi dialog logout Anda
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -101,9 +99,10 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
             child: Text('Cancel', style: greyTextStyle),
           ),
           TextButton(
-            onPressed: () {
-              // TODO: Panggil BLoC untuk logout
+            onPressed: () async {
+              await Token.clearToken();
               // context.read<AuthBloc>().add(LogoutEvent());
+              //TODO implement logout from backend
               Navigator.of(context).pop();
               routes.goNamed(RouteNames.login);
             },
@@ -114,7 +113,6 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
     );
   }
 
-  // Helper widget untuk membuat container button
   Widget _buildOptionContainer({
     required String title,
     required IconData icon,
@@ -125,7 +123,7 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 18.r),
-        margin: EdgeInsets.only(bottom: 16.r), // Jarak antar container
+        margin: EdgeInsets.only(bottom: 16.r),
         decoration: BoxDecoration(
           color: backgroundGreyColor,
           borderRadius: BorderRadius.circular(24.r),
@@ -168,7 +166,6 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
                 title: 'Edit Profile',
                 icon: Icons.person_outline,
                 onTap: () {
-                  // Kirim data user ke halaman EditProfilePage
                   routes.pushNamed(RouteNames.profileEdit, extra: widget.user);
                 },
               ),
@@ -176,15 +173,14 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
                 title: 'Edit Financial Profile',
                 icon: Icons.account_balance_wallet_outlined,
                 onTap: () {
-                  // Arahkan ke halaman profil finansial yang sudah ada
                   routes.pushNamed(RouteNames.financialProfile);
                 },
               ),
-              SizedBox(height: 24.r), // Beri jarak sebelum tombol logout
+              SizedBox(height: 24.r),
               ProfileActionSection(
-                onLogout: _showLogoutDialog, // Fungsi logout
+                onLogout: _showLogoutDialog,
               ),
-              SizedBox(height: 40.r), // Padding bawah
+              SizedBox(height: 40.r),
             ],
           ),
         ),

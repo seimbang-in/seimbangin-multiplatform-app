@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Main Color
 Color primaryColor = const Color(0xFF1976D2);
-Color secondaryColor = const Color(0xFF0048FF);
+Color secondaryColor = const Color.fromRGBO(0, 72, 255, 1);
 Color buttonColor = const Color(0xFF2885FF);
+Color statusBarPrimaryColor = Colors.transparent;
 Color sliderOnboardingColor = const Color(0xFF9AB7FF);
 Color backgroundWhiteColor = const Color(0xFFFFFFFF);
 Color backgroundGreyColor = const Color(0xFFECECEC);

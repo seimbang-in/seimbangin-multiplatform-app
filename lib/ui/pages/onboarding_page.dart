@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
+import 'package:seimbangin_app/utils/token.dart'; // <-- Import class Token
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -23,6 +24,14 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     'AI-Advisor: Smart Budgeting,\nSmarter Spending',
     'Build Healthy Money Habits &\nAchieve Financial Goals'
   ];
+
+  void _finishOnboarding() async {
+    await Token.setOnboardingSeen();
+
+    if (mounted) {
+      routes.goNamed(RouteNames.login);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,145 +109,27 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                       SizedBox(
                         height: 32.h,
                       ),
-                      (currentIndex == 1)
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 20.w,
-                                  height: 8.h,
-                                  margin: const EdgeInsets.only(
-                                    right: 4,
-                                  ).r,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    color: currentIndex == 0
-                                        ? secondaryColor
-                                        : sliderOnboardingColor,
-                                  ),
-                                ),
-                                Container(
-                                  width: 38.r,
-                                  height: 8.r,
-                                  margin: const EdgeInsets.only(
-                                    right: 4,
-                                  ).r,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: currentIndex == 1
-                                        ? secondaryColor
-                                        : sliderOnboardingColor,
-                                  ),
-                                ),
-                                Container(
-                                  width: 20.w,
-                                  height: 8.h,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: currentIndex == 2
-                                        ? secondaryColor
-                                        : sliderOnboardingColor,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : (currentIndex == 2)
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 20.w,
-                                      height: 8.h,
-                                      margin: const EdgeInsets.only(
-                                        right: 4,
-                                      ).r,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: currentIndex == 0
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 20.w,
-                                      height: 8.h,
-                                      margin: const EdgeInsets.only(
-                                        right: 4,
-                                      ).r,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(12).r,
-                                        color: currentIndex == 1
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 38.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(12).r,
-                                        color: currentIndex == 2
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 38.w,
-                                      height: 8.h,
-                                      margin: const EdgeInsets.only(
-                                        right: 4,
-                                      ).r,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(12).r,
-                                        color: currentIndex == 0
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 20.w,
-                                      height: 8.h,
-                                      margin: const EdgeInsets.only(
-                                        right: 4,
-                                      ).r,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(12).r,
-                                        color: currentIndex == 1
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 20.w,
-                                      height: 8.h,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius:
-                                            BorderRadius.circular(12).r,
-                                        color: currentIndex == 2
-                                            ? secondaryColor
-                                            : sliderOnboardingColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: titles.map((url) {
+                          int index = titles.indexOf(url);
+                          return Container(
+                            width: currentIndex == index ? 38.w : 20.w,
+                            height: 8.h,
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 2.0,
+                            ).r,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(12.r),
+                              color: currentIndex == index
+                                  ? secondaryColor
+                                  : sliderOnboardingColor,
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ],
                   ),
                 ],
@@ -251,9 +142,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
               child: (currentIndex == 2)
                   ? PrimaryFilledButton(
                       title: 'Login',
-                      onPressed: () {
-                        routes.goNamed(RouteNames.login);
-                      },
+                      onPressed: _finishOnboarding, // Panggil method finish
                     )
                   : PrimaryFilledButton(
                       title: 'Next',
@@ -263,9 +152,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                     ),
             ),
             TextButton(
-              onPressed: () {
-                routes.goNamed(RouteNames.login);
-              },
+              onPressed: _finishOnboarding, // Panggil method finish
               child: Text(
                 'Skip',
                 style: blueTextStyle.copyWith(
