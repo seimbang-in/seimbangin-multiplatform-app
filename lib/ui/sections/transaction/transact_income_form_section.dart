@@ -5,7 +5,7 @@ import 'package:seimbangin_app/ui/sections/transactions_section.dart'; // Asumsi
 class TransactionIncomeFormSection extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController priceController;
-  final TextEditingController amountController;
+
   final List<Category> categories;
   final Function(String) onCategorySelected;
   final VoidCallback onFormChanged;
@@ -14,7 +14,6 @@ class TransactionIncomeFormSection extends StatelessWidget {
     super.key,
     required this.nameController,
     required this.priceController,
-    required this.amountController,
     required this.categories,
     required this.onCategorySelected,
     required this.onFormChanged,
