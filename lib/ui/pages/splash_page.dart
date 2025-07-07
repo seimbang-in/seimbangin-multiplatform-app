@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
+import 'package:seimbangin_app/utils/token.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -14,9 +16,30 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    _checkStatusAndNavigate();
+  }
+
+  Future<void> _checkStatusAndNavigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    final bool hasSeenOnboarding = await Token.getOnboardingSeen();
+
+    if (!mounted) return;
+
+    if (!hasSeenOnboarding) {
       routes.goNamed(RouteNames.onboarding);
-    });
+      return;
+    }
+
+    final String? token = await Token.getToken();
+
+    if (!mounted) return;
+
+    if (token != null) {
+      routes.goNamed(RouteNames.main);
+    } else {
+      routes.goNamed(RouteNames.login);
+    }
   }
 
   @override
@@ -49,7 +72,7 @@ class _SplashPageState extends State<SplashPage> {
                       backgroundWhiteColor.withAlpha(50),
                       backgroundWhiteColor.withAlpha(255),
                     ],
-                    stops: [0.0, 0.6],
+                    stops: const [0.0, 0.6],
                   ).createShader(bound);
                 },
                 child: SvgPicture.asset(

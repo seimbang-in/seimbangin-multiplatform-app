@@ -87,7 +87,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
         }
         // --- Akhir logika inisialisasi form ---
 
-        if (state is financialProfileLoading) {
+        if (state is FinancialProfileLoading) {
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -95,7 +95,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
               child: CircularProgressIndicator(),
             ),
           );
-        } else if (state is financialProfileSuccess) {
+        } else if (state is FinancialProfileSuccess) {
           if (Navigator.of(context, rootNavigator: true).canPop()) {
             Navigator.of(context, rootNavigator: true).pop();
           }
@@ -107,7 +107,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
           );
           context.read<HomepageBloc>().add(HomepageStarted());
           routes.replaceNamed(RouteNames.main);
-        } else if (state is financialProfileFailure) {
+        } else if (state is FinancialProfileFailure) {
           if (Navigator.of(context, rootNavigator: true).canPop()) {
             Navigator.of(context, rootNavigator: true).pop();
           }

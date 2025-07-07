@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:logger/logger.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
@@ -23,49 +24,78 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  var logger = Logger();
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Memuat data homepage jika belum pernah dimuat sebelumnya
+    if (context.read<HomepageBloc>().state is! HomePageSuccess) {
+      context.read<HomepageBloc>().add(HomepageStarted());
+    }
+
+    // Memuat transaksi terkini jika state-nya BUKAN TransactionLoadSuccess
+    if (context.read<TransactionBloc>().state is! TransactionLoadSuccess) {
+      context.read<TransactionBloc>().add(
+            GetRecentTransactionsEvent(limit: 3),
+          );
+    }
+  }
+
+  // Fungsi untuk pull-to-refresh
   Future<void> _onRefresh() async {
     context.read<HomepageBloc>().add(HomepageStarted());
-    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 5));
+    context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 3));
 
-    await Future.wait([
-      context.read<HomepageBloc>().stream.firstWhere(
-          (state) => state is HomePageSuccess || state is HomePageFailure),
-      context.read<TransactionBloc>().stream.firstWhere((state) =>
-          state is TransactionGetSuccess || state is TransactionFailure),
-    ]);
+    try {
+      await Future.wait([
+        context.read<HomepageBloc>().stream.firstWhere(
+            (state) => state is HomePageSuccess || state is HomePageFailure),
+        context.read<TransactionBloc>().stream.firstWhere((state) =>
+            state is TransactionLoadSuccess || state is TransactionFailure),
+      ]);
+    } catch (e) {
+      logger.e("Error waiting for BLoC refresh: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<TransactionBloc, TransactionState>(
-      listenWhen: (previousState, currentState) {
-        return currentState is TransactionSuccess &&
-            previousState is! TransactionSuccess;
-      },
-      listener: (context, state) {
-        print(
-            '[BlocListener] TransactionSuccess terdeteksi! Me-refresh homepage...');
-        context.read<HomepageBloc>().add(HomepageStarted());
-        context
-            .read<TransactionBloc>()
-            .add(GetRecentTransactionsEvent(limit: 3));
-      },
-      child: BlocBuilder<HomepageBloc, HomepageState>(
-        builder: (context, state) {
-          if (state is HomePageLoading) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (state is HomePageSuccess) {
-            final user = state.user;
-            return Scaffold(
-              backgroundColor: backgroundWhiteColor,
-              body: RefreshIndicator(
+
+    return Scaffold(
+      backgroundColor: secondaryColor,
+      body: BlocListener<TransactionBloc, TransactionState>(
+        listenWhen: (previousState, currentState) {
+          return currentState is TransactionSuccess &&
+              previousState is! TransactionSuccess;
+        },
+        listener: (context, state) {
+          logger.i(
+              '[BlocListener HomePage] TransactionSuccess terdeteksi! Me-refresh homepage...');
+          context.read<HomepageBloc>().add(HomepageStarted());
+          context
+              .read<TransactionBloc>()
+              .add(GetRecentTransactionsEvent(limit: 3));
+        },
+        child: BlocBuilder<HomepageBloc, HomepageState>(
+          builder: (context, homepageState) {
+            // State 1: Loading Awal
+            if (homepageState is HomePageLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: textWhiteColor,
+                ),
+              );
+            }
+
+            // State 2: Sukses Memuat Data Utama
+            if (homepageState is HomePageSuccess) {
+              final user = homepageState.user;
+
+              return RefreshIndicator(
+                color: primaryColor,
                 onRefresh: _onRefresh,
                 child: CustomScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -89,8 +119,8 @@ class _HomePageState extends State<HomePage>
                         decoration: BoxDecoration(
                           color: backgroundWhiteColor,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.r),
-                            topRight: Radius.circular(30.r),
+                            topLeft: Radius.circular(32.r),
+                            topRight: Radius.circular(32.r),
                           ),
                         ),
                         child: Padding(
@@ -118,15 +148,43 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SizedBox(height: 10.r),
-                              AiAdvisorSection(
-                                financialProfileButtonOntap: () => routes
-                                    .pushNamed(RouteNames.financialProfile),
-                                advice: state.advice,
-                                isAdviceExist:
-                                    state.user.data.financeProfile != null,
-                              ),
+
+                              // Logic untuk Lazy Loading AI Advisor (sudah benar)
+                              if (homepageState.isAdviceLoading)
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                      color: primaryColor),
+                                )
+                              else if (homepageState.adviceError != null)
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    homepageState.adviceError!,
+                                    style: greyTextStyle,
+                                  ),
+                                )
+                              else if (homepageState.advice != null)
+                                AiAdvisorSection(
+                                  financialProfileButtonOntap: () => routes
+                                      .pushNamed(RouteNames.financialProfile),
+                                  advice: homepageState.advice!,
+                                  isAdviceExist:
+                                      homepageState.user.data.financeProfile !=
+                                          null,
+                                )
+                              else
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                      "Saran AI tidak tersedia saat ini."),
+                                ),
+
                               SizedBox(height: 20.r),
-                              HomeRecentTransactionsSection(),
+                              const HomeRecentTransactionsSection(),
                               SizedBox(height: 100.r),
                             ],
                           ),
@@ -135,12 +193,39 @@ class _HomePageState extends State<HomePage>
                     ),
                   ],
                 ),
-              ),
+              );
+            }
+
+            // State 3: Gagal Memuat Data Awal
+            if (homepageState is HomePageFailure) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0).r,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Gagal memuat data: ${homepageState.error}',
+                        textAlign: TextAlign.center,
+                        style: blackTextStyle.copyWith(fontSize: 16.sp),
+                      ),
+                      SizedBox(height: 20.h),
+                      ElevatedButton(
+                        onPressed: _onRefresh,
+                        child: const Text('Coba Lagi'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            // Fallback State
+            return const Center(
+              child: Text("Terjadi kesalahan tidak dikenal."),
             );
-          }
-          // Fallback jika state gagal atau lainnya
-          return const Scaffold(body: SizedBox.shrink());
-        },
+          },
+        ),
       ),
     );
   }

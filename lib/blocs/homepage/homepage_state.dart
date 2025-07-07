@@ -1,3 +1,5 @@
+// lib/blocs/homepage/homepage_state.dart
+
 part of 'homepage_bloc.dart';
 
 @immutable
@@ -13,9 +15,34 @@ class HomePageLoading extends HomepageState {
 class HomePageSuccess extends HomepageState {
   final String message;
   final User user;
-  final Advice advice;
-  HomePageSuccess(
-      {required this.message, required this.user, required this.advice});
+  final Advice? advice;
+  final bool isAdviceLoading;
+  final String? adviceError;
+
+  HomePageSuccess({
+    required this.message,
+    required this.user,
+    this.advice,
+    this.isAdviceLoading = false,
+    this.adviceError,
+  });
+
+  // 4. Tambahkan method copyWith untuk mempermudah update state
+  HomePageSuccess copyWith({
+    String? message,
+    User? user,
+    Advice? advice,
+    bool? isAdviceLoading,
+    String? adviceError,
+  }) {
+    return HomePageSuccess(
+      message: message ?? this.message,
+      user: user ?? this.user,
+      advice: advice ?? this.advice,
+      isAdviceLoading: isAdviceLoading ?? this.isAdviceLoading,
+      adviceError: adviceError ?? this.adviceError,
+    );
+  }
 }
 
 class HomePageFailure extends HomepageState {
@@ -23,17 +50,17 @@ class HomePageFailure extends HomepageState {
   HomePageFailure(this.error);
 }
 
-class financialProfileLoading extends HomepageState {
+class FinancialProfileLoading extends HomepageState {
   final String message;
-  financialProfileLoading(this.message);
+  FinancialProfileLoading(this.message);
 }
 
-class financialProfileSuccess extends HomepageState {
+class FinancialProfileSuccess extends HomepageState {
   final String message;
-  financialProfileSuccess({required this.message});
+  FinancialProfileSuccess({required this.message});
 }
 
-class financialProfileFailure extends HomepageState {
+class FinancialProfileFailure extends HomepageState {
   final String error;
-  financialProfileFailure(this.error);
+  FinancialProfileFailure(this.error);
 }
