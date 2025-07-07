@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
+import 'package:seimbangin_app/models/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
+import 'package:collection/collection.dart';
 
 class HistoryTransactPage extends StatefulWidget {
   const HistoryTransactPage({super.key});
@@ -23,7 +25,9 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    if (context.read<TransactionBloc>().state is! HistoryLoadSuccess) {
+    final currentState = context.read<TransactionBloc>().state;
+    if (currentState is! TransactionLoadSuccess ||
+        currentState.historicalTransactions.isEmpty) {
       context.read<TransactionBloc>().add(FetchHistoryTransactions());
     }
   }
@@ -39,7 +43,8 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
   void _onScroll() {
     if (_isBottom) {
       final currentState = context.read<TransactionBloc>().state;
-      if (currentState is HistoryLoadSuccess && !currentState.hasReachedMax) {
+      if (currentState is TransactionLoadSuccess &&
+          !currentState.hasReachedMax) {
         context.read<TransactionBloc>().add(FetchHistoryTransactions());
       }
     }
@@ -49,9 +54,29 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.8);
+    return currentScroll >= (maxScroll * 0.9);
   }
 
+  Future<void> _onRefresh() async {
+    context
+        .read<TransactionBloc>()
+        .add(FetchHistoryTransactions(isRefresh: true));
+  }
+
+  Map<String, List<Data>> _groupTransactionsByMonth(List<Data> transactions) {
+    final now = DateTime.now();
+    final monthYearFormat = DateFormat('MMMM yyyy', 'en_EN');
+
+    return groupBy(transactions, (Data transaction) {
+      final date = DateTime.parse(transaction.createdAt!).toLocal();
+      if (date.year == now.year && date.month == now.month) {
+        return 'This Month';
+      }
+      return monthYearFormat.format(date);
+    });
+  }
+
+  /// Helper untuk mendapatkan warna dan ikon berdasarkan kategori transaksi.
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
       case 'salary':
@@ -63,7 +88,7 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
       case 'gift':
         return (buttonBonusColor, 'assets/ic_gift.png');
       case 'parent':
-        return (buttonGiftColor, 'assets/ic_parents.png');
+        return (buttonParentColor, 'assets/ic_parents.png');
       case 'food':
         return (buttonFoodColor, 'assets/ic_food.png');
       case 'transportation':
@@ -84,10 +109,6 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
     }
   }
 
-  Future<void> _onRefresh() async {
-    context.read<TransactionBloc>().add(FetchHistoryTransactions());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,24 +122,18 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
         leading: Padding(
           padding: EdgeInsets.only(left: 24.r),
           child: CustomRoundedButton(
-            onPressed: () => routes.replaceNamed(RouteNames.main),
+            onPressed: () => Navigator.of(context).pop(),
             widget:
                 Icon(Icons.chevron_left, size: 32.r, color: textSecondaryColor),
             backgroundColor: backgroundWhiteColor,
           ),
         ),
         title: Text(
-          'History Transaction',
+          'Transactions History',
           style: blackTextStyle.copyWith(
               fontSize: 18.sp, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 24.r),
-            child: Image.asset('assets/ic_seimbangin-logo-logreg.png'),
-          ),
-        ],
       ),
       body: _buildTransactionList(),
     );
@@ -127,108 +142,103 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
   Widget _buildTransactionList() {
     return BlocBuilder<TransactionBloc, TransactionState>(
       builder: (context, state) {
-        bool isLoadingFirstTime =
-            state is TransactionLoading && state is! HistoryLoadSuccess;
-
-        if (isLoadingFirstTime) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is TransactionFailure) {
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Failed to fetch transactions: ${state.message}',
-                textAlign: TextAlign.center),
-          ));
-        }
-
-        if (state is HistoryLoadSuccess) {
-          if (state.transactions.isEmpty) {
-            return Center(
-              child: RefreshIndicator(
-                // Izinkan refresh meskipun kosong
-                onRefresh: _onRefresh,
-                child: ListView(
-                  children: [
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.3), // Pusatkan teks
-                    const Center(child: Text('No transactions found.')),
-                  ],
-                ),
+        if (state is TransactionLoadSuccess) {
+          if (state.historicalTransactions.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: ListView(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  const Center(child: Text('There is no transaction yet.')),
+                ],
               ),
             );
           }
 
-          final displayedTransactions = List.of(state.transactions);
-          displayedTransactions.sort((a, b) => DateTime.parse(b.createdAt!)
-              .compareTo(DateTime.parse(a.createdAt!)));
+          final groupedTransactions =
+              _groupTransactionsByMonth(state.historicalTransactions);
+          final groupKeys = groupedTransactions.keys.toList();
 
           return RefreshIndicator(
             onRefresh: _onRefresh,
             child: ListView.builder(
               controller: _scrollController,
-              padding: EdgeInsets.fromLTRB(24.r, 20.r, 24.r, 20.r),
-              itemCount: state.hasReachedMax
-                  ? displayedTransactions.length
-                  : displayedTransactions.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index >= displayedTransactions.length) {
-                  // Ini adalah item terakhir untuk loading indicator
+              padding: EdgeInsets.fromLTRB(24.r, 20.r, 24.r, 100.r),
+              itemCount: groupKeys.length + (state.hasReachedMax ? 0 : 1),
+              itemBuilder: (context, groupIndex) {
+                if (groupIndex == groupKeys.length) {
                   return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircularProgressIndicator(),
+                      child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator()));
+                }
+
+                final month = groupKeys[groupIndex];
+                final transactionsInMonth = groupedTransactions[month]!;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: groupIndex == 0 ? 0 : 24.r, bottom: 12.r),
+                      child: Text(
+                        month,
+                        style: blackTextStyle.copyWith(
+                            fontSize: 16.sp, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  );
-                }
+                    ...transactionsInMonth.map((transaction) {
+                      final total = int.tryParse(transaction.amount) ?? 0;
+                      final prefix = transaction.type == 0 ? '+' : '-';
+                      final amountColor = transaction.type == 0
+                          ? textGreenColor
+                          : textWarningColor;
+                      final date = DateFormat('d MMMM y', 'en_EN').format(
+                          DateTime.parse(transaction.createdAt!).toLocal());
 
-                final transaction = displayedTransactions[
-                    index]; // Gunakan data yang sudah diurutkan
-                String categoryForIcon = transaction.category ?? 'others';
-                if (transaction.items != null &&
-                    transaction.items!.isNotEmpty &&
-                    transaction.items!.first.category != null) {
-                  categoryForIcon = transaction.items!.first.category!;
-                }
+                      String categoryForIcon = 'others'; // Nilai default
 
-                final categoryUI = _getCategoryUIData(categoryForIcon);
-                final Color bgColor = categoryUI.$1;
-                final String iconPath = categoryUI.$2;
+                      if (transaction.items.isNotEmpty &&
+                          transaction.items.first.category != null &&
+                          transaction.items.first.category.isNotEmpty) {
+                        categoryForIcon = transaction.items.first.category;
+                      } else if (transaction.category.isNotEmpty) {
+                        categoryForIcon = transaction.category;
+                      }
 
-                final total = int.tryParse(transaction.amount ?? '0') ?? 0;
-                final prefix = transaction.type == 0 ? '+' : '-';
-                final amountColor =
-                    transaction.type == 0 ? textGreenColor : textWarningColor;
-                final date = DateFormat(
-                        'd MMMM yyyy, HH:mm') // Format tanggal lebih lengkap
-                    .format(DateTime.parse(transaction.createdAt!));
+                      final categoryUI = _getCategoryUIData(categoryForIcon);
+                      final Color bgColor = categoryUI.$1;
+                      final String iconPath = categoryUI.$2;
 
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 16.r),
-                  child: RecentTransactionCard(
-                    // --- PERUBAHAN DI SINI ---
-                    onTap: () {
-                      // Navigasi ke halaman detail dengan mengirim objek 'transaction'
-                      routes.pushNamed(RouteNames.transactionDetail,
-                          extra: transaction);
-                    },
-                    // --- AKHIR PERUBAHAN ---
-                    backgroundColor: bgColor,
-                    icon: Image.asset(iconPath, width: 30.r, height: 30.r),
-                    title: transaction.name!,
-                    subtitle: date,
-                    amount:
-                        "$prefix${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(total)}",
-                    amountColor: amountColor,
-                  ),
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 16.r),
+                        child: RecentTransactionCard(
+                          onTap: () => routes.pushNamed(
+                              RouteNames.transactionDetail,
+                              extra: transaction),
+                          backgroundColor: bgColor,
+                          icon:
+                              Image.asset(iconPath, width: 30.r, height: 30.r),
+                          title: transaction.name,
+                          subtitle: date,
+                          amount:
+                              "$prefix${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(total)}",
+                          amountColor: amountColor,
+                        ),
+                      );
+                    }).toList(),
+                  ],
                 );
               },
             ),
           );
         }
-        // State default jika belum ada apa-apa (misal, TransactionInitial)
+
+        if (state is TransactionFailure) {
+          return Center(child: Text(state.message));
+        }
+
         return const Center(child: CircularProgressIndicator());
       },
     );

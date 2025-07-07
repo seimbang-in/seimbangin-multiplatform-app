@@ -140,13 +140,13 @@ class CategorySelector extends StatefulWidget {
 }
 
 class _CategorySelectorState extends State<CategorySelector> {
-  String? _selectedCategoryId;
+  String? _selectedCategoryTitle;
 
-  void _handleCategoryTap(String categoryId) {
+  void _handleCategoryTap(String categoryTitle) {
     setState(() {
-      _selectedCategoryId = categoryId;
+      _selectedCategoryTitle = categoryTitle;
     });
-    widget.onCategorySelected?.call(categoryId);
+    widget.onCategorySelected?.call(categoryTitle);
   }
 
   @override
@@ -168,10 +168,10 @@ class _CategorySelectorState extends State<CategorySelector> {
           spacing: 12.r,
           runSpacing: 12.r,
           children: widget.categories.map((category) {
-            final isSelected = _selectedCategoryId == category.id;
+            final isSelected = _selectedCategoryTitle == category.title;
 
             return GestureDetector(
-              onTap: () => _handleCategoryTap(category.id),
+              onTap: () => _handleCategoryTap(category.title),
               child: Column(
                 children: [
                   AnimatedContainer(

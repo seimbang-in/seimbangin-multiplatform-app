@@ -37,24 +37,28 @@ class _TransactionsPageState extends State<TransactionsPage> {
   double totalPrice = 0.0;
 
   // --- DATA STATIS KATEGORI ---
+  // --- PERUBAHAN UTAMA: KATEGORI DISESUAIKAN DENGAN MODEL ---
   final List<Category> incomeCategories = [
-    Category(id: '1', title: 'salary', icon: 'assets/ic_salary.png'),
-    Category(id: '2', title: 'bonus', icon: 'assets/ic_bonus.png'),
-    Category(id: '3', title: 'freelance', icon: 'assets/ic_freelance.png'),
-    Category(id: '4', title: 'parent', icon: 'assets/ic_parents.png'),
-    Category(id: '5', title: 'gift', icon: 'assets/ic_gift.png'),
+    Category(id: 'inc1', title: 'salary', icon: 'assets/ic_salary.png'),
+    Category(id: 'inc2', title: 'freelance', icon: 'assets/ic_freelance.png'),
+    Category(id: 'inc3', title: 'bonus', icon: 'assets/ic_bonus.png'),
+    Category(id: 'inc4', title: 'gift', icon: 'assets/ic_gift.png'),
+    Category(id: 'inc5', title: 'parent', icon: 'assets/ic_parents.png'),
   ];
 
   final List<Category> outcomeCategories = [
-    Category(id: '1', title: 'health', icon: 'assets/ic_health.png'),
-    Category(id: '2', title: 'housing', icon: 'assets/ic_housing.png'),
-    Category(id: '3', title: 'internet', icon: 'assets/ic_internet.png'),
-    Category(id: '4', title: 'education', icon: 'assets/ic_education.png'),
-    Category(id: '5', title: 'shopping', icon: 'assets/ic_shopping.png'),
+    Category(id: 'out1', title: 'food', icon: 'assets/ic_food.png'),
+    Category(id: 'out2', title: 'shopping', icon: 'assets/ic_shopping.png'),
     Category(
-        id: '6', title: 'transportation', icon: 'assets/ic_transportation.png'),
-    Category(id: '7', title: 'food', icon: 'assets/ic_food.png'),
+        id: 'out3',
+        title: 'transportation',
+        icon: 'assets/ic_transportation.png'),
+    Category(id: 'out4', title: 'internet', icon: 'assets/ic_internet.png'),
+    Category(id: 'out5', title: 'housing', icon: 'assets/ic_housing.png'),
+    Category(id: 'out6', title: 'health', icon: 'assets/ic_health.png'),
+    Category(id: 'out7', title: 'education', icon: 'assets/ic_education.png'),
   ];
+  // --- AKHIR PERUBAHAN ---
 
   // --- LIFECYCLE METHODS ---
   @override

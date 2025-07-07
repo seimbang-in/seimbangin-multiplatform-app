@@ -30,10 +30,11 @@ Color buttonInternetColor = const Color(0xFF01DDB0);
 Color buttonTransportationColor = const Color(0xFFA377FF);
 Color buttonHousingColor = const Color(0xFFFFF694);
 Color buttonFoodColor = const Color(0xFFC1E45B);
-Color buttonSalaryColor = const Color(0xFFFFEA01);
+Color buttonSalaryColor = const Color(0xFFFFC107);
 Color buttonFreelanceColor = const Color(0xFFFFEA01);
+Color buttonParentColor = const Color(0xFF4CAF50);
 Color buttonGiftColor = const Color(0xFFFFA600);
-Color buttonBonusColor = const Color(0xFFFFA600);
+Color buttonBonusColor = const Color(0xFFFF6A00);
 Color buttonHealthColor = const Color(0xFFFF3D00);
 
 // Text Themes

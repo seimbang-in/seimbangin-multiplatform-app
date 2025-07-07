@@ -1,3 +1,5 @@
+// lib/blocs/transaction/transaction_state.dart
+
 part of 'transaction_bloc.dart';
 
 @immutable
@@ -20,30 +22,31 @@ class TransactionFailure extends TransactionState {
   TransactionFailure(this.message);
 }
 
-class TransactionGetSuccess extends TransactionState {
-  final Transaction transaction;
+// --- PERUBAHAN UTAMA DI SINI ---
+// State ini akan menjadi satu-satunya state sukses untuk memuat data.
+class TransactionLoadSuccess extends TransactionState {
+  // Data untuk homepage (limit 3)
+  final List<Data> recentTransactions;
 
-  TransactionGetSuccess(this.transaction);
-}
-
-// --- STATE BARU UNTUK LAZY LOAD ---
-// State ini akan menyimpan daftar transaksi yang sudah terkumpul
-// dan informasi apakah masih ada halaman berikutnya.
-class HistoryLoadSuccess extends TransactionState {
-  final List<Data> transactions;
+  // Data untuk halaman histori (semua data, bisa bertambah dengan lazy load)
+  final List<Data> historicalTransactions;
   final bool hasReachedMax;
 
-  HistoryLoadSuccess({
-    required this.transactions,
-    required this.hasReachedMax,
+  TransactionLoadSuccess({
+    this.recentTransactions = const [],
+    this.historicalTransactions = const [],
+    this.hasReachedMax = false,
   });
 
-  HistoryLoadSuccess copyWith({
-    List<Data>? transactions,
+  TransactionLoadSuccess copyWith({
+    List<Data>? recentTransactions,
+    List<Data>? historicalTransactions,
     bool? hasReachedMax,
   }) {
-    return HistoryLoadSuccess(
-      transactions: transactions ?? this.transactions,
+    return TransactionLoadSuccess(
+      recentTransactions: recentTransactions ?? this.recentTransactions,
+      historicalTransactions:
+          historicalTransactions ?? this.historicalTransactions,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
   }

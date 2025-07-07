@@ -34,9 +34,9 @@ class _HomePageState extends State<HomePage>
     if (context.read<HomepageBloc>().state is! HomePageSuccess) {
       context.read<HomepageBloc>().add(HomepageStarted());
     }
-    // Memuat transaksi terkini jika belum ada
-    if (context.read<TransactionBloc>().state is! TransactionGetSuccess &&
-        context.read<TransactionBloc>().state is! HistoryLoadSuccess) {
+
+    // Memuat transaksi terkini jika state-nya BUKAN TransactionLoadSuccess
+    if (context.read<TransactionBloc>().state is! TransactionLoadSuccess) {
       context.read<TransactionBloc>().add(
             GetRecentTransactionsEvent(limit: 3),
           );
@@ -49,12 +49,11 @@ class _HomePageState extends State<HomePage>
     context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 3));
 
     try {
-      // Menunggu kedua BLoC selesai me-refresh
       await Future.wait([
         context.read<HomepageBloc>().stream.firstWhere(
             (state) => state is HomePageSuccess || state is HomePageFailure),
         context.read<TransactionBloc>().stream.firstWhere((state) =>
-            state is TransactionGetSuccess || state is TransactionFailure),
+            state is TransactionLoadSuccess || state is TransactionFailure),
       ]);
     } catch (e) {
       logger.e("Error waiting for BLoC refresh: $e");
@@ -73,7 +72,6 @@ class _HomePageState extends State<HomePage>
               previousState is! TransactionSuccess;
         },
         listener: (context, state) {
-          // Me-refresh data homepage setiap ada transaksi baru yang berhasil
           logger.i(
               '[BlocListener HomePage] TransactionSuccess terdeteksi! Me-refresh homepage...');
           context.read<HomepageBloc>().add(HomepageStarted());
@@ -87,7 +85,7 @@ class _HomePageState extends State<HomePage>
             if (homepageState is HomePageLoading) {
               return Center(
                 child: CircularProgressIndicator(
-                  color: primaryColor,
+                  color: textWhiteColor,
                 ),
               );
             }
@@ -151,7 +149,7 @@ class _HomePageState extends State<HomePage>
                               ),
                               SizedBox(height: 10.r),
 
-                              // Tampilkan loading indicator jika advice sedang dimuat
+                              // Logic untuk Lazy Loading AI Advisor (sudah benar)
                               if (homepageState.isAdviceLoading)
                                 Container(
                                   height: 100,
@@ -159,7 +157,6 @@ class _HomePageState extends State<HomePage>
                                   child: CircularProgressIndicator(
                                       color: primaryColor),
                                 )
-                              // Tampilkan pesan error jika GAGAL memuat advice
                               else if (homepageState.adviceError != null)
                                 Container(
                                   height: 100,
@@ -169,7 +166,6 @@ class _HomePageState extends State<HomePage>
                                     style: greyTextStyle,
                                   ),
                                 )
-                              // Tampilkan data jika SUKSES memuat advice
                               else if (homepageState.advice != null)
                                 AiAdvisorSection(
                                   financialProfileButtonOntap: () => routes
@@ -179,7 +175,6 @@ class _HomePageState extends State<HomePage>
                                       homepageState.user.data.financeProfile !=
                                           null,
                                 )
-                              // Fallback jika tidak ada data sama sekali
                               else
                                 Container(
                                   height: 100,
