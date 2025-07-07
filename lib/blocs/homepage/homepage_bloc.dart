@@ -1,3 +1,5 @@
+// lib/blocs/homepage/homepage_bloc.dart
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
@@ -12,6 +14,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
 
   HomepageBloc({required this.userService}) : super(HomepageInitial()) {
     on<HomepageStarted>(_handleHomepageStarted);
+    on<_FetchAiAdvice>(_handleFetchAiAdvice);
     on<UpdateFinancialProfile>(_updateFinancialProfile);
   }
 
@@ -20,48 +23,56 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     Emitter<HomepageState> emit,
   ) async {
     try {
-      // Selalu emit loading setiap kali event ini dipanggil
-      emit(HomePageLoading('Memuat data...'));
-      print('[HomepageBloc] Memulai pemanggilan service...');
+      emit(HomePageLoading('Memuat data profil...'));
 
-      // --- LOGGING POINT 1 ---
-      print('[HomepageBloc] Memanggil userService.getUserProfile()...');
       final userData = await userService.getUserProfile();
-      print('[HomepageBloc] Selesai memanggil userService.getUserProfile().');
-      // ------------------------
-
-      // --- LOGGING POINT 2 ---
-      print('[HomepageBloc] Memanggil userService.getUserAdvice()...');
-      final adviceData = await userService.getUserAdvice();
-      print('[HomepageBloc] Selesai memanggil userService.getUserAdvice().');
-      // ------------------------
 
       emit(HomePageSuccess(
-        message: 'Data berhasil dimuat',
+        message: 'Profil berhasil dimuat',
         user: userData,
-        advice: adviceData,
+        isAdviceLoading: true,
       ));
-      print('[HomepageBloc] Berhasil emit HomePageSuccess.');
+
+      add(_FetchAiAdvice());
     } catch (e) {
-      print('[HomepageBloc] Terjadi error saat memuat data: $e');
-      emit(HomePageFailure('Gagal memuat data: ${e.toString()}'));
+      emit(HomePageFailure('Gagal memuat data utama: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _handleFetchAiAdvice(
+    _FetchAiAdvice event,
+    Emitter<HomepageState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! HomePageSuccess) return;
+
+    try {
+      final adviceData = await userService.getUserAdvice();
+
+      emit(currentState.copyWith(
+        advice: adviceData,
+        isAdviceLoading: false, // Advice loading is complete.
+      ));
+    } catch (e) {
+      emit(currentState.copyWith(
+        isAdviceLoading: false, // Advice loading is complete (but failed).
+        adviceError: 'Gagal memuat saran AI',
+      ));
     }
   }
 
   Future<void> _updateFinancialProfile(
       UpdateFinancialProfile event, Emitter<HomepageState> emit) async {
-    emit(financialProfileLoading("Memperbarui data..."));
+    emit(FinancialProfileLoading("Memperbarui data..."));
     try {
-      print(
-          'payload : current savings: ${event.currentSavings}, debt: ${event.debt}, financialGoals: ${event.financialGoals}, riskManagement: ${event.riskManagement}');
       await userService.updateUserProfile(event.currentSavings, event.debt,
           event.financialGoals, event.riskManagement);
-      emit(financialProfileSuccess(message: "Data berhasil diperbarui"));
-      // Panggil event untuk refresh data setelah sukses update
+
+      emit(FinancialProfileSuccess(message: "Data berhasil diperbarui"));
+
       add(HomepageStarted());
     } catch (e) {
-      print('[HomepageBloc] Terjadi error saat update profile: $e');
-      emit(financialProfileFailure("Gagal memperbarui data: ${e.toString()}"));
+      emit(FinancialProfileFailure("Gagal memperbarui data: ${e.toString()}"));
     }
   }
 }

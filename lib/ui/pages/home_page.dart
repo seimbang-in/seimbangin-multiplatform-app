@@ -30,9 +30,11 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
+    // Memuat data homepage jika belum pernah dimuat sebelumnya
     if (context.read<HomepageBloc>().state is! HomePageSuccess) {
       context.read<HomepageBloc>().add(HomepageStarted());
     }
+    // Memuat transaksi terkini jika belum ada
     if (context.read<TransactionBloc>().state is! TransactionGetSuccess &&
         context.read<TransactionBloc>().state is! HistoryLoadSuccess) {
       context.read<TransactionBloc>().add(
@@ -41,11 +43,13 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  // Fungsi untuk pull-to-refresh
   Future<void> _onRefresh() async {
     context.read<HomepageBloc>().add(HomepageStarted());
     context.read<TransactionBloc>().add(GetRecentTransactionsEvent(limit: 3));
 
     try {
+      // Menunggu kedua BLoC selesai me-refresh
       await Future.wait([
         context.read<HomepageBloc>().stream.firstWhere(
             (state) => state is HomePageSuccess || state is HomePageFailure),
@@ -69,6 +73,7 @@ class _HomePageState extends State<HomePage>
               previousState is! TransactionSuccess;
         },
         listener: (context, state) {
+          // Me-refresh data homepage setiap ada transaksi baru yang berhasil
           logger.i(
               '[BlocListener HomePage] TransactionSuccess terdeteksi! Me-refresh homepage...');
           context.read<HomepageBloc>().add(HomepageStarted());
@@ -78,6 +83,7 @@ class _HomePageState extends State<HomePage>
         },
         child: BlocBuilder<HomepageBloc, HomepageState>(
           builder: (context, homepageState) {
+            // State 1: Loading Awal
             if (homepageState is HomePageLoading) {
               return Center(
                 child: CircularProgressIndicator(
@@ -85,6 +91,8 @@ class _HomePageState extends State<HomePage>
                 ),
               );
             }
+
+            // State 2: Sukses Memuat Data Utama
             if (homepageState is HomePageSuccess) {
               final user = homepageState.user;
 
@@ -142,16 +150,46 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SizedBox(height: 10.r),
-                              AiAdvisorSection(
-                                financialProfileButtonOntap: () => routes
-                                    .pushNamed(RouteNames.financialProfile),
-                                advice: homepageState.advice,
-                                isAdviceExist:
-                                    homepageState.user.data.financeProfile !=
-                                        null,
-                              ),
+
+                              // Tampilkan loading indicator jika advice sedang dimuat
+                              if (homepageState.isAdviceLoading)
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                      color: primaryColor),
+                                )
+                              // Tampilkan pesan error jika GAGAL memuat advice
+                              else if (homepageState.adviceError != null)
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    homepageState.adviceError!,
+                                    style: greyTextStyle,
+                                  ),
+                                )
+                              // Tampilkan data jika SUKSES memuat advice
+                              else if (homepageState.advice != null)
+                                AiAdvisorSection(
+                                  financialProfileButtonOntap: () => routes
+                                      .pushNamed(RouteNames.financialProfile),
+                                  advice: homepageState.advice!,
+                                  isAdviceExist:
+                                      homepageState.user.data.financeProfile !=
+                                          null,
+                                )
+                              // Fallback jika tidak ada data sama sekali
+                              else
+                                Container(
+                                  height: 100,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                      "Saran AI tidak tersedia saat ini."),
+                                ),
+
                               SizedBox(height: 20.r),
-                              HomeRecentTransactionsSection(),
+                              const HomeRecentTransactionsSection(),
                               SizedBox(height: 100.r),
                             ],
                           ),
@@ -162,6 +200,8 @@ class _HomePageState extends State<HomePage>
                 ),
               );
             }
+
+            // State 3: Gagal Memuat Data Awal
             if (homepageState is HomePageFailure) {
               return Center(
                 child: Padding(
@@ -184,6 +224,8 @@ class _HomePageState extends State<HomePage>
                 ),
               );
             }
+
+            // Fallback State
             return const Center(
               child: Text("Terjadi kesalahan tidak dikenal."),
             );
