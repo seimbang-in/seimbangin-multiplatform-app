@@ -16,9 +16,11 @@ import 'package:seimbangin_app/services/statistics_service.dart';
 import 'package:seimbangin_app/services/transaction_service.dart';
 import 'package:seimbangin_app/services/user_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp,
@@ -60,6 +62,7 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         designSize: const Size(390, 844),
         minTextAdapt: true,
+        splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
