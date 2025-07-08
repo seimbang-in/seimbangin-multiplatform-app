@@ -223,10 +223,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       nameController: _transactNameController,
                       priceController: _transactPriceController,
                       categories: incomeCategories,
-                      onCategorySelected: (categoryId) {
+                      onCategorySelected: (categoryTitle) {
                         if (mounted) {
                           final selectedTitle = incomeCategories
-                              .firstWhere((cat) => cat.id == categoryId)
+                              .firstWhere((cat) => cat.title == categoryTitle)
                               .title;
                           setState(() => selectedCategory = selectedTitle);
                         }
