@@ -130,9 +130,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
       final name = _transactNameController.text.trim();
       final price = _transactPriceController.text.trim();
       if (name.isEmpty || price.isEmpty || selectedCategory == null) {
-        print(name);
-        print(price);
-        print(selectedCategory);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: const Text('Please complete all income fields!'),
           backgroundColor: backgroundWarningColor,
