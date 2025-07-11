@@ -22,13 +22,9 @@ class TransactionFailure extends TransactionState {
   TransactionFailure(this.message);
 }
 
-// --- PERUBAHAN UTAMA DI SINI ---
-// State ini akan menjadi satu-satunya state sukses untuk memuat data.
 class TransactionLoadSuccess extends TransactionState {
-  // Data untuk homepage (limit 3)
   final List<Data> recentTransactions;
 
-  // Data untuk halaman histori (semua data, bisa bertambah dengan lazy load)
   final List<Data> historicalTransactions;
   final bool hasReachedMax;
 
