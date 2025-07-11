@@ -98,7 +98,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         widget: Icon(
                           Icons.chevron_left,
                           size: 32.r,
-                          color: textPrimaryColor,
+                          color: textSecondaryColor,
                         ),
                         backgroundColor: backgroundWhiteColor,
                       ),
