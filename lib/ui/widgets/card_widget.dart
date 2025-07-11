@@ -337,3 +337,137 @@ class DateAndPeriodSelector extends StatelessWidget {
     );
   }
 }
+
+class DetailAnalytic extends StatelessWidget {
+  final String price;
+  final bool isIncome;
+  const DetailAnalytic({
+    super.key,
+    required this.price,
+    required this.isIncome,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          price,
+          overflow: TextOverflow.ellipsis,
+          style: blackTextStyle.copyWith(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(
+          height: 4.h,
+        ),
+        // CONTAINER TIPE
+        Container(
+          decoration: BoxDecoration(
+            color: backgroundBlueColor,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 14.r,
+                backgroundColor:
+                    isIncome == true ? textGreenColor : textWarningColor,
+                child: Icon(
+                  isIncome == true
+                      ? Icons.keyboard_arrow_up_outlined
+                      : Icons.keyboard_arrow_down_outlined,
+                  color: textWhiteColor,
+                ),
+              ),
+              SizedBox(
+                width: 6.w,
+              ),
+              Text(
+                isIncome == true ? 'Pemasukan' : 'Pengeluaran',
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 10.sp,
+                ),
+              ),
+              SizedBox(
+                width: 12.w,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class StaticNoTransaction extends StatelessWidget {
+  final VoidCallback? onTap;
+  const StaticNoTransaction({
+    super.key,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(12.r),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: textWhiteColor,
+        borderRadius: BorderRadius.circular(18.r),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Belum Ada Transaksi',
+                style: blueTextStyle.copyWith(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(
+                height: 4.h,
+              ),
+              Text(
+                'Anda belum melakukan transaksi sama sekali',
+                style: greyTextStyle.copyWith(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          InkWell(
+            onTap: onTap,
+            child: Container(
+              width: 48.w,
+              height: 48.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+                gradient: LinearGradient(
+                  colors: [
+                    gradientBlueStartColor,
+                    gradientBlueEndColor,
+                  ],
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 24.r,
+                  color: skyBlueColor,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

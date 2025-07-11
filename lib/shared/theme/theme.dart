@@ -16,6 +16,9 @@ Color backgroundPinkColor = const Color(0xFFFFCBDE);
 Color backgroundGreenColor = const Color(0xFF20E828);
 Color backgroundOldGreenColor = const Color(0xFF4CAF50);
 Color backgroundOldWarningColor = const Color(0xFFEA1763);
+Color gradientBlueStartColor = const Color(0xFF60A5FF);
+Color gradientBlueEndColor = const Color(0xFFB1D3FF);
+Color skyBlueColor = const Color(0xFFE0EDFF);
 
 // Text Color
 Color textPrimaryColor = const Color(0xFF000000);
