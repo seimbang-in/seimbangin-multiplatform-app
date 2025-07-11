@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
@@ -29,8 +30,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Coba inisialisasi dari state BLoC saat ini jika sudah tersedia
-    // Ini berguna jika data sudah ada sebelum listener pertama kali terpanggil
+
     final initialHomepageState = context.read<HomepageBloc>().state;
     if (initialHomepageState is HomePageSuccess && !_formInitialized) {
       _initializeFormFields(initialHomepageState.user.data.financeProfile);
@@ -122,197 +122,205 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
       builder: (context, state) {
         // Bagian builder sekarang tidak lagi memanggil _initializeFormFields secara langsung.
         // Ia hanya fokus membangun UI berdasarkan state controller dan _selectedInterval saat ini.
-        return Scaffold(
-          backgroundColor: backgroundWhiteColor,
-          body: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24).r,
-              children: [
-                SizedBox(height: 21.r),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomRoundedButton(
-                      onPressed: () => routes.pop(),
-                      widget: Icon(Icons.chevron_left,
-                          size: 32.r, color: textSecondaryColor),
-                      backgroundColor: backgroundWhiteColor,
-                    ),
-                    Image.asset('assets/ic_seimbangin-logo-logreg.png'),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/img_mascot-login.png', height: 150.h),
-                    SizedBox(height: 20.r),
-                    Text('Financial Profile',
-                        style: blackTextStyle.copyWith(
-                            fontWeight: FontWeight.w600, fontSize: 18.sp)),
-                    SizedBox(height: 4.r),
-                    Text(
-                      'Complete or update your financial profile for AI Advise.',
-                      style: greyTextStyle.copyWith(
-                          fontWeight: FontWeight.w500, fontSize: 14.sp),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30.h),
-                Text("Risk Management Profile",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                SizedBox(height: 8.h),
-                DropdownButtonFormField<String>(
-                  value: _selectedInterval,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16.r, vertical: 14.r),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide:
-                            BorderSide(color: textBlueColor, width: 1.r)),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: statusBarPrimaryColor,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+          child: Scaffold(
+            backgroundColor: backgroundWhiteColor,
+            body: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 24).r,
+                children: [
+                  SizedBox(height: 21.r),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomRoundedButton(
+                        onPressed: () => routes.pop(),
+                        widget: Icon(Icons.chevron_left,
+                            size: 32.r, color: textSecondaryColor),
+                        backgroundColor: backgroundWhiteColor,
+                      ),
+                      Image.asset('assets/ic_seimbangin-logo-logreg.png'),
+                    ],
                   ),
-                  items: _intervals.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value.toUpperCase(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/img_mascot-login.png', height: 150.h),
+                      SizedBox(height: 20.r),
+                      Text('Financial Profile',
                           style: blackTextStyle.copyWith(
-                              fontSize: 14.sp, fontWeight: FontWeight.w500)),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (mounted) setState(() => _selectedInterval = newValue);
-                  },
-                  icon: Icon(Icons.arrow_drop_down,
-                      color: textPrimaryColor, size: 24.r),
-                  dropdownColor: backgroundWhiteColor,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                SizedBox(height: 16.h),
-                Text("Financial Goals",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                SizedBox(height: 8.h),
-                TextField(
-                  controller: _financialGoalsController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'e.g., Buy a house, Travel',
-                    hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14.sp, fontWeight: FontWeight.w500),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: textBlueColor)),
+                              fontWeight: FontWeight.w600, fontSize: 18.sp)),
+                      SizedBox(height: 4.r),
+                      Text(
+                        'Complete or update your financial profile for AI Advise.',
+                        style: greyTextStyle.copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 14.sp),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  style: blackTextStyle.copyWith(
-                      fontSize: 14.sp, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 16.h),
-                Text("Current Saving (Rp)",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                SizedBox(height: 8.h),
-                TextField(
-                  controller: _currentSavingController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'e.g., 5000000',
-                    hintStyle: greyTextStyle.copyWith(
-                        fontSize: 14.sp, fontWeight: FontWeight.w500),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: textBlueColor)),
+                  SizedBox(height: 30.h),
+                  Text("Risk Management Profile",
+                      style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                  SizedBox(height: 8.h),
+                  DropdownButtonFormField<String>(
+                    value: _selectedInterval,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: backgroundGreyColor,
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.r, vertical: 14.r),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide:
+                              BorderSide(color: textBlueColor, width: 1.r)),
+                    ),
+                    items: _intervals.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value.toUpperCase(),
+                            style: blackTextStyle.copyWith(
+                                fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      if (mounted) setState(() => _selectedInterval = newValue);
+                    },
+                    icon: Icon(Icons.arrow_drop_down,
+                        color: textPrimaryColor, size: 24.r),
+                    dropdownColor: backgroundWhiteColor,
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  keyboardType: TextInputType.number,
-                  style: blackTextStyle.copyWith(
-                      fontSize: 14.sp, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 16.h),
-                Text("Total Debt (Rp)",
+                  SizedBox(height: 16.h),
+                  Text("Financial Goals",
+                      style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                  SizedBox(height: 8.h),
+                  TextField(
+                    controller: _financialGoalsController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: backgroundGreyColor,
+                      hintText: 'e.g., Buy a house, Travel',
+                      hintStyle: greyTextStyle.copyWith(
+                          fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: textBlueColor)),
+                    ),
                     style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                SizedBox(height: 8.h),
-                TextField(
-                  controller: _totalDebtController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: backgroundGreyColor,
-                    hintText: 'e.g., 1000000',
-                    hintStyle: greyTextStyle.copyWith(
                         fontSize: 14.sp, fontWeight: FontWeight.w500),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: textBlueColor)),
                   ),
-                  keyboardType: TextInputType.number,
-                  style: blackTextStyle.copyWith(
-                      fontSize: 14.sp, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(height: 42.h),
-                PrimaryFilledButton(
-                  title: 'Save Profile',
-                  onPressed: () {
-                    if (_financialGoalsController.text.isEmpty ||
-                        _currentSavingController.text.isEmpty ||
-                        _totalDebtController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Please fill all fields'),
-                        backgroundColor: Colors.orange,
-                      ));
-                      return;
-                    }
+                  SizedBox(height: 16.h),
+                  Text("Current Saving (Rp)",
+                      style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                  SizedBox(height: 8.h),
+                  TextField(
+                    controller: _currentSavingController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: backgroundGreyColor,
+                      hintText: 'e.g., 5000000',
+                      hintStyle: greyTextStyle.copyWith(
+                          fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: textBlueColor)),
+                    ),
+                    keyboardType: TextInputType.number,
+                    style: blackTextStyle.copyWith(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 16.h),
+                  Text("Total Debt (Rp)",
+                      style: blackTextStyle.copyWith(
+                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                  SizedBox(height: 8.h),
+                  TextField(
+                    controller: _totalDebtController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: backgroundGreyColor,
+                      hintText: 'e.g., 1000000',
+                      hintStyle: greyTextStyle.copyWith(
+                          fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide(color: textBlueColor)),
+                    ),
+                    keyboardType: TextInputType.number,
+                    style: blackTextStyle.copyWith(
+                        fontSize: 14.sp, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 42.h),
+                  PrimaryFilledButton(
+                    title: 'Save Profile',
+                    onPressed: () {
+                      if (_financialGoalsController.text.isEmpty ||
+                          _currentSavingController.text.isEmpty ||
+                          _totalDebtController.text.isEmpty) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Please fill all fields'),
+                          backgroundColor: Colors.orange,
+                        ));
+                        return;
+                      }
 
-                    final currentSavings =
-                        int.tryParse(_currentSavingController.text);
-                    final debt = int.tryParse(_totalDebtController.text);
+                      final currentSavings =
+                          int.tryParse(_currentSavingController.text);
+                      final debt = int.tryParse(_totalDebtController.text);
 
-                    if (currentSavings == null || debt == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text(
-                            'Please enter valid numbers for savings and debt.'),
-                        backgroundColor: Colors.orange,
-                      ));
-                      return;
-                    }
+                      if (currentSavings == null || debt == null) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                              'Please enter valid numbers for savings and debt.'),
+                          backgroundColor: Colors.orange,
+                        ));
+                        return;
+                      }
 
-                    context.read<HomepageBloc>().add(UpdateFinancialProfile(
-                        currentSavings: currentSavings,
-                        debt: debt,
-                        financialGoals: _financialGoalsController.text,
-                        riskManagement: _selectedInterval ?? 'low'));
-                  },
-                ),
-                SizedBox(height: 40.h),
-              ],
+                      context.read<HomepageBloc>().add(UpdateFinancialProfile(
+                          currentSavings: currentSavings,
+                          debt: debt,
+                          financialGoals: _financialGoalsController.text,
+                          riskManagement: _selectedInterval ?? 'low'));
+                    },
+                  ),
+                  SizedBox(height: 40.h),
+                ],
+              ),
             ),
           ),
         );
