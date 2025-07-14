@@ -9,6 +9,7 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
+import 'package:seimbangin_app/ui/sections/homepage/home_page_skeleton.dart';
 import 'package:seimbangin_app/ui/sections/homepage/home_recent_transact_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
 import 'package:seimbangin_app/ui/sections/header_section.dart';
@@ -81,16 +82,10 @@ class _HomePageState extends State<HomePage>
         },
         child: BlocBuilder<HomepageBloc, HomepageState>(
           builder: (context, homepageState) {
-            // State 1: Loading Awal
             if (homepageState is HomePageLoading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: textWhiteColor,
-                ),
-              );
+              return const HomePageSkeleton();
             }
 
-            // State 2: Sukses Memuat Data Utama
             if (homepageState is HomePageSuccess) {
               final user = homepageState.user;
 
@@ -148,8 +143,6 @@ class _HomePageState extends State<HomePage>
                                 ),
                               ),
                               SizedBox(height: 10.r),
-
-                              // Logic untuk Lazy Loading AI Advisor (sudah benar)
                               if (homepageState.isAdviceLoading)
                                 Container(
                                   height: 100,
@@ -182,7 +175,6 @@ class _HomePageState extends State<HomePage>
                                   child: const Text(
                                       "Saran AI tidak tersedia saat ini."),
                                 ),
-
                               SizedBox(height: 20.r),
                               const HomeRecentTransactionsSection(),
                               SizedBox(height: 100.r),
@@ -196,7 +188,6 @@ class _HomePageState extends State<HomePage>
               );
             }
 
-            // State 3: Gagal Memuat Data Awal
             if (homepageState is HomePageFailure) {
               return Center(
                 child: Padding(

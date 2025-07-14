@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/item_model.dart';
 import 'package:seimbangin_app/models/transaction_preview_model.dart';
@@ -192,66 +193,72 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundWhiteColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                children: [
-                  SizedBox(height: 21.h),
-                  const TransactionHeaderSection(),
-                  SizedBox(height: 40.r),
-                  TransactionTypeTabBarSection(
-                    selectedIndex: _selectedIndexTab,
-                    tabs: _tabs,
-                    onTabSelected: (index) {
-                      if (mounted) {
-                        setState(() {
-                          _selectedIndexTab = index;
-                          _transactNameController.clear();
-                          _calculateTotalPrice();
-                        });
-                      }
-                    },
-                  ),
-                  SizedBox(height: 32.r),
-                  if (_selectedIndexTab == 0)
-                    TransactionIncomeFormSection(
-                      nameController: _transactNameController,
-                      priceController: _transactPriceController,
-                      categories: incomeCategories,
-                      onCategorySelected: (categoryTitle) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusBarPrimaryColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  children: [
+                    SizedBox(height: 21.h),
+                    const TransactionHeaderSection(),
+                    SizedBox(height: 40.r),
+                    TransactionTypeTabBarSection(
+                      selectedIndex: _selectedIndexTab,
+                      tabs: _tabs,
+                      onTabSelected: (index) {
                         if (mounted) {
-                          final selectedTitle = incomeCategories
-                              .firstWhere((cat) => cat.title == categoryTitle)
-                              .title;
-                          setState(() => selectedCategory = selectedTitle);
+                          setState(() {
+                            _selectedIndexTab = index;
+                            _transactNameController.clear();
+                            _calculateTotalPrice();
+                          });
                         }
                       },
-                      onFormChanged: _calculateTotalPrice,
-                    )
-                  else
-                    TransactionOutcomeFormSection(
-                      transactionNameController: _transactNameController,
-                      items: _outcomeItems,
-                      categories: outcomeCategories,
-                      onAddItem: _addItem,
-                      onRemoveItem: _removeItem,
-                      onItemChanged: _calculateTotalPrice,
                     ),
-                  SizedBox(height: 40.r),
-                ],
+                    SizedBox(height: 32.r),
+                    if (_selectedIndexTab == 0)
+                      TransactionIncomeFormSection(
+                        nameController: _transactNameController,
+                        priceController: _transactPriceController,
+                        categories: incomeCategories,
+                        onCategorySelected: (categoryTitle) {
+                          if (mounted) {
+                            final selectedTitle = incomeCategories
+                                .firstWhere((cat) => cat.title == categoryTitle)
+                                .title;
+                            setState(() => selectedCategory = selectedTitle);
+                          }
+                        },
+                        onFormChanged: _calculateTotalPrice,
+                      )
+                    else
+                      TransactionOutcomeFormSection(
+                        transactionNameController: _transactNameController,
+                        items: _outcomeItems,
+                        categories: outcomeCategories,
+                        onAddItem: _addItem,
+                        onRemoveItem: _removeItem,
+                        onItemChanged: _calculateTotalPrice,
+                      ),
+                    SizedBox(height: 40.r),
+                  ],
+                ),
               ),
-            ),
-            if (MediaQuery.of(context).viewInsets.bottom == 0)
-              TransactionFooterSection(
-                totalPrice: totalPrice,
-                onAddTransaction: _prepareAndNavigateToReview,
-              )
-          ],
+              if (MediaQuery.of(context).viewInsets.bottom == 0)
+                TransactionFooterSection(
+                  totalPrice: totalPrice,
+                  onAddTransaction: _prepareAndNavigateToReview,
+                )
+            ],
+          ),
         ),
       ),
     );
