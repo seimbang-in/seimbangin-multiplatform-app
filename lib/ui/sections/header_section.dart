@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -56,12 +57,12 @@ class HeaderSection extends StatelessWidget {
                           color: backgroundWhiteColor,
                           borderRadius: BorderRadius.circular(25).r,
                         ),
-                        child: Image.network(
-                          imageUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
+                          errorWidget: (context, error, stackTrace) {
                             return Icon(
-                              Icons.person, // Ikon fallback
+                              Icons.person,
                               color: primaryColor,
                               size: 36.r,
                             );
