@@ -103,8 +103,8 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return PersistentTabView(
       tabs: _tabs(context), // Kirim context ke _tabs jika diperlukan
-      navBarHeight: 70.r,
       navBarBuilder: (navBarConfig) => Style13BottomNavBar(
+        height: 70.r,
         navBarConfig: navBarConfig,
         navBarDecoration: NavBarDecoration(
           color: buttonColor,
