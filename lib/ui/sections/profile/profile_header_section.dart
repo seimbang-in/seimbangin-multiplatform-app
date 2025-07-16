@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class ProfileHeaderSection extends StatelessWidget {
-  final User user;
+  final UserResponse user;
   final XFile? imageFile;
   final VoidCallback onEditImage;
 

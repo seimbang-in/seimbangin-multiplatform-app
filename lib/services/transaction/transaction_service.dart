@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:seimbangin_app/config/constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:seimbangin_app/models/item_model.dart';
-import 'package:seimbangin_app/models/transaction_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/utils/token.dart';
 
 class TransactionService {
-  Future<void> addTransaction(
-      List<Item> items, int type, String description, String name) async {
+  Future<void> addTransaction(List<TransactionItem> items, int type,
+      String description, String name) async {
     final String? token = await Token.getToken();
     if (token == null) {
       print('[TransactionService] ADD TRANSACTION - Error: Token is null.');
@@ -56,7 +55,7 @@ class TransactionService {
     }
   }
 
-  Future<Transaction> getTransaction(
+  Future<TransactionResponse> getTransaction(
       {required int limit, required int page}) async {
     final String? token = await Token.getToken();
     if (token == null) {
@@ -74,7 +73,7 @@ class TransactionService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        return Transaction.fromJson(data);
+        return TransactionResponse.fromJson(data);
       } else {
         throw Exception(
             'Failed to load transaction (GET): ${response.statusCode}, Body: ${response.body}');

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:seimbangin_app/models/transaction_model.dart' as model;
+import 'package:seimbangin_app/models/transaction/transaction_model.dart'
+    as model;
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -46,7 +47,7 @@ class DottedDivider extends StatelessWidget {
 }
 
 class TransactionDetailPage extends StatefulWidget {
-  final model.Data transactionData;
+  final model.TransactionData transactionData;
   const TransactionDetailPage({super.key, required this.transactionData});
 
   @override
@@ -309,7 +310,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   }
 
   // Widget helper untuk membangun setiap baris item
-  Widget _buildItemTile(model.Items item) {
+  Widget _buildItemTile(model.TransactionItem item) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(

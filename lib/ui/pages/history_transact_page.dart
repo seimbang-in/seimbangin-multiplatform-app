@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/models/transaction_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -63,11 +63,12 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
         .add(FetchHistoryTransactions(isRefresh: true));
   }
 
-  Map<String, List<Data>> _groupTransactionsByMonth(List<Data> transactions) {
+  Map<String, List<TransactionData>> _groupTransactionsByMonth(
+      List<TransactionData> transactions) {
     final now = DateTime.now();
     final monthYearFormat = DateFormat('MMMM yyyy', 'en_EN');
 
-    return groupBy(transactions, (Data transaction) {
+    return groupBy(transactions, (TransactionData transaction) {
       final date = DateTime.parse(transaction.createdAt!).toLocal();
       if (date.year == now.year && date.month == now.month) {
         return 'This Month';

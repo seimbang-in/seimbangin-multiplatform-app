@@ -6,7 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/logout/logout_bloc.dart';
-import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart';
@@ -68,7 +68,7 @@ class ProfilePage extends StatelessWidget {
 }
 
 class _ProfilePageContent extends StatefulWidget {
-  final User user;
+  final UserResponse user;
   const _ProfilePageContent({required this.user});
 
   @override

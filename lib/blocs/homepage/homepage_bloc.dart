@@ -3,7 +3,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
-import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/services/user_service.dart';
 
 part 'homepage_event.dart';

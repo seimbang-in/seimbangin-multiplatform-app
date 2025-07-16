@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:seimbangin_app/services/logout_service.dart'; // Import service
+import 'package:seimbangin_app/services/auth/logout/logout_service.dart'; // Import service
 import 'package:seimbangin_app/utils/token.dart'; // Import token util
 
 part 'logout_event.dart';

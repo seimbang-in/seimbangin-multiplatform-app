@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
-import 'package:seimbangin_app/models/user_model.dart'; // Pastikan UserData dan FinanceProfile ada di sini
+import 'package:seimbangin_app/models/user/user_model.dart'; // Pastikan UserData dan FinanceProfile ada di sini
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
