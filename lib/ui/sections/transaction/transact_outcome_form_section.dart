@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seimbangin_app/models/item_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/transactions_section.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionOutcomeFormSection extends StatelessWidget {
   final TextEditingController transactionNameController;
-  final List<Item> items;
+  final List<TransactionItem> items;
   final List<Category> categories;
   final VoidCallback onAddItem;
-  final VoidCallback onItemChanged;
-
   final Function(int) onRemoveItem;
+  final Function(int, TransactionItem) onItemUpdated;
 
   const TransactionOutcomeFormSection({
     super.key,
@@ -20,14 +19,15 @@ class TransactionOutcomeFormSection extends StatelessWidget {
     required this.items,
     required this.categories,
     required this.onAddItem,
-    required this.onItemChanged,
     required this.onRemoveItem,
+    required this.onItemUpdated,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Input untuk nama transaksi secara keseluruhan
         TextField(
           controller: transactionNameController,
           decoration: InputDecoration(
@@ -47,6 +47,8 @@ class TransactionOutcomeFormSection extends StatelessWidget {
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 20.r),
+
+        // Daftar item yang dinamis
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -56,6 +58,8 @@ class TransactionOutcomeFormSection extends StatelessWidget {
           },
         ),
         SizedBox(height: 16.r),
+
+        // Tombol untuk menambah item baru
         AddItemTransactButton(
           title: 'Add Another Item',
           onPressed: onAddItem,
@@ -64,11 +68,9 @@ class TransactionOutcomeFormSection extends StatelessWidget {
     );
   }
 
+  /// Membangun UI untuk setiap kartu item.
   Widget _buildItemContainer(BuildContext context, int itemIndex) {
     final item = items[itemIndex];
-
-    item.priceController.addListener(onItemChanged);
-    item.quantityController.addListener(onItemChanged);
 
     return Card(
       color: backgroundGreyColor,
@@ -78,11 +80,10 @@ class TransactionOutcomeFormSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16).r,
+        padding: const EdgeInsets.all(16).r,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- PERUBAHAN: HEADER ITEM DENGAN TOMBOL HAPUS ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -100,48 +101,25 @@ class TransactionOutcomeFormSection extends StatelessWidget {
                   )
               ],
             ),
-
             SizedBox(height: 16.r),
-            TextField(
-              controller: item.nameController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: backgroundWhiteColor,
-                hintText: 'Item Name',
-                hintStyle: greyTextStyle.copyWith(
-                    fontSize: 14.sp, fontWeight: FontWeight.w500),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24).r,
-                    borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24).r,
-                    borderSide: BorderSide(color: textBlueColor)),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
-              ),
-              keyboardType: TextInputType.name,
-              style: blackTextStyle.copyWith(
-                  fontSize: 14.sp, fontWeight: FontWeight.w500),
+
+            // Nama Item
+            TextFormField(
+              initialValue: item.itemName,
+              onChanged: (value) {
+                onItemUpdated(itemIndex, item.copyWith(itemName: value));
+              },
+              decoration: _inputDecoration(hintText: 'Item Name'),
+              style: blackTextStyle.copyWith(fontSize: 14.sp),
             ),
             SizedBox(height: 8.r),
+
+            // Kategori Item
             DropdownButtonFormField<String>(
+              value: item.category.isEmpty ? null : item.category,
+              decoration: _inputDecoration(hintText: 'Category'),
+              style: blackTextStyle.copyWith(fontSize: 14.sp),
               dropdownColor: backgroundWhiteColor,
-              style: blackTextStyle.copyWith(
-                  fontSize: 14.sp, fontWeight: FontWeight.w500),
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: backgroundWhiteColor,
-                hintText: 'Category',
-                hintStyle: greyTextStyle.copyWith(fontSize: 14.sp),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24).r,
-                    borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24).r,
-                    borderSide: BorderSide(color: textBlueColor)),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
-              ),
               items: categories.map((Category category) {
                 return DropdownMenuItem<String>(
                   value: category.title,
@@ -149,64 +127,49 @@ class TransactionOutcomeFormSection extends StatelessWidget {
                     children: [
                       Image.asset(category.icon, width: 24.w, height: 24.h),
                       SizedBox(width: 10.r),
-                      Text(category.title,
-                          style: blackTextStyle.copyWith(
-                              fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                      Text(category.title),
                     ],
                   ),
                 );
               }).toList(),
               onChanged: (value) {
-                if (value != null) items[itemIndex].category = value;
+                if (value != null) {
+                  onItemUpdated(itemIndex, item.copyWith(category: value));
+                }
               },
               isExpanded: true,
             ),
             SizedBox(height: 8.r),
+
+            // Harga dan Kuantitas
             Row(
               children: [
                 Expanded(
                   flex: 2,
-                  child: TextField(
-                    controller: item.priceController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundWhiteColor,
-                      hintText: 'Amount',
-                      hintStyle: greyTextStyle.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24).r,
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24).r,
-                          borderSide: BorderSide(color: textBlueColor)),
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.r, vertical: 12.r),
-                    ),
+                  child: TextFormField(
+                    initialValue: item.price == '0' ? '' : item.price,
+                    onChanged: (value) {
+                      onItemUpdated(itemIndex, item.copyWith(price: value));
+                    },
+                    decoration: _inputDecoration(hintText: 'Price'),
                     keyboardType: TextInputType.number,
+                    style: blackTextStyle.copyWith(fontSize: 14.sp),
                   ),
                 ),
                 SizedBox(width: 8.r),
                 Expanded(
                   flex: 1,
-                  child: TextField(
-                    controller: item.quantityController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundWhiteColor,
-                      hintText: 'Qty',
-                      hintStyle: greyTextStyle.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24).r,
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24).r,
-                          borderSide: BorderSide(color: textBlueColor)),
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.r, vertical: 12.r),
-                    ),
+                  child: TextFormField(
+                    initialValue:
+                        item.quantity == 0 ? '1' : item.quantity.toString(),
+                    onChanged: (value) {
+                      onItemUpdated(itemIndex,
+                          item.copyWith(quantity: int.tryParse(value) ?? 1));
+                    },
+                    decoration: _inputDecoration(hintText: 'Qty'),
                     keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    style: blackTextStyle.copyWith(fontSize: 14.sp),
                   ),
                 ),
               ],
@@ -214,6 +177,23 @@ class TransactionOutcomeFormSection extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Helper untuk styling input field agar konsisten.
+  InputDecoration _inputDecoration({required String hintText}) {
+    return InputDecoration(
+      filled: true,
+      fillColor: backgroundWhiteColor,
+      hintText: hintText,
+      hintStyle: greyTextStyle.copyWith(fontSize: 14.sp),
+      enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24).r,
+          borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24).r,
+          borderSide: BorderSide(color: textBlueColor)),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
     );
   }
 }

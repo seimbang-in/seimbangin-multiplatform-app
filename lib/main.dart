@@ -10,12 +10,13 @@ import 'package:seimbangin_app/blocs/register/register_bloc.dart';
 import 'package:seimbangin_app/blocs/statistics/statistics_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
+import 'package:seimbangin_app/services/auth/register/register_service.dart';
 import 'package:seimbangin_app/services/chatbot_service.dart';
-import 'package:seimbangin_app/services/login_service.dart';
-import 'package:seimbangin_app/services/logout_service.dart';
+import 'package:seimbangin_app/services/auth/login/login_service.dart';
+import 'package:seimbangin_app/services/auth/logout/logout_service.dart';
 import 'package:seimbangin_app/services/ocr_service.dart';
 import 'package:seimbangin_app/services/statistics_service.dart';
-import 'package:seimbangin_app/services/transaction_service.dart';
+import 'package:seimbangin_app/services/transaction/transaction_service.dart';
 import 'package:seimbangin_app/services/user_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -42,13 +43,13 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => LoginBloc(authService: AuthService()),
+          create: (context) => LoginBloc(authService: LoginService()),
         ),
         BlocProvider(
           create: (context) => LogoutBloc(logoutService: LogoutService()),
         ),
         BlocProvider(
-          create: (context) => RegisterBloc(authService: AuthService()),
+          create: (context) => RegisterBloc(authService: RegisterService()),
         ),
         BlocProvider(
             create: (context) => HomepageBloc(userService: UserService())),
