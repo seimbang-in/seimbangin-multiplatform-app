@@ -102,8 +102,12 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
+      navBarOverlap: NavBarOverlap.full(),
+
+      backgroundColor: Colors.transparent,
       tabs: _tabs(context), // Kirim context ke _tabs jika diperlukan
       navBarBuilder: (navBarConfig) => Style13BottomNavBar(
+        middleItemSize: 65.r,
         height: 70.r,
         navBarConfig: navBarConfig,
         navBarDecoration: NavBarDecoration(
