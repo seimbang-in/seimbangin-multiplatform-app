@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/models/transaction_preview_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
@@ -268,7 +268,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(
-                                item.name,
+                                item.itemName,
                                 style: blackTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12.sp,

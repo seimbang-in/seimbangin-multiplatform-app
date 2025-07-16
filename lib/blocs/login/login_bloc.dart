@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:seimbangin_app/models/login_model.dart';
-import 'package:seimbangin_app/services/login_service.dart';
+import 'package:seimbangin_app/models/auth/login/login_model.dart';
+import 'package:seimbangin_app/services/auth/login/login_service.dart';
 import 'package:seimbangin_app/utils/token.dart';
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthService authService;
+  final LoginService authService;
 
   LoginBloc({required this.authService}) : super(LoginInitial()) {
     on<LoginButtonPressed>(_onLoginButtonPressed);
@@ -23,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         event.identifier,
         event.password,
       );
-      await Token.saveToken(result.data.token);
+      await Token.saveToken(result.data!.token);
       emit(LoginSuccess(result));
       // Reset state setelah 1 detik
       await Future.delayed(Duration(seconds: 1));

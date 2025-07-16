@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/models/donut_chart_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/sections/header_section.dart';
-import 'package:seimbangin_app/ui/widgets/bar_widget.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
 
@@ -62,94 +60,154 @@ class _AnalyticsPageState extends State<AnalyticsPage>
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: backgroundWhiteColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          toolbarHeight: 70.r,
-          title: Text(
-            'Analytics',
-            style: blackTextStyle.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.sp,
-            ),
-          ),
-          elevation: 0,
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 16),
-              child: Image.asset(
-                'assets/ic_seimbangin-logo-logreg.png',
-                width: 50,
-              ),
-            ),
-          ],
-        ),
+        backgroundColor: backgroundGreySecondaryColor,
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AnalyticsTabBar(
-                    tabController: _mainTabController,
-                    tabTitles: mainTabTitles,
-                  ),
-                  Visibility(
-                    visible: selectedMainTab == 1 || selectedMainTab == 2,
-                    child: AnalyticsTabBar(
-                      tabController: _secondaryTabController,
-                      tabTitles: secondaryTabTitles,
-                    ),
-                  ),
-                  if (selectedMainTab == 0) ...[
-                    CurrentBalanceSection(
-                      balance: "Rp 2.500.000",
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    DateAndPeriodSelector(
-                        month: "agustus",
-                        day: "17",
-                        selectedDropdown: selectedDropdown,
-                        onDropdownChanged: (value) => {
-                              setState(() {
-                                selectedDropdown = value!;
-                              })
-                            }),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    AnalyticsBarChart(),
-                  ],
-                  if (selectedMainTab == 1 || selectedMainTab == 2)
-                    AnalyticsDonutChart(sections: incomeData),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  RecentTransactionSection(
-                    subtitle: "today",
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  // RecentTransactionCard(
-                  //     backgroundIcon: buttonColor,
-                  //     title: "Mr.B",
-                  //     subtitle: "12:00 Wib",
-                  //     amount: "-Rp 12.000"),
-                  // RecentTransactionCard(
-                  //     backgroundIcon: buttonColor,
-                  //     title: "Zona Bakso",
-                  //     subtitle: "18:00 Wib",
-                  //     amount: "-Rp 18.000"),
-                ],
+          child: ListView(
+            padding: EdgeInsets.all(20.r),
+            children: [
+              SizedBox(
+                height: 24.h,
               ),
-            ),
+
+              // SECTION BULAN LALU VS SEKARANG
+              Text(
+                'Bulan Lalu vs Sekarang',
+                style: blackTextStyle.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+
+              // CARD DATA
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: textWhiteColor,
+                  borderRadius: BorderRadius.circular(24.r),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(20.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sekarang',
+                        style: greyTextStyle.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8.h,
+                      ),
+
+                      // DATA ROW SEKARANG
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DetailAnalytic(
+                            price: 'Rp 320.000',
+                            isIncome: true,
+                          ),
+                          DetailAnalytic(
+                            price: 'Rp 9.200.000',
+                            isIncome: false,
+                          )
+                        ],
+                      ),
+
+                      SizedBox(
+                        height: 12.h,
+                      ),
+
+                      Text(
+                        'Bulan Lalu',
+                        style: greyTextStyle.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8.h,
+                      ),
+
+                      // DATA BULAN LALU
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DetailAnalytic(
+                            price: 'Rp 0.0',
+                            isIncome: true,
+                          ),
+                          DetailAnalytic(
+                            price: 'Rp 0.0',
+                            isIncome: false,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // END OF SECTION BULAN LALU VS SEKARANG
+
+              SizedBox(
+                height: 18.h,
+              ),
+
+              // SECTION PEMASUKAN VS PENGELUARAN CHART
+
+              Text(
+                'Pemasukan vs Pengeluaran',
+                style: blackTextStyle.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+
+              // DATA CHART
+              AnalyticsBarChart(),
+              SizedBox(
+                height: 18.h,
+              ),
+
+              // END OF SECTION CHART
+
+              Text(
+                'Kategori Transaksi',
+                style: blackTextStyle.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                'Jumlah transaksi berdasarkan kategori',
+                style: greyTextStyle.copyWith(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+
+              SizedBox(
+                height: 12.h,
+              ),
+
+              // IF THERE'S NO TRANSACTION
+
+              StaticNoTransaction(
+                onTap: () => print(
+                  'You clicked add transaction on static no transact card!',
+                ),
+              ),
+            ],
           ),
         ),
       ),

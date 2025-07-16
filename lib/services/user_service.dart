@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:seimbangin_app/config/constants.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
-import 'package:seimbangin_app/models/user_model.dart';
+import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:seimbangin_app/utils/token.dart';
 
 class UserService {
-  Future<User> getUserProfile() async {
+  Future<UserResponse> getUserProfile() async {
     try {
       final String? token = await Token.getToken();
       final response =
@@ -17,7 +17,7 @@ class UserService {
       print('response status code : ${response.statusCode}');
       print('response body : ${response.body}');
       final Map<String, dynamic> data = json.decode(response.body);
-      return User.fromJson(data);
+      return UserResponse.fromJson(data);
     } catch (e) {
       print('Error: $e');
       throw Exception('$e');

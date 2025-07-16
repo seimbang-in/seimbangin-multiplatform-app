@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:seimbangin_app/models/item_model.dart';
-import 'package:seimbangin_app/models/transaction_preview_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/transaction/transact_footer_section.dart';
@@ -26,7 +25,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   final TextEditingController _transactPriceController =
       TextEditingController();
 
-  final List<Item> _outcomeItems = [];
+  List<TransactionItem> _outcomeItems = [];
   String? selectedCategory;
   double totalPrice = 0.0;
 
@@ -49,6 +48,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     Category(id: 'out5', title: 'housing', icon: 'assets/ic_housing.png'),
     Category(id: 'out6', title: 'health', icon: 'assets/ic_health.png'),
     Category(id: 'out7', title: 'education', icon: 'assets/ic_education.png'),
+    Category(id: 'out8', title: 'others', icon: 'assets/ic_bonus.png'),
   ];
 
   @override
@@ -61,9 +61,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
   void dispose() {
     _transactNameController.dispose();
     _transactPriceController.dispose();
-    for (var item in _outcomeItems) {
-      item.dispose();
-    }
     super.dispose();
   }
 
@@ -73,37 +70,33 @@ class _TransactionsPageState extends State<TransactionsPage> {
       total = double.tryParse(_transactPriceController.text) ?? 0.0;
     } else {
       for (var item in _outcomeItems) {
-        item.updateFromControllers();
-        final price = double.tryParse(item.priceController.text) ?? 0.0;
-        final qty = double.tryParse(item.quantityController.text) ?? 1.0;
+        final price = double.tryParse(item.price) ?? 0.0;
+        final qty = item.quantity == 0 ? 1 : item.quantity;
         total += price * qty;
       }
     }
-    if (mounted) {
-      setState(() {
-        totalPrice = total;
-      });
-    }
+    if (mounted) setState(() => totalPrice = total);
   }
 
   void _addItem() {
-    if (mounted) {
-      setState(() {
-        _outcomeItems.add(
-          Item(name: '', category: '', price: '', quantity: ''),
-        );
-      });
-      _calculateTotalPrice();
-    }
+    setState(() {
+      _outcomeItems.add(TransactionItem(quantity: 1));
+    });
+    _calculateTotalPrice();
   }
 
   void _removeItem(int index) {
     if (mounted && _outcomeItems.length > 1) {
-      setState(() {
-        _outcomeItems[index].dispose();
-        _outcomeItems.removeAt(index);
-      });
+      setState(() => _outcomeItems.removeAt(index));
+      _calculateTotalPrice();
+    }
+  }
 
+  void _updateItem(int index, TransactionItem updatedItem) {
+    if (mounted) {
+      final newItems = List<TransactionItem>.from(_outcomeItems);
+      newItems[index] = updatedItem;
+      setState(() => _outcomeItems = newItems);
       _calculateTotalPrice();
     }
   }
@@ -115,9 +108,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
         _transactPriceController.clear();
         selectedCategory = null;
         totalPrice = 0.0;
-        for (var item in _outcomeItems) {
-          item.dispose();
-        }
         _outcomeItems.clear();
         _addItem();
         _selectedIndexTab = 0;
@@ -131,15 +121,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
       final price = _transactPriceController.text.trim();
       if (name.isEmpty || price.isEmpty || selectedCategory == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('Please complete all income fields!'),
+          content: const Text('Harap lengkapi semua field pemasukan!'),
           backgroundColor: backgroundWarningColor,
         ));
         return;
       }
-      final singleItem = Item(
-        name: name,
+      final singleItem = TransactionItem(
+        itemName: name,
         price: price,
-        quantity: "1",
+        quantity: 1,
         category: selectedCategory!,
       );
       final previewData = TransactionPreviewData(
@@ -158,19 +148,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
       bool isValid = true;
       if (_transactNameController.text.trim().isEmpty) isValid = false;
       for (final item in _outcomeItems) {
-        item.updateFromControllers();
-        if (item.name.isEmpty ||
+        if (item.itemName.isEmpty ||
             item.category.isEmpty ||
             item.price.isEmpty ||
-            item.quantity.isEmpty) {
+            item.quantity == 0) {
           isValid = false;
           break;
         }
       }
       if (!isValid) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text(
-              'Please complete all outcome fields, including transaction name and all item details!'),
+          content: const Text('Harap lengkapi semua field pengeluaran!'),
           backgroundColor: backgroundWarningColor,
         ));
         return;
@@ -225,10 +213,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       categories: incomeCategories,
                       onCategorySelected: (categoryTitle) {
                         if (mounted) {
-                          final selectedTitle = incomeCategories
-                              .firstWhere((cat) => cat.title == categoryTitle)
-                              .title;
-                          setState(() => selectedCategory = selectedTitle);
+                          setState(() => selectedCategory = categoryTitle);
                         }
                       },
                       onFormChanged: _calculateTotalPrice,
@@ -240,7 +225,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       categories: outcomeCategories,
                       onAddItem: _addItem,
                       onRemoveItem: _removeItem,
-                      onItemChanged: _calculateTotalPrice,
+                      onItemUpdated: _updateItem,
                     ),
                   SizedBox(height: 40.r),
                 ],

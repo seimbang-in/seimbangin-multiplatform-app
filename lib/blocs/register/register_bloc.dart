@@ -1,15 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:seimbangin_app/services/login_service.dart';
+import 'package:seimbangin_app/services/auth/register/register_service.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final AuthService authService;
+  final RegisterService authService;
   RegisterBloc({required this.authService}) : super(RegisterInitial()) {
-    on<RegisterEvent>((event, emit) {
-    });
+    on<RegisterEvent>((event, emit) {});
     on<RegisterButtonPressed>(onRegisterButtonPressed);
   }
 

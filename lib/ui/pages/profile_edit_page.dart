@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:go_router/go_router.dart'; // Tidak digunakan langsung di sini jika 'userData' sudah di-pass
-import 'package:seimbangin_app/models/user_model.dart'; // Pastikan User dan UserData diimport
-import 'package:seimbangin_app/routes/routes.dart'; // Untuk RouteNames
+import 'package:seimbangin_app/models/user/user_model.dart';
+import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart'; // Untuk CustomRoundedButton
+import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class ProfileEditPage extends StatelessWidget {
-  final User userData; // Terima objek User lengkap
+  final UserResponse userData;
 
   const ProfileEditPage({super.key, required this.userData});
 
@@ -51,8 +51,7 @@ class ProfileEditPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 8.r),
-                Icon(Icons.edit_outlined,
-                    color: textSecondaryColor, size: 22.r),
+                Icon(Icons.edit_rounded, color: textSecondaryColor, size: 22.r),
               ],
             ),
           ),
@@ -66,85 +65,92 @@ class ProfileEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProfileData = userData.data;
 
-    return Scaffold(
-      backgroundColor: backgroundWhiteColor,
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 20.r),
-          children: [
-            // --- HEADER CUSTOM ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomRoundedButton(
-                  onPressed: () => routes.pop(),
-                  widget: Icon(
-                    Icons.chevron_left,
-                    size: 32.r,
-                    color: textSecondaryColor,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: statusBarPrimaryColor,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: backgroundWhiteColor,
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 20.r),
+            children: [
+              // --- HEADER CUSTOM ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomRoundedButton(
+                    onPressed: () => routes.pop(),
+                    widget: Icon(
+                      Icons.chevron_left,
+                      size: 32.r,
+                      color: textSecondaryColor,
+                    ),
+                    backgroundColor: backgroundWhiteColor,
                   ),
-                  backgroundColor: backgroundWhiteColor,
-                ),
-                Text(
-                  'Edit Profile',
-                  style: blackTextStyle.copyWith(
-                    fontSize:
-                        16.sp, // Ukuran font disesuaikan dengan header lama
-                    fontWeight: FontWeight.w600,
+                  Text(
+                    'Edit Profile',
+                    style: blackTextStyle.copyWith(
+                      fontSize:
+                          16.sp, // Ukuran font disesuaikan dengan header lama
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Image.asset('assets/ic_seimbangin-logo-logreg.png'),
-              ],
-            ),
-            SizedBox(height: 24.r),
-            // --- AKHIR DARI HEADER CUSTOM ---
+                  Image.asset('assets/ic_seimbangin-logo-logreg.png'),
+                ],
+              ),
+              SizedBox(height: 24.r),
+              // --- AKHIR DARI HEADER CUSTOM ---
 
-            _buildProfileFieldBlock(
-              context,
-              label: 'Username',
-              value: userProfileData.username,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Navigate to Edit Username Page (TODO)')),
-                );
-              },
-            ),
-            _buildProfileFieldBlock(
-              context,
-              label: 'Full Name',
-              value: userProfileData.fullName,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Navigate to Edit Full Name Page (TODO)')),
-                );
-              },
-            ),
-            _buildProfileFieldBlock(
-              context,
-              label: 'Email',
-              value: userProfileData.email,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Navigate to Edit Email Page (TODO)')),
-                );
-              },
-            ),
-            _buildProfileFieldBlock(
-              context,
-              label: 'Phone Number',
-              value: userProfileData.phoneNumber,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Navigate to Edit Phone Number Page (TODO)')),
-                );
-              },
-            ),
-          ],
+              _buildProfileFieldBlock(
+                context,
+                label: 'Username',
+                value: userProfileData.username,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Navigate to Edit Username Page (TODO)')),
+                  );
+                },
+              ),
+              _buildProfileFieldBlock(
+                context,
+                label: 'Full Name',
+                value: userProfileData.fullName,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content:
+                            Text('Navigate to Edit Full Name Page (TODO)')),
+                  );
+                },
+              ),
+              _buildProfileFieldBlock(
+                context,
+                label: 'Email',
+                value: userProfileData.email,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Navigate to Edit Email Page (TODO)')),
+                  );
+                },
+              ),
+              _buildProfileFieldBlock(
+                context,
+                label: 'Phone Number',
+                value: userProfileData.phoneNumber,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content:
+                            Text('Navigate to Edit Phone Number Page (TODO)')),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

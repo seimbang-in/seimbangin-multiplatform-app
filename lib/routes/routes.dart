@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seimbangin_app/models/user_model.dart';
-import 'package:seimbangin_app/models/transaction_model.dart' as model;
+import 'package:seimbangin_app/models/user/user_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart'
+    as model;
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
 import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
 import 'package:seimbangin_app/ui/pages/financial_profile_page.dart';
@@ -65,14 +66,10 @@ final routes = GoRouter(
           path: 'profileEdit',
           name: RouteNames.profileEdit,
           builder: (context, state) {
-            // Ambil data yang dikirim melalui 'extra'
-            final userData =
-                state.extra as User?; // Lakukan casting ke UserData
+            final userData = state.extra as UserResponse?;
 
             // Handle jika data tidak ada (sebagai pengaman)
             if (userData == null) {
-              // Anda bisa redirect ke halaman error atau kembali ke halaman profil
-              // Untuk contoh ini, kita tampilkan pesan error sederhana
               print("Error: UserData tidak ditemukan untuk ProfileEditPage.");
               return const Scaffold(
                 body: Center(child: Text("Error: User data not provided.")),
@@ -108,14 +105,11 @@ final routes = GoRouter(
               builder: (context, state) => const TransactionsPage(),
             ),
             GoRoute(
-              path: 'transactionDetail', // Anda bisa memilih path yang sesuai
-              name: RouteNames
-                  .transactionDetail, // Definisikan nama rute ini di name_route.dart
+              path: 'transactionDetail',
+              name: RouteNames.transactionDetail,
               builder: (context, state) {
-                // Ambil objek model.Data dari parameter 'extra'
-                final transactionData = state.extra as model.Data?;
+                final transactionData = state.extra as model.TransactionData;
                 if (transactionData == null) {
-                  // Handle jika data tidak ada (sebagai pengaman)
                   return Scaffold(
                     body: Center(
                         child: Text("Error: Transaction data not provided.")),

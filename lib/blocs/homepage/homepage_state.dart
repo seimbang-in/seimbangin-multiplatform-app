@@ -14,7 +14,7 @@ class HomePageLoading extends HomepageState {
 
 class HomePageSuccess extends HomepageState {
   final String message;
-  final User user;
+  final UserResponse user;
   final Advice? advice;
   final bool isAdviceLoading;
   final String? adviceError;
@@ -30,7 +30,7 @@ class HomePageSuccess extends HomepageState {
   // 4. Tambahkan method copyWith untuk mempermudah update state
   HomePageSuccess copyWith({
     String? message,
-    User? user,
+    UserResponse? user,
     Advice? advice,
     bool? isAdviceLoading,
     String? adviceError,
