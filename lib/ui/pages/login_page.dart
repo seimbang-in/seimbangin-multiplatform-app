@@ -6,7 +6,7 @@ import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
-import 'package:seimbangin_app/services/login_service.dart';
+import 'package:seimbangin_app/services/auth/login/login_service.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/login/login_footer_section.dart';
 import 'package:seimbangin_app/ui/sections/login/login_form_section.dart';
@@ -27,8 +27,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPassValid = true;
   bool _isFormSubmitted = false;
   final TextEditingController identifierController = TextEditingController();
-  final AuthService authService =
-      AuthService(); // Tidak digunakan di contoh ini
+  final LoginService authService =
+      LoginService(); // Tidak digunakan di contoh ini
   final TextEditingController passwordController = TextEditingController();
 
   // --- LOGIC ---

@@ -7,7 +7,7 @@ class TransactionButtonPressed extends TransactionEvent {
   final String name;
   final String description;
   final int type;
-  final List<Item> items;
+  final List<TransactionItem> items;
 
   TransactionButtonPressed({
     required this.description,

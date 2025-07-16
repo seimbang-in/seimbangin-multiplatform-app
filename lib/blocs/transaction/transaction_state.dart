@@ -23,9 +23,9 @@ class TransactionFailure extends TransactionState {
 }
 
 class TransactionLoadSuccess extends TransactionState {
-  final List<Data> recentTransactions;
+  final List<TransactionData> recentTransactions;
 
-  final List<Data> historicalTransactions;
+  final List<TransactionData> historicalTransactions;
   final bool hasReachedMax;
 
   TransactionLoadSuccess({
@@ -35,8 +35,8 @@ class TransactionLoadSuccess extends TransactionState {
   });
 
   TransactionLoadSuccess copyWith({
-    List<Data>? recentTransactions,
-    List<Data>? historicalTransactions,
+    List<TransactionData>? recentTransactions,
+    List<TransactionData>? historicalTransactions,
     bool? hasReachedMax,
   }) {
     return TransactionLoadSuccess(

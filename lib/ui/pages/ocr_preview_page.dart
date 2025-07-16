@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/ocr/ocr_bloc.dart';
-import 'package:seimbangin_app/models/item_model.dart';
-import 'package:seimbangin_app/models/transaction_preview_model.dart';
+import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
@@ -98,11 +97,11 @@ class OcrPreviewPage extends StatelessWidget {
 
                     final ocrResult = state.ocrModel;
 
-                    final List<Item> itemsFromOcr =
+                    final List<TransactionItem> itemsFromOcr =
                         ocrResult.data.items.map((i) {
-                      return Item(
-                        name: i.itemName,
-                        quantity: i.quantity.toString(),
+                      return TransactionItem(
+                        itemName: i.itemName,
+                        quantity: i.quantity,
                         price: i.price.toString(),
                         category: i.category,
                       );
