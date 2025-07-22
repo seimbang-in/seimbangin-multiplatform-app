@@ -372,8 +372,7 @@ mixin _$UserData {
   @JsonKey(name: 'updated_at')
   DateTime? get updatedAt;
   @JsonKey(name: 'phone_number')
-  String?
-      get phoneNumber; // --- LANGKAH 2: GUNAKAN FUNGSI HELPER PADA ANOTASI @JsonKey ---
+  String? get phoneNumber;
   @JsonKey(name: 'finance_profile', fromJson: _financeProfileFromJson)
   FinanceProfile? get financeProfile;
 
@@ -873,7 +872,6 @@ class _UserData implements UserData {
   @override
   @JsonKey(name: 'phone_number')
   final String? phoneNumber;
-// --- LANGKAH 2: GUNAKAN FUNGSI HELPER PADA ANOTASI @JsonKey ---
   @override
   @JsonKey(name: 'finance_profile', fromJson: _financeProfileFromJson)
   final FinanceProfile? financeProfile;
@@ -1083,20 +1081,25 @@ mixin _$FinanceProfile {
   @JsonKey(name: 'monthly_income')
   double? get monthlyIncome;
   @JsonKey(name: 'current_savings')
+  @StringOrIntConverter()
   String get currentSavings;
+  @StringOrIntConverter()
   String get debt;
   @JsonKey(name: 'financial_goals')
-  String get financialGoals;
+  String? get financialGoals;
   @JsonKey(name: 'total_income')
+  @StringOrIntConverter()
   String get totalIncome;
   @JsonKey(name: 'total_outcome')
+  @StringOrIntConverter()
   String get totalOutcome;
   @JsonKey(name: 'risk_management')
-  String get riskManagement;
+  String? get riskManagement;
   @JsonKey(name: 'this_month_income')
-  String
-      get thisMonthIncome; // Tambahkan field yang mungkin terlewat dari respons
+  @StringOrIntConverter()
+  String get thisMonthIncome;
   @JsonKey(name: 'this_month_outcome')
+  @StringOrIntConverter()
   String get thisMonthOutcome;
 
   /// Create a copy of FinanceProfile
@@ -1162,14 +1165,22 @@ abstract mixin class $FinanceProfileCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(name: 'monthly_income') double? monthlyIncome,
-      @JsonKey(name: 'current_savings') String currentSavings,
-      String debt,
-      @JsonKey(name: 'financial_goals') String financialGoals,
-      @JsonKey(name: 'total_income') String totalIncome,
-      @JsonKey(name: 'total_outcome') String totalOutcome,
-      @JsonKey(name: 'risk_management') String riskManagement,
-      @JsonKey(name: 'this_month_income') String thisMonthIncome,
-      @JsonKey(name: 'this_month_outcome') String thisMonthOutcome});
+      @JsonKey(name: 'current_savings')
+      @StringOrIntConverter()
+      String currentSavings,
+      @StringOrIntConverter() String debt,
+      @JsonKey(name: 'financial_goals') String? financialGoals,
+      @JsonKey(name: 'total_income') @StringOrIntConverter() String totalIncome,
+      @JsonKey(name: 'total_outcome')
+      @StringOrIntConverter()
+      String totalOutcome,
+      @JsonKey(name: 'risk_management') String? riskManagement,
+      @JsonKey(name: 'this_month_income')
+      @StringOrIntConverter()
+      String thisMonthIncome,
+      @JsonKey(name: 'this_month_outcome')
+      @StringOrIntConverter()
+      String thisMonthOutcome});
 }
 
 /// @nodoc
@@ -1188,10 +1199,10 @@ class _$FinanceProfileCopyWithImpl<$Res>
     Object? monthlyIncome = freezed,
     Object? currentSavings = null,
     Object? debt = null,
-    Object? financialGoals = null,
+    Object? financialGoals = freezed,
     Object? totalIncome = null,
     Object? totalOutcome = null,
-    Object? riskManagement = null,
+    Object? riskManagement = freezed,
     Object? thisMonthIncome = null,
     Object? thisMonthOutcome = null,
   }) {
@@ -1208,10 +1219,10 @@ class _$FinanceProfileCopyWithImpl<$Res>
           ? _self.debt
           : debt // ignore: cast_nullable_to_non_nullable
               as String,
-      financialGoals: null == financialGoals
+      financialGoals: freezed == financialGoals
           ? _self.financialGoals
           : financialGoals // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       totalIncome: null == totalIncome
           ? _self.totalIncome
           : totalIncome // ignore: cast_nullable_to_non_nullable
@@ -1220,10 +1231,10 @@ class _$FinanceProfileCopyWithImpl<$Res>
           ? _self.totalOutcome
           : totalOutcome // ignore: cast_nullable_to_non_nullable
               as String,
-      riskManagement: null == riskManagement
+      riskManagement: freezed == riskManagement
           ? _self.riskManagement
           : riskManagement // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       thisMonthIncome: null == thisMonthIncome
           ? _self.thisMonthIncome
           : thisMonthIncome // ignore: cast_nullable_to_non_nullable
@@ -1331,14 +1342,24 @@ extension FinanceProfilePatterns on FinanceProfile {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             @JsonKey(name: 'monthly_income') double? monthlyIncome,
-            @JsonKey(name: 'current_savings') String currentSavings,
-            String debt,
-            @JsonKey(name: 'financial_goals') String financialGoals,
-            @JsonKey(name: 'total_income') String totalIncome,
-            @JsonKey(name: 'total_outcome') String totalOutcome,
-            @JsonKey(name: 'risk_management') String riskManagement,
-            @JsonKey(name: 'this_month_income') String thisMonthIncome,
-            @JsonKey(name: 'this_month_outcome') String thisMonthOutcome)?
+            @JsonKey(name: 'current_savings')
+            @StringOrIntConverter()
+            String currentSavings,
+            @StringOrIntConverter() String debt,
+            @JsonKey(name: 'financial_goals') String? financialGoals,
+            @JsonKey(name: 'total_income')
+            @StringOrIntConverter()
+            String totalIncome,
+            @JsonKey(name: 'total_outcome')
+            @StringOrIntConverter()
+            String totalOutcome,
+            @JsonKey(name: 'risk_management') String? riskManagement,
+            @JsonKey(name: 'this_month_income')
+            @StringOrIntConverter()
+            String thisMonthIncome,
+            @JsonKey(name: 'this_month_outcome')
+            @StringOrIntConverter()
+            String thisMonthOutcome)?
         $default, {
     required TResult orElse(),
   }) {
@@ -1377,14 +1398,24 @@ extension FinanceProfilePatterns on FinanceProfile {
   TResult when<TResult extends Object?>(
     TResult Function(
             @JsonKey(name: 'monthly_income') double? monthlyIncome,
-            @JsonKey(name: 'current_savings') String currentSavings,
-            String debt,
-            @JsonKey(name: 'financial_goals') String financialGoals,
-            @JsonKey(name: 'total_income') String totalIncome,
-            @JsonKey(name: 'total_outcome') String totalOutcome,
-            @JsonKey(name: 'risk_management') String riskManagement,
-            @JsonKey(name: 'this_month_income') String thisMonthIncome,
-            @JsonKey(name: 'this_month_outcome') String thisMonthOutcome)
+            @JsonKey(name: 'current_savings')
+            @StringOrIntConverter()
+            String currentSavings,
+            @StringOrIntConverter() String debt,
+            @JsonKey(name: 'financial_goals') String? financialGoals,
+            @JsonKey(name: 'total_income')
+            @StringOrIntConverter()
+            String totalIncome,
+            @JsonKey(name: 'total_outcome')
+            @StringOrIntConverter()
+            String totalOutcome,
+            @JsonKey(name: 'risk_management') String? riskManagement,
+            @JsonKey(name: 'this_month_income')
+            @StringOrIntConverter()
+            String thisMonthIncome,
+            @JsonKey(name: 'this_month_outcome')
+            @StringOrIntConverter()
+            String thisMonthOutcome)
         $default,
   ) {
     final _that = this;
@@ -1421,14 +1452,24 @@ extension FinanceProfilePatterns on FinanceProfile {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             @JsonKey(name: 'monthly_income') double? monthlyIncome,
-            @JsonKey(name: 'current_savings') String currentSavings,
-            String debt,
-            @JsonKey(name: 'financial_goals') String financialGoals,
-            @JsonKey(name: 'total_income') String totalIncome,
-            @JsonKey(name: 'total_outcome') String totalOutcome,
-            @JsonKey(name: 'risk_management') String riskManagement,
-            @JsonKey(name: 'this_month_income') String thisMonthIncome,
-            @JsonKey(name: 'this_month_outcome') String thisMonthOutcome)?
+            @JsonKey(name: 'current_savings')
+            @StringOrIntConverter()
+            String currentSavings,
+            @StringOrIntConverter() String debt,
+            @JsonKey(name: 'financial_goals') String? financialGoals,
+            @JsonKey(name: 'total_income')
+            @StringOrIntConverter()
+            String totalIncome,
+            @JsonKey(name: 'total_outcome')
+            @StringOrIntConverter()
+            String totalOutcome,
+            @JsonKey(name: 'risk_management') String? riskManagement,
+            @JsonKey(name: 'this_month_income')
+            @StringOrIntConverter()
+            String thisMonthIncome,
+            @JsonKey(name: 'this_month_outcome')
+            @StringOrIntConverter()
+            String thisMonthOutcome)?
         $default,
   ) {
     final _that = this;
@@ -1455,14 +1496,24 @@ extension FinanceProfilePatterns on FinanceProfile {
 class _FinanceProfile implements FinanceProfile {
   _FinanceProfile(
       {@JsonKey(name: 'monthly_income') this.monthlyIncome,
-      @JsonKey(name: 'current_savings') this.currentSavings = '0.00',
-      this.debt = '0.00',
-      @JsonKey(name: 'financial_goals') this.financialGoals = '',
-      @JsonKey(name: 'total_income') this.totalIncome = '0',
-      @JsonKey(name: 'total_outcome') this.totalOutcome = '0',
-      @JsonKey(name: 'risk_management') this.riskManagement = '',
-      @JsonKey(name: 'this_month_income') this.thisMonthIncome = '0',
-      @JsonKey(name: 'this_month_outcome') this.thisMonthOutcome = '0'});
+      @JsonKey(name: 'current_savings')
+      @StringOrIntConverter()
+      this.currentSavings = '0',
+      @StringOrIntConverter() this.debt = '0',
+      @JsonKey(name: 'financial_goals') this.financialGoals,
+      @JsonKey(name: 'total_income')
+      @StringOrIntConverter()
+      this.totalIncome = '0',
+      @JsonKey(name: 'total_outcome')
+      @StringOrIntConverter()
+      this.totalOutcome = '0',
+      @JsonKey(name: 'risk_management') this.riskManagement,
+      @JsonKey(name: 'this_month_income')
+      @StringOrIntConverter()
+      this.thisMonthIncome = '0',
+      @JsonKey(name: 'this_month_outcome')
+      @StringOrIntConverter()
+      this.thisMonthOutcome = '0'});
   factory _FinanceProfile.fromJson(Map<String, dynamic> json) =>
       _$FinanceProfileFromJson(json);
 
@@ -1471,28 +1522,33 @@ class _FinanceProfile implements FinanceProfile {
   final double? monthlyIncome;
   @override
   @JsonKey(name: 'current_savings')
+  @StringOrIntConverter()
   final String currentSavings;
   @override
   @JsonKey()
+  @StringOrIntConverter()
   final String debt;
   @override
   @JsonKey(name: 'financial_goals')
-  final String financialGoals;
+  final String? financialGoals;
   @override
   @JsonKey(name: 'total_income')
+  @StringOrIntConverter()
   final String totalIncome;
   @override
   @JsonKey(name: 'total_outcome')
+  @StringOrIntConverter()
   final String totalOutcome;
   @override
   @JsonKey(name: 'risk_management')
-  final String riskManagement;
+  final String? riskManagement;
   @override
   @JsonKey(name: 'this_month_income')
+  @StringOrIntConverter()
   final String thisMonthIncome;
-// Tambahkan field yang mungkin terlewat dari respons
   @override
   @JsonKey(name: 'this_month_outcome')
+  @StringOrIntConverter()
   final String thisMonthOutcome;
 
   /// Create a copy of FinanceProfile
@@ -1564,14 +1620,22 @@ abstract mixin class _$FinanceProfileCopyWith<$Res>
   @useResult
   $Res call(
       {@JsonKey(name: 'monthly_income') double? monthlyIncome,
-      @JsonKey(name: 'current_savings') String currentSavings,
-      String debt,
-      @JsonKey(name: 'financial_goals') String financialGoals,
-      @JsonKey(name: 'total_income') String totalIncome,
-      @JsonKey(name: 'total_outcome') String totalOutcome,
-      @JsonKey(name: 'risk_management') String riskManagement,
-      @JsonKey(name: 'this_month_income') String thisMonthIncome,
-      @JsonKey(name: 'this_month_outcome') String thisMonthOutcome});
+      @JsonKey(name: 'current_savings')
+      @StringOrIntConverter()
+      String currentSavings,
+      @StringOrIntConverter() String debt,
+      @JsonKey(name: 'financial_goals') String? financialGoals,
+      @JsonKey(name: 'total_income') @StringOrIntConverter() String totalIncome,
+      @JsonKey(name: 'total_outcome')
+      @StringOrIntConverter()
+      String totalOutcome,
+      @JsonKey(name: 'risk_management') String? riskManagement,
+      @JsonKey(name: 'this_month_income')
+      @StringOrIntConverter()
+      String thisMonthIncome,
+      @JsonKey(name: 'this_month_outcome')
+      @StringOrIntConverter()
+      String thisMonthOutcome});
 }
 
 /// @nodoc
@@ -1590,10 +1654,10 @@ class __$FinanceProfileCopyWithImpl<$Res>
     Object? monthlyIncome = freezed,
     Object? currentSavings = null,
     Object? debt = null,
-    Object? financialGoals = null,
+    Object? financialGoals = freezed,
     Object? totalIncome = null,
     Object? totalOutcome = null,
-    Object? riskManagement = null,
+    Object? riskManagement = freezed,
     Object? thisMonthIncome = null,
     Object? thisMonthOutcome = null,
   }) {
@@ -1610,10 +1674,10 @@ class __$FinanceProfileCopyWithImpl<$Res>
           ? _self.debt
           : debt // ignore: cast_nullable_to_non_nullable
               as String,
-      financialGoals: null == financialGoals
+      financialGoals: freezed == financialGoals
           ? _self.financialGoals
           : financialGoals // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       totalIncome: null == totalIncome
           ? _self.totalIncome
           : totalIncome // ignore: cast_nullable_to_non_nullable
@@ -1622,10 +1686,10 @@ class __$FinanceProfileCopyWithImpl<$Res>
           ? _self.totalOutcome
           : totalOutcome // ignore: cast_nullable_to_non_nullable
               as String,
-      riskManagement: null == riskManagement
+      riskManagement: freezed == riskManagement
           ? _self.riskManagement
           : riskManagement // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       thisMonthIncome: null == thisMonthIncome
           ? _self.thisMonthIncome
           : thisMonthIncome // ignore: cast_nullable_to_non_nullable
