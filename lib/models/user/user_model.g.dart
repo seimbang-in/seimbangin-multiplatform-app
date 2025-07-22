@@ -60,25 +60,41 @@ Map<String, dynamic> _$UserDataToJson(_UserData instance) => <String, dynamic>{
 _FinanceProfile _$FinanceProfileFromJson(Map<String, dynamic> json) =>
     _FinanceProfile(
       monthlyIncome: (json['monthly_income'] as num?)?.toDouble(),
-      currentSavings: json['current_savings'] as String? ?? '0.00',
-      debt: json['debt'] as String? ?? '0.00',
-      financialGoals: json['financial_goals'] as String? ?? '',
-      totalIncome: json['total_income'] as String? ?? '0',
-      totalOutcome: json['total_outcome'] as String? ?? '0',
-      riskManagement: json['risk_management'] as String? ?? '',
-      thisMonthIncome: json['this_month_income'] as String? ?? '0',
-      thisMonthOutcome: json['this_month_outcome'] as String? ?? '0',
+      currentSavings: json['current_savings'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['current_savings']),
+      debt: json['debt'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['debt']),
+      financialGoals: json['financial_goals'] as String?,
+      totalIncome: json['total_income'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['total_income']),
+      totalOutcome: json['total_outcome'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['total_outcome']),
+      riskManagement: json['risk_management'] as String?,
+      thisMonthIncome: json['this_month_income'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['this_month_income']),
+      thisMonthOutcome: json['this_month_outcome'] == null
+          ? '0'
+          : const StringOrIntConverter().fromJson(json['this_month_outcome']),
     );
 
 Map<String, dynamic> _$FinanceProfileToJson(_FinanceProfile instance) =>
     <String, dynamic>{
       'monthly_income': instance.monthlyIncome,
-      'current_savings': instance.currentSavings,
-      'debt': instance.debt,
+      'current_savings':
+          const StringOrIntConverter().toJson(instance.currentSavings),
+      'debt': const StringOrIntConverter().toJson(instance.debt),
       'financial_goals': instance.financialGoals,
-      'total_income': instance.totalIncome,
-      'total_outcome': instance.totalOutcome,
+      'total_income': const StringOrIntConverter().toJson(instance.totalIncome),
+      'total_outcome':
+          const StringOrIntConverter().toJson(instance.totalOutcome),
       'risk_management': instance.riskManagement,
-      'this_month_income': instance.thisMonthIncome,
-      'this_month_outcome': instance.thisMonthOutcome,
+      'this_month_income':
+          const StringOrIntConverter().toJson(instance.thisMonthIncome),
+      'this_month_outcome':
+          const StringOrIntConverter().toJson(instance.thisMonthOutcome),
     };
