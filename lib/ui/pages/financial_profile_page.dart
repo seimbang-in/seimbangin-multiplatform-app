@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
-import 'package:seimbangin_app/models/user/user_model.dart'; // Pastikan UserData dan FinanceProfile ada di sini
+import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
+import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
 class FinancialProfilePage extends StatefulWidget {
   const FinancialProfilePage({super.key});
@@ -16,14 +18,24 @@ class FinancialProfilePage extends StatefulWidget {
 }
 
 class _FinancialProfilePageState extends State<FinancialProfilePage> {
+  // INTERVAL LISTS
   String? _selectedInterval = 'low';
-  final List<String> _intervals = ['low', 'normal', 'high'];
+  final List<String> _intervals = ['low', 'high'];
 
+  // CONTROLLER LIST
   final TextEditingController _financialGoalsController =
       TextEditingController();
   final TextEditingController _currentSavingController =
       TextEditingController();
   final TextEditingController _totalDebtController = TextEditingController();
+
+
+  // CURRENCY FORMATTER
+  final NumberFormat _currencyFormatter = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
 
   bool _formInitialized = false;
 
@@ -45,60 +57,85 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
     super.dispose();
   }
 
+  // LOADING DATA FROM BE
   void _initializeFormFields(FinanceProfile? financeProfileData) {
-    // Hanya jalankan jika belum diinisialisasi dan widget masih mounted
     if (!mounted || _formInitialized) return;
 
     if (financeProfileData != null) {
       _financialGoalsController.text = financeProfileData.financialGoals ?? '';
-      _currentSavingController.text =
-          financeProfileData.currentSavings?.toString() ?? '';
-      _totalDebtController.text = financeProfileData.debt?.toString() ?? '';
 
-      String newSelectedInterval = 'low'; // Default
+      // CHECKING CURRENTSAVING DATA AND FORMATTING INTO REGULAR NUMBER
+      if (financeProfileData.currentSavings != null) {
+        final double? parsedValue =
+            double.tryParse(financeProfileData.currentSavings!);
+        if (parsedValue != null) {
+          _currentSavingController.text = _currencyFormatter.format(parsedValue);
+        }
+      }
+
+      // CHECKING DEBT DATA AND FORMATTING INTO REGULAR NUMBER
+      if (financeProfileData.debt != null) {
+        final double? parsedValue = double.tryParse(financeProfileData.debt!);
+        if (parsedValue != null) {
+          _totalDebtController.text = _currencyFormatter.format(parsedValue);
+        }
+      }
+
+      String newSelectedInterval = 'low';
       if (financeProfileData.riskManagement != null &&
           _intervals
               .contains(financeProfileData.riskManagement!.toLowerCase())) {
         newSelectedInterval = financeProfileData.riskManagement!.toLowerCase();
       }
 
-      // setState dipanggil di sini, yang aman karena akan dipanggil dari listener atau initState
       setState(() {
         _selectedInterval = newSelectedInterval;
         _formInitialized = true;
       });
     } else {
-      // Jika tidak ada data profil finansial, kita tetap tandai sebagai "sudah diinisialisasi"
-      // agar tidak mencoba mengisi form berulang kali jika state HomePageSuccess datang
-      // tanpa data financeProfile.
       setState(() {
         _formInitialized = true;
       });
     }
   }
 
+  void _formatCurrencyInput(String value, TextEditingController controller) {
+    String cleanValue = value.replaceAll(RegExp(r'[^\d]'), '');
+    double? parsedValue = double.tryParse(cleanValue);
+
+    if (parsedValue != null) {
+      String formattedValue = _currencyFormatter.format(parsedValue);
+      controller.value = TextEditingValue(
+        text: formattedValue,
+        selection: TextSelection.collapsed(offset: formattedValue.length),
+      );
+    } else if (cleanValue.isEmpty) {
+      controller.clear();
+    }
+  }
+
+  int? _parseCurrency(String formattedValue) {
+    if (formattedValue.isEmpty) {
+      return 0;
+    }
+    final cleanValue = formattedValue.replaceAll(RegExp(r'[^\d]'), '');
+    if (cleanValue.isEmpty) {
+      return 0;
+    }
+    return int.tryParse(cleanValue);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomepageBloc, HomepageState>(
       listener: (context, state) {
-        // --- Logika inisialisasi form dipindahkan ke listener ---
         if (state is HomePageSuccess && !_formInitialized) {
           _initializeFormFields(state.user.data.financeProfile);
         }
-        // --- Akhir logika inisialisasi form ---
-
         if (state is FinancialProfileLoading) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          AlertDialogWidget.showLoading(context, message: 'Saving data...');
         } else if (state is FinancialProfileSuccess) {
-          if (Navigator.of(context, rootNavigator: true).canPop()) {
-            Navigator.of(context, rootNavigator: true).pop();
-          }
+          AlertDialogWidget.dismiss(context);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Financial profile updated successfully!'),
@@ -120,8 +157,6 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
         }
       },
       builder: (context, state) {
-        // Bagian builder sekarang tidak lagi memanggil _initializeFormFields secara langsung.
-        // Ia hanya fokus membangun UI berdasarkan state controller dan _selectedInterval saat ini.
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
             statusBarColor: statusBarPrimaryColor,
@@ -191,7 +226,8 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                         value: value,
                         child: Text(value.toUpperCase(),
                             style: blackTextStyle.copyWith(
-                                fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500)),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
@@ -229,9 +265,11 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                         fontSize: 14.sp, fontWeight: FontWeight.w500),
                   ),
                   SizedBox(height: 16.h),
-                  Text("Current Saving (Rp)",
-                      style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
+                  Text(
+                    "Current Saving (Rp)",
+                    style: blackTextStyle.copyWith(
+                        fontWeight: FontWeight.w600, fontSize: 14.sp),
+                  ),
                   SizedBox(height: 8.h),
                   TextField(
                     controller: _currentSavingController,
@@ -251,6 +289,9 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                           borderRadius: BorderRadius.circular(12.r),
                           borderSide: BorderSide(color: textBlueColor)),
                     ),
+                    onChanged: (value) {
+                      _formatCurrencyInput(value, _currentSavingController);
+                    },
                     keyboardType: TextInputType.number,
                     style: blackTextStyle.copyWith(
                         fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -278,6 +319,9 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                           borderRadius: BorderRadius.circular(12.r),
                           borderSide: BorderSide(color: textBlueColor)),
                     ),
+                    onChanged: (value) {
+                      _formatCurrencyInput(value, _totalDebtController);
+                    },
                     keyboardType: TextInputType.number,
                     style: blackTextStyle.copyWith(
                         fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -286,9 +330,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                   PrimaryFilledButton(
                     title: 'Save Profile',
                     onPressed: () {
-                      if (_financialGoalsController.text.isEmpty ||
-                          _currentSavingController.text.isEmpty ||
-                          _totalDebtController.text.isEmpty) {
+                      if (_financialGoalsController.text.isEmpty) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text('Please fill all fields'),
@@ -296,13 +338,11 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                         ));
                         return;
                       }
-
                       final currentSavings =
-                          int.tryParse(_currentSavingController.text);
-                      final debt = int.tryParse(_totalDebtController.text);
-
+                          _parseCurrency(_currentSavingController.text);
+                      final debt = _parseCurrency(_totalDebtController.text);
                       if (currentSavings == null || debt == null) {
-                        ScaffoldMessenger.of(context)
+                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(
                               'Please enter valid numbers for savings and debt.'),
