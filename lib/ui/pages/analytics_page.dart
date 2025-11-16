@@ -180,7 +180,11 @@ class _AnalyticsPageState extends State<AnalyticsPage>
             builder: (context, state) {
               if (state is TransactionLoading &&
                   state is! TransactionLoadSuccess) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
+                );
               }
 
               if (state is TransactionFailure) {

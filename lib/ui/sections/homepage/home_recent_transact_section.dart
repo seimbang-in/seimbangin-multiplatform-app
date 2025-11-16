@@ -91,7 +91,6 @@ class HomeRecentTransactionsSection extends StatelessWidget {
                   String categoryForIcon = 'others'; // Nilai default
 
                   if (transaction.items.isNotEmpty &&
-                      transaction.items.first.category != null &&
                       transaction.items.first.category.isNotEmpty) {
                     categoryForIcon = transaction.items.first.category;
                   } else if (transaction.category.isNotEmpty) {

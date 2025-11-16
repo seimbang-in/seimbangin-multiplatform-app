@@ -116,7 +116,7 @@ class TransactionOutcomeFormSection extends StatelessWidget {
 
             // Kategori Item
             DropdownButtonFormField<String>(
-              value: item.category.isEmpty ? null : item.category,
+              initialValue: item.category.isEmpty ? null : item.category,
               decoration: _inputDecoration(hintText: 'Category'),
               style: blackTextStyle.copyWith(fontSize: 14.sp),
               dropdownColor: backgroundWhiteColor,

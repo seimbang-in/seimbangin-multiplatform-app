@@ -113,8 +113,9 @@ class _OcrPageState extends State<OcrPage> {
 
   /// Mengubah mode flash antara on (torch) dan off.
   Future<void> _toggleFlash() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized)
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
       return;
+    }
 
     final newFlashMode =
         _currentFlashMode == FlashMode.off ? FlashMode.torch : FlashMode.off;

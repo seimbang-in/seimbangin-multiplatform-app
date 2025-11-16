@@ -29,7 +29,6 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
       TextEditingController();
   final TextEditingController _totalDebtController = TextEditingController();
 
-
   // CURRENCY FORMATTER
   final NumberFormat _currencyFormatter = NumberFormat.currency(
     locale: 'id_ID',
@@ -65,20 +64,17 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
       _financialGoalsController.text = financeProfileData.financialGoals ?? '';
 
       // CHECKING CURRENTSAVING DATA AND FORMATTING INTO REGULAR NUMBER
-      if (financeProfileData.currentSavings != null) {
-        final double? parsedValue =
-            double.tryParse(financeProfileData.currentSavings!);
-        if (parsedValue != null) {
-          _currentSavingController.text = _currencyFormatter.format(parsedValue);
-        }
+      final double? parsedValueSavings =
+          double.tryParse(financeProfileData.currentSavings);
+      if (parsedValueSavings != null) {
+        _currentSavingController.text =
+            _currencyFormatter.format(parsedValueSavings);
       }
 
       // CHECKING DEBT DATA AND FORMATTING INTO REGULAR NUMBER
-      if (financeProfileData.debt != null) {
-        final double? parsedValue = double.tryParse(financeProfileData.debt!);
-        if (parsedValue != null) {
-          _totalDebtController.text = _currencyFormatter.format(parsedValue);
-        }
+      final double? parsedValueDebt = double.tryParse(financeProfileData.debt);
+      if (parsedValueDebt != null) {
+        _totalDebtController.text = _currencyFormatter.format(parsedValueDebt);
       }
 
       String newSelectedInterval = 'low';
@@ -204,7 +200,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                           fontWeight: FontWeight.w600, fontSize: 14.sp)),
                   SizedBox(height: 8.h),
                   DropdownButtonFormField<String>(
-                    value: _selectedInterval,
+                    initialValue: _selectedInterval,
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: backgroundGreyColor,
@@ -226,8 +222,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                         value: value,
                         child: Text(value.toUpperCase(),
                             style: blackTextStyle.copyWith(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500)),
+                                fontSize: 14.sp, fontWeight: FontWeight.w500)),
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
@@ -342,7 +337,7 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                           _parseCurrency(_currentSavingController.text);
                       final debt = _parseCurrency(_totalDebtController.text);
                       if (currentSavings == null || debt == null) {
-                         ScaffoldMessenger.of(context)
+                        ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(
                               'Please enter valid numbers for savings and debt.'),
