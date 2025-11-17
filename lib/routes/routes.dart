@@ -12,7 +12,6 @@ import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_preview_page.dart';
 import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
-import 'package:seimbangin_app/ui/pages/profile_edit_fullname.dart';
 import 'package:seimbangin_app/ui/pages/profile_edit_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
 import 'package:seimbangin_app/ui/pages/register_page.dart';
@@ -64,28 +63,22 @@ final routes = GoRouter(
       builder: (context, state) => ProfilePage(),
       routes: [
         GoRoute(
-            path: 'profileEdit',
-            name: RouteNames.profileEdit,
-            builder: (context, state) {
-              final userData = state.extra as UserResponse?;
+          path: 'profileEdit',
+          name: RouteNames.profileEdit,
+          builder: (context, state) {
+            final userData = state.extra as UserResponse?;
 
-              // Handle jika data tidak ada (sebagai pengaman)
-              if (userData == null) {
-                print("Error: UserData tidak ditemukan untuk ProfileEditPage.");
-                return const Scaffold(
-                  body: Center(child: Text("Error: User data not provided.")),
-                );
-              }
-              // Kirim userData ke ProfileEditPage
-              return ProfileEditPage(userData: userData);
-            },
-            routes: [
-              GoRoute(
-                path: 'profileEditFullname',
-                name: RouteNames.profileEditFullname,
-                builder: (context, state) => ProfileEditFullname(),
-              )
-            ]),
+            // Handle jika data tidak ada (sebagai pengaman)
+            if (userData == null) {
+              print("Error: UserData tidak ditemukan untuk ProfileEditPage.");
+              return const Scaffold(
+                body: Center(child: Text("Error: User data not provided.")),
+              );
+            }
+            // Kirim userData ke ProfileEditPage
+            return ProfileEditPage(userData: userData);
+          },
+        ),
       ],
     ),
     GoRoute(
