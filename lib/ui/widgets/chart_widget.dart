@@ -115,7 +115,7 @@ class _AnalyticsDonutChartState extends State<AnalyticsDonutChart> {
                   },
                 ),
                 sectionsSpace: 0,
-                centerSpaceRadius: chartSize * 0.2, // auto size tengah
+                centerSpaceRadius: chartSize * 0.2,
                 sections: _buildSections(chartSize),
               ),
             ),
@@ -126,17 +126,20 @@ class _AnalyticsDonutChartState extends State<AnalyticsDonutChart> {
   }
 
   List<PieChartSectionData> _buildSections(double chartSize) {
+    final double totalValue =
+        widget.sections.fold(0.0, (sum, item) => sum + item.value);
+
     return List.generate(widget.sections.length, (i) {
       final isTouched = i == touchedIndex;
       final fontSize = isTouched ? chartSize * 0.05 : chartSize * 0.03;
       final radius = isTouched ? chartSize * 0.35 : chartSize * 0.3;
+      final double percentage = (widget.sections[i].value / totalValue) * 100;
 
       return PieChartSectionData(
         color: widget.sections[i].color,
         value: widget.sections[i].value,
         radius: radius,
-        title:
-            "${widget.sections[i].title} ${widget.sections[i].value.toStringAsFixed(0)}%",
+        title: '${widget.sections[i].title}\n${percentage.toStringAsFixed(0)}%',
         showTitle: true,
         titleStyle: TextStyle(
           fontSize: fontSize,

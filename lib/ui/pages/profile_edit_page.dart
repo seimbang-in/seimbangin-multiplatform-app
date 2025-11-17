@@ -105,48 +105,10 @@ class ProfileEditPage extends StatelessWidget {
 
               _buildProfileFieldBlock(
                 context,
-                label: 'Username',
-                value: userProfileData.username,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Navigate to Edit Username Page (TODO)')),
-                  );
-                },
-              ),
-              _buildProfileFieldBlock(
-                context,
                 label: 'Full Name',
                 value: userProfileData.fullName,
                 onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text('Navigate to Edit Full Name Page (TODO)')),
-                  );
-                },
-              ),
-              _buildProfileFieldBlock(
-                context,
-                label: 'Email',
-                value: userProfileData.email,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Navigate to Edit Email Page (TODO)')),
-                  );
-                },
-              ),
-              _buildProfileFieldBlock(
-                context,
-                label: 'Phone Number',
-                value: userProfileData.phoneNumber,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text('Navigate to Edit Phone Number Page (TODO)')),
-                  );
+                  routes.pushNamed(RouteNames.profileEditFullname);
                 },
               ),
             ],

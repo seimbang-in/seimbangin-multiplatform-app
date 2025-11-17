@@ -385,7 +385,7 @@ class DetailAnalytic extends StatelessWidget {
                 width: 6.w,
               ),
               Text(
-                isIncome == true ? 'Pemasukan' : 'Pengeluaran',
+                isIncome == true ? 'My Income' : 'My Expenses',
                 style: blackTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 10.sp,
