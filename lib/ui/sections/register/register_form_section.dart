@@ -35,7 +35,7 @@ class RegisterFormSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Helper untuk membuat InputDecoration agar tidak berulang
-    InputDecoration _buildInputDecoration(
+    InputDecoration buildInputDecoration(
         {required String hintText, String? errorText}) {
       return InputDecoration(
         filled: true,
@@ -65,7 +65,7 @@ class RegisterFormSection extends StatelessWidget {
       children: [
         TextField(
           controller: fullNameController,
-          decoration: _buildInputDecoration(
+          decoration: buildInputDecoration(
               hintText: 'Full Name', errorText: fullNameError),
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -73,7 +73,7 @@ class RegisterFormSection extends StatelessWidget {
         SizedBox(height: 16.r),
         TextField(
           controller: usernameController,
-          decoration: _buildInputDecoration(
+          decoration: buildInputDecoration(
               hintText: 'Username', errorText: usernameError),
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -81,7 +81,7 @@ class RegisterFormSection extends StatelessWidget {
         SizedBox(height: 16.r),
         TextField(
           controller: emailController,
-          decoration: _buildInputDecoration(
+          decoration: buildInputDecoration(
               hintText: 'Email Address', errorText: emailError),
           keyboardType: TextInputType.emailAddress,
           style: blackTextStyle.copyWith(
@@ -90,7 +90,7 @@ class RegisterFormSection extends StatelessWidget {
         SizedBox(height: 16.r),
         TextField(
           controller: phoneController,
-          decoration: _buildInputDecoration(
+          decoration: buildInputDecoration(
               hintText: 'Phone Number', errorText: phoneError),
           keyboardType: TextInputType.phone,
           style: blackTextStyle.copyWith(
@@ -100,7 +100,7 @@ class RegisterFormSection extends StatelessWidget {
         TextField(
           controller: passwordController,
           obscureText: isObscure,
-          decoration: _buildInputDecoration(
+          decoration: buildInputDecoration(
                   hintText: 'Password', errorText: passwordError)
               .copyWith(
             suffixIcon: IconButton(

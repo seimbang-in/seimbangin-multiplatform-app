@@ -15,6 +15,7 @@ abstract class RouteNames {
   static const transaction = 'transaction';
   static const profile = 'profile';
   static const profileEdit = 'profileEdit';
+  static const profileEditFullname = 'profileEditFullname';
   static const chatAdvisor = 'chat-advisor';
   static const transactionStruct = 'transactionStruct';
   static const transactionDetail = 'transactionDetail';

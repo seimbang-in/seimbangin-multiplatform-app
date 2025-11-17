@@ -109,12 +109,6 @@ final routes = GoRouter(
               name: RouteNames.transactionDetail,
               builder: (context, state) {
                 final transactionData = state.extra as model.TransactionData;
-                if (transactionData == null) {
-                  return Scaffold(
-                    body: Center(
-                        child: Text("Error: Transaction data not provided.")),
-                  );
-                }
                 return TransactionDetailPage(transactionData: transactionData);
               },
             ),

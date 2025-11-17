@@ -201,7 +201,6 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                       String categoryForIcon = 'others'; // Nilai default
 
                       if (transaction.items.isNotEmpty &&
-                          transaction.items.first.category != null &&
                           transaction.items.first.category.isNotEmpty) {
                         categoryForIcon = transaction.items.first.category;
                       } else if (transaction.category.isNotEmpty) {
@@ -228,7 +227,7 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                           amountColor: amountColor,
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 );
               },
