@@ -20,7 +20,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   ) async {
     emit(OcrLoading("Loading..."));
     try {
-      final result = await ocrService.extractOcrData(event.imagePath);
+      final result = await ocrService.extractOcrData(event.imagePath).timeout(
+            const Duration(seconds: 45),
+          );
       print("Image path: ${event.imagePath}"); // Dari OcrButtonPressed
       print("File exists: ${File(event.imagePath).existsSync()}");
       print("Sending image to API...");

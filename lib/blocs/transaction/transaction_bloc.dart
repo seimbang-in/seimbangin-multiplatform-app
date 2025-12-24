@@ -24,8 +24,12 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       TransactionButtonPressed event, Emitter<TransactionState> emit) async {
     try {
       emit(TransactionLoading("Loading..."));
-      await transactionService.addTransaction(
-          event.items, event.type, event.description, event.name);
+      await transactionService
+          .addTransaction(
+              event.items, event.type, event.description, event.name)
+          .timeout(
+            const Duration(seconds: 15),
+          );
       emit(TransactionSuccess("Transaction successful"));
     } catch (e) {
       emit(TransactionFailure("Failed to add transaction: $e"));
