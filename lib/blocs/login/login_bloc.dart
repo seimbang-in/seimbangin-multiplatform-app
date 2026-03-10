@@ -19,12 +19,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(LoginLoading());
     try {
-      final result = await authService
-          .login(
-            event.identifier,
-            event.password,
-          )
-          .timeout(const Duration(seconds: 15));
+      final result = await authService.login(
+        event.identifier,
+        event.password,
+      );
 
       if (result.data?.token != null) {
         await Token.saveToken(result.data!.token);
