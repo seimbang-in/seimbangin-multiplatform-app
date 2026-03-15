@@ -7,13 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logger/logger.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
-import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/sections/ai_advisor_section.dart';
 import 'package:seimbangin_app/ui/sections/homepage/home_page_skeleton.dart';
 import 'package:seimbangin_app/ui/sections/homepage/home_recent_transact_section.dart';
 import 'package:seimbangin_app/ui/sections/income_outcome_section.dart';
-import 'package:seimbangin_app/ui/sections/header_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -98,20 +95,6 @@ class _HomePageState extends State<HomePage>
                 return SafeArea(
                   child: ListView(
                     children: [
-                      SizedBox(
-                        height: 18.h,
-                      ),
-                      HeaderSection(
-                        name: user.data.username ?? "Guest",
-                        money: user.data.balance.toString() ?? '0',
-                        imageUrl: "assets/img_mascot-login.png",
-                        isAdviceLoading: homepageState.isAdviceLoading,
-                        adviceError: homepageState.adviceError,
-                        advice: homepageState.advice,
-                        isAdviceExist: user.data.financeProfile != null,
-                        financialProfileButtonOntap: () =>
-                            routes.pushNamed(RouteNames.financialProfile),
-                      ),
                       IncomeOutcomeSection(
                           balance: user.data.balance.toString(),
                           incomeAmount: user.data.financeProfile?.totalIncome

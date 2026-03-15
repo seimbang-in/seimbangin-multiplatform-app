@@ -9,6 +9,9 @@ import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
+import 'package:seimbangin_app/routes/routes.dart';
+import 'package:seimbangin_app/ui/sections/header_section.dart';
 import 'package:seimbangin_app/ui/sections/homepage/home_recent_transact_section.dart';
 
 class AnalyticsPage extends StatefulWidget {
@@ -209,6 +212,29 @@ class _AnalyticsPageState extends State<AnalyticsPage>
               return ListView(
                 padding: EdgeInsets.symmetric(vertical: 20.h),
                 children: [
+                  BlocBuilder<HomepageBloc, HomepageState>(
+                    builder: (context, homepageState) {
+                      if (homepageState is HomePageSuccess) {
+                        final user = homepageState.user;
+                        return Padding(
+                          padding: EdgeInsets.only(
+                              left: 20.w, right: 20.w, bottom: 24.h),
+                          child: HeaderSection(
+                            name: user.data.username ?? "Guest",
+                            money: user.data.balance.toString() ?? '0',
+                            imageUrl: "assets/img_mascot-login.png",
+                            isAdviceLoading: homepageState.isAdviceLoading,
+                            adviceError: homepageState.adviceError,
+                            advice: homepageState.advice,
+                            isAdviceExist: user.data.financeProfile != null,
+                            financialProfileButtonOntap: () =>
+                                routes.pushNamed(RouteNames.financialProfile),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(

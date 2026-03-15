@@ -27,65 +27,43 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      clipBehavior: Clip.none,
       children: [
-        Padding(
-          padding: EdgeInsets.only(top: 32.h, left: 20.w, bottom: 40.h),
-          child: Text(
-            'Seimbangin',
-            style: blackTextStyle.copyWith(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.bold,
+        // KONTEN CARD
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18.r),
+            gradient: LinearGradient(
+              colors: [secondaryColor, secondaryColor, backgroundWhiteColor],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
           ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Stack(
-            clipBehavior: Clip.none,
+          padding: EdgeInsets.all(20.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // KONTEN CARD
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18.r),
-                  gradient: LinearGradient(
-                    colors: [
-                      secondaryColor,
-                      secondaryColor,
-                      backgroundWhiteColor
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                ),
-                padding: EdgeInsets.all(20.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'AI Advisor',
-                      style: whiteTextStyle.copyWith(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                    _buildAdviceContent(context),
-                  ],
+              Text(
+                'AI Advisor',
+                style: whiteTextStyle.copyWith(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-
-              Positioned(
-                top: -100.h,
-                right: -10.w,
-                child: Image.asset(
-                  "assets/img_onboarding2.png",
-                  width: 180.w,
-                ),
-              ),
+              SizedBox(height: 24.h),
+              _buildAdviceContent(context),
             ],
+          ),
+        ),
+
+        Positioned(
+          top: -100.h,
+          right: -10.w,
+          child: Image.asset(
+            "assets/img_onboarding2.png",
+            width: 180.w,
           ),
         ),
       ],
@@ -222,7 +200,7 @@ class HeaderSection extends StatelessWidget {
     } else if (advice != null) {
       const String placeholderFromApi =
           "Please complete your financial profile first";
-      
+
       final bool hasRealAdvice =
           isAdviceExist && advice!.data.trim() != placeholderFromApi;
 

@@ -52,9 +52,9 @@ class _IncomeOutcomeSectionState extends State<IncomeOutcomeSection> {
           child: Row(
             children: [
               Text(
-                'Saldo',
+                'Seimbangin',
                 style: blackTextStyle.copyWith(
-                  fontSize: 22.sp,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
