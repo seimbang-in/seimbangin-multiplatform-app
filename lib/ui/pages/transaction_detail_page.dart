@@ -104,7 +104,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         backgroundColor: backgroundWhiteColor,
                       ),
                       Text(
-                        'Detail Transaction',
+                        'Detail Transaksi',
                         style: whiteTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16.sp,
@@ -135,19 +135,21 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       children: [
                         Center(
                           child: Text(
-                            'Transaction',
-                            style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.sp,
+                            'Konfirmasi Transaksi',
+                            style: greyTextStyle.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
                             ),
                           ),
                         ),
+                        SizedBox(height: 4.h),
                         Center(
                           child: Text(
                             widget.transactionData.name,
+                            textAlign: TextAlign.center,
                             style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
                             ),
                           ),
                         ),
@@ -167,7 +169,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   size: 4, color: textSecondaryColor),
                             ),
                             Text(
-                              DateFormat('HH:mm').format(transactionDate),
+                              DateFormat('hh:mm a').format(transactionDate),
                               style: greyTextStyle.copyWith(fontSize: 12.sp),
                             ),
                           ],
@@ -196,12 +198,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             ),
                             SizedBox(width: 4.h),
                             Text(
-                              isOutcome ? 'Outcome' : 'Income',
+                              isOutcome ? 'Pengeluaran' : 'Pemasukan',
                               style: (isOutcome
                                       ? warningTextStyle
                                       : greenTextStyle)
                                   .copyWith(
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
                               ),
                             )
@@ -209,35 +211,39 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         ),
                         SizedBox(height: 12.h),
                         Container(
-                          height: 32.h,
                           width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.r, vertical: 12.r),
                           decoration: BoxDecoration(
-                              color: buttonColor,
-                              borderRadius: BorderRadius.circular(12).r),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10).r,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  isOutcome ? 'Total Outcome' : 'Total Income',
-                                  style: whiteTextStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12.sp),
-                                ),
-                                Text(
-                                  NumberFormat.currency(
-                                          locale: 'id',
-                                          symbol: 'Rp ',
-                                          decimalDigits: 0)
-                                      .format(totalAmount),
-                                  style: whiteTextStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12.sp),
-                                ),
-                              ],
-                            ),
+                              color: isOutcome
+                                  ? const Color(0xffE91E63).withOpacity(0.1)
+                                  : primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16).r),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                isOutcome
+                                    ? 'Total Pengeluaran'
+                                    : 'Total Pemasukan',
+                                style: blackTextStyle.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14.sp),
+                              ),
+                              Text(
+                                NumberFormat.currency(
+                                        locale: 'id',
+                                        symbol: 'Rp ',
+                                        decimalDigits: 0)
+                                    .format(totalAmount),
+                                style: (isOutcome
+                                        ? warningTextStyle
+                                        : blueTextStyle)
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.sp),
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(height: 18.h),
@@ -252,7 +258,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Detail Transactions',
+                                Text('Rincian Barang',
                                     style: blackTextStyle.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14.sp)),
@@ -297,7 +303,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   SizedBox(height: 64.h),
                   PrimaryFilledButton(
                     onPressed: () {},
-                    title: 'Share',
+                    title: 'Bagikan',
                   ),
                   SizedBox(height: 24.h),
                 ],

@@ -39,7 +39,7 @@ class ProfileHeaderSection extends StatelessWidget {
           _buildAvatar(),
           SizedBox(height: 10.r),
           Text(
-            user.data.fullName ?? 'User Name',
+            user.data.fullName,
             style: blackTextStyle.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 18.sp,
@@ -47,7 +47,7 @@ class ProfileHeaderSection extends StatelessWidget {
           ),
           SizedBox(height: 4.r),
           Text(
-            user.data.email ?? 'user@email.com',
+            user.data.email,
             style: greyTextStyle.copyWith(
               fontWeight: FontWeight.w500,
               fontSize: 12.sp,

@@ -74,8 +74,9 @@ class AnalyticsBarChart extends StatelessWidget {
                 showTitles: true,
                 reservedSize: 45,
                 getTitlesWidget: (value, meta) {
-                  if (value == maxY || value == 0)
+                  if (value == maxY || value == 0) {
                     return const SizedBox.shrink();
+                  }
                   String text;
                   if (value >= 1000000) {
                     text = '${(value / 1000000).toStringAsFixed(1)}jt';

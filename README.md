@@ -42,6 +42,34 @@ Indonesia faces a significant challenge in financial literacy. According to the 
 | AI Financial Advisor   | Get personalized insights and recommendations based on your transaction history.               |
 | Financial Analytics    | Visualize your income and spending using dynamic, easy-to-read charts.                         |
 
+### 🛠️ Tech Stack
+- **State Management:** `flutter_bloc`
+- **Routing:** `go_router`
+- **Networking:** `http`
+- **Local Storage:** `shared_preferences`
+- **Charts:** `fl_chart`
+- **UI Components:** `carousel_slider`, `persistent_bottom_nav_bar_v2`, `flutter_animate`
+
+---
+
+## 📂 Project Architecture
+
+This project follows a feature-first and layered architecture to maintain clean and scalable code:
+
+```text
+lib/
+├── blocs/        # Business logic and state management (BLoC)
+├── models/       # Data entities and structured models
+├── routes/       # Application routing configuration (GoRouter)
+├── services/     # External API integrations and network calls
+├── shared/       # Shared themes, constants, and utilities
+├── ui/           # Presentation layer
+│   ├── pages/    # Main screen layouts
+│   ├── sections/ # Reusable page sections
+│   └── widgets/  # Atomic UI components
+└── main.dart     # Application entry point
+```
+
 ---
 
 ## 🚀 Getting Started with Flutter
@@ -52,8 +80,8 @@ Follow these steps to run this Flutter project locally:
 
 Make sure the following tools are installed on your system:
 
-- Flutter SDK (>=3.32.5)
-- Dart SDK (included with Flutter)
+- Flutter SDK (latest stable release)
+- Dart SDK (>= 3.6.0)
 - Android Studio / VSCode with Flutter extension
 - Android device or emulator
 - Git
@@ -111,11 +139,28 @@ To try the latest version without building from source:
 
 ## 🚧 Current Limitations
 
-- Only available for **Android** (iOS not yet supported)
-- Requires internet connection (no offline mode)
-- English language only
+- Only available for **Android** (iOS not yet fully tested)
+- Requires internet connection for AI Advisor and Syncing (no offline mode)
 - Limited transaction category customization
-- Not a digital wallet (no fund transfers)
+- Not a digital wallet (no direct fund transfers)
+
+---
+
+## 👥 Meet the BMD Team
+
+This project is proudly developed by the **BMD Team**. 
+
+### 📱 Mobile Team
+| [<img src="https://github.com/shandikadav.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Shandika David Ardiansyah</b></sub>](https://github.com/shandikadav) | [<img src="https://github.com/mkhsnw.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Muhammad Khosyi</b></sub>](https://github.com/mkhsnw) |
+| :---: | :---: |
+
+### ⚙️ Backend Team
+| [<img src="https://github.com/MasDewaa.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Rama Syailana Dewa</b></sub>](https://github.com/MasDewaa) | [<img src="https://github.com/hansfigo.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Claudio Hans Figo</b></sub>](https://github.com/hansfigo) |
+| :---: | :---: |
+
+### 🎨 Designer Team
+| [<img src="https://github.com/fawwazhumam.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Muhammad Fawwaz Humam</b></sub>](https://github.com/fawwazhumam) |
+| :---: |
 
 ---
 

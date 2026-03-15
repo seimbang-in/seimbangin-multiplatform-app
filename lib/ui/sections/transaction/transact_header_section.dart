@@ -22,7 +22,7 @@ class TransactionHeaderSection extends StatelessWidget {
           backgroundColor: backgroundWhiteColor,
         ),
         Text(
-          'Add Transaction',
+          'Tambah Transaksi',
           style: blackTextStyle.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 18.sp,

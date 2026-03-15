@@ -11,6 +11,7 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_header_section.dart';
+import 'package:seimbangin_app/ui/sections/profile/profile_menu_section.dart';
 import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -99,7 +100,7 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
       );
       if (croppedFile != null) {
         setState(() => _imageFile = XFile(croppedFile.path));
-        // TODO: Tambahkan logika untuk upload _imageFile ke backend
+        // TODO: logic add image to backend
       }
     }
   }
@@ -130,41 +131,6 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
     );
   }
 
-  Widget _buildOptionContainer({
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 18.r),
-        margin: EdgeInsets.only(bottom: 16.r),
-        decoration: BoxDecoration(
-          color: backgroundGreyColor,
-          borderRadius: BorderRadius.circular(24.r),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: textSecondaryColor, size: 24.r),
-            SizedBox(width: 12.r),
-            Expanded(
-              child: Text(
-                title,
-                style: blackTextStyle.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Icon(Icons.chevron_right, color: textSecondaryColor, size: 24.r),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -179,21 +145,21 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
           padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 30.r),
           child: Column(
             children: [
-              _buildOptionContainer(
+              ProfileMenuSection(
                 title: 'Edit Profile',
                 icon: Icons.person_outline,
                 onTap: () {
                   routes.pushNamed(RouteNames.profileEdit, extra: widget.user);
                 },
               ),
-              _buildOptionContainer(
+              ProfileMenuSection(
                 title: 'Edit Financial Profile',
                 icon: Icons.account_balance_wallet_outlined,
                 onTap: () {
                   routes.pushNamed(RouteNames.financialProfile);
                 },
               ),
-              SizedBox(height: 24.r),
+              SizedBox(height: 16.r),
               ProfileActionSection(
                 onLogout: _showLogoutDialog,
               ),

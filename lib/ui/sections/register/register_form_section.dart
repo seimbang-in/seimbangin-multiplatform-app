@@ -66,7 +66,7 @@ class RegisterFormSection extends StatelessWidget {
         TextField(
           controller: fullNameController,
           decoration: buildInputDecoration(
-              hintText: 'Full Name', errorText: fullNameError),
+              hintText: 'Nama Lengkap', errorText: fullNameError),
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
@@ -82,7 +82,7 @@ class RegisterFormSection extends StatelessWidget {
         TextField(
           controller: emailController,
           decoration: buildInputDecoration(
-              hintText: 'Email Address', errorText: emailError),
+              hintText: 'Alamat Email', errorText: emailError),
           keyboardType: TextInputType.emailAddress,
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -91,7 +91,7 @@ class RegisterFormSection extends StatelessWidget {
         TextField(
           controller: phoneController,
           decoration: buildInputDecoration(
-              hintText: 'Phone Number', errorText: phoneError),
+              hintText: 'Nomor Handphone', errorText: phoneError),
           keyboardType: TextInputType.phone,
           style: blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
@@ -101,7 +101,7 @@ class RegisterFormSection extends StatelessWidget {
           controller: passwordController,
           obscureText: isObscure,
           decoration: buildInputDecoration(
-                  hintText: 'Password', errorText: passwordError)
+                  hintText: 'Kata Sandi', errorText: passwordError)
               .copyWith(
             suffixIcon: IconButton(
               onPressed: onToggleObscure,

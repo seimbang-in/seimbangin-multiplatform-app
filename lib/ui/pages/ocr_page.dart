@@ -7,8 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
+import 'package:seimbangin_app/ui/sections/ocr/ocr_overlay_painter.dart';
+import 'package:seimbangin_app/ui/sections/ocr/ocr_camera_controls_section.dart';
 
-// Enum untuk merepresentasikan state kamera dengan jelas
 enum CameraStatus { initial, loading, success, failure }
 
 class OcrPage extends StatefulWidget {
@@ -18,21 +19,28 @@ class OcrPage extends StatefulWidget {
   State<OcrPage> createState() => _OcrPageState();
 }
 
-class _OcrPageState extends State<OcrPage> {
-  // Variabel State
+class _OcrPageState extends State<OcrPage>
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   CameraStatus _cameraStatus = CameraStatus.initial;
   CameraController? _cameraController;
   String? _errorMessage;
   final ImagePicker _picker = ImagePicker();
 
-  // State untuk fitur tambahan
   List<CameraDescription> _cameras = [];
   int _selectedCameraIndex = 0;
   FlashMode _currentFlashMode = FlashMode.off;
 
+  late AnimationController _animationController;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
@@ -43,14 +51,32 @@ class _OcrPageState extends State<OcrPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final CameraController? cameraController = _cameraController;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      // Free up memory and prevent camera hogging when app is in background
+      cameraController.dispose();
+      _cameraController = null;
+    } else if (state == AppLifecycleState.resumed) {
+      // Reinitialize the camera carefully when app comes back
+      _initializeCamera(_selectedCameraIndex);
+    }
+  }
+
+  @override
   void dispose() {
-    // Kembalikan UI status bar ke default saat keluar halaman
+    WidgetsBinding.instance.removeObserver(this);
+    _animationController.dispose();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     _cameraController?.dispose();
     super.dispose();
   }
 
-  /// Menginisialisasi controller kamera dengan indeks kamera yang dipilih.
   Future<void> _initializeCamera([int cameraIndex = 0]) async {
     if (!mounted) return;
 
@@ -103,7 +129,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  /// Mengganti kamera antara depan dan belakang.
   void _switchCamera() {
     if (_cameras.length > 1) {
       final nextCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
@@ -111,7 +136,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  /// Mengubah mode flash antara on (torch) dan off.
   Future<void> _toggleFlash() async {
     if (_cameraController == null || !_cameraController!.value.isInitialized) {
       return;
@@ -132,7 +156,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  /// Mengambil gambar dari kamera.
   Future<void> takePicture() async {
     if (_cameraStatus != CameraStatus.success ||
         _cameraController == null ||
@@ -147,7 +170,7 @@ class _OcrPageState extends State<OcrPage> {
       final XFile image = await _cameraController!.takePicture();
 
       if (_currentFlashMode == FlashMode.torch) {
-        await _toggleFlash();
+        await _toggleFlash(); // Turn off flash after taking picture if it was torch
       }
 
       if (mounted) {
@@ -161,7 +184,6 @@ class _OcrPageState extends State<OcrPage> {
     }
   }
 
-  /// Memilih gambar dari galeri.
   Future<void> _selectFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -183,12 +205,11 @@ class _OcrPageState extends State<OcrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: textPrimaryColor,
+      backgroundColor: Colors.black,
       body: _buildBody(),
     );
   }
 
-  /// Membangun UI berdasarkan state kamera saat ini.
   Widget _buildBody() {
     switch (_cameraStatus) {
       case CameraStatus.loading:
@@ -200,17 +221,22 @@ class _OcrPageState extends State<OcrPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Failed to initialize camera', style: whiteTextStyle),
+              Icon(Icons.error_outline, color: Colors.redAccent, size: 60.r),
+              SizedBox(height: 16.h),
+              Text('Gagal memuat kamera',
+                  style: whiteTextStyle.copyWith(
+                      fontSize: 18.sp, fontWeight: FontWeight.bold)),
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(_errorMessage!,
-                      style: whiteTextStyle.copyWith(fontSize: 12.sp),
+                      style: whiteTextStyle.copyWith(
+                          fontSize: 12.sp, color: Colors.grey),
                       textAlign: TextAlign.center),
                 ),
               SizedBox(height: 24.h),
               PrimaryFilledButton(
-                title: 'Try Again',
+                title: 'Coba Lagi',
                 onPressed: _initializeCamera,
               ),
             ],
@@ -223,10 +249,10 @@ class _OcrPageState extends State<OcrPage> {
 
   Widget _buildCameraView() {
     final screenSize = MediaQuery.of(context).size;
-    final width = screenSize.width * 0.7;
-    final height = (width * 2) / 2;
+    final width = screenSize.width * 0.8;
+    final height = (width * 3) / 2;
     final centerRect = Rect.fromCenter(
-      center: Offset(screenSize.width / 2, screenSize.height / 2),
+      center: Offset(screenSize.width / 2, screenSize.height / 2.2),
       width: width,
       height: height,
     );
@@ -243,143 +269,89 @@ class _OcrPageState extends State<OcrPage> {
           ),
         ),
 
-        // Overlay
+        // Overlay Paint
         Positioned.fill(
-          child: CustomPaint(painter: OverlayPainter(centerRect)),
-        ),
-
-        // Top buttons
-        Positioned(
-          top: 60.r,
-          left: 24.r,
-          child: CustomRoundedButton(
-            onPressed: () => routes.pushReplacementNamed(RouteNames.main),
-            widget:
-                Icon(Icons.chevron_left, size: 32.r, color: textSecondaryColor),
-            backgroundColor: backgroundWhiteColor,
-          ),
-        ),
-        Positioned(
-          top: 60.r,
-          right: 24.r,
-          child: Image.asset('assets/ic_seimbangin-logo-logreg.png'),
-        ),
-
-        // Kontrol Kamera: Ganti Kamera, Shutter, Flash
-        Align(
-          alignment: const Alignment(0, 0.35),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Tombol Ganti Kamera (kiri)
-              if (_cameras.length > 1) // Hanya tampilkan jika ada > 1 kamera
-                GestureDetector(
-                  onTap: _switchCamera,
-                  child: Container(
-                    width: 60.r,
-                    height: 60.r,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: textWhiteColor,
-                    ),
-                    child: Image.asset(
-                      'assets/ic_switch_cam.png',
-                    ),
-                  ),
-                )
-              else
-                SizedBox(width: 36.r),
-
-              // Tombol Shutter (tengah)
-              GestureDetector(
-                onTap: takePicture,
-                child: Container(
-                  width: 80.r,
-                  height: 80.r,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: textWhiteColor,
-                  ),
-                  child: Image.asset('assets/ic_camera.png'),
-                ),
-              ),
-
-              // Tombol Flash (kanan)
-              GestureDetector(
-                onTap: _toggleFlash,
-                child: Container(
-                  width: 60.r,
-                  height: 60.r,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: textWhiteColor,
-                  ),
-                  child: Image.asset(
-                    'assets/ic_flash.png',
-                  ),
-                ),
-              )
-            ],
+          child: CustomPaint(
+            painter: OcrOverlayPainter(centerRect),
           ),
         ),
 
-        // Bottom Container (Pilih dari galeri / manual)
-        Positioned(
-          bottom: 30.r,
-          left: 20.r,
-          right: 20.r,
+        // Scanning Animation Line
+        AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            final dy = _animationController.value * centerRect.height;
+            return Positioned(
+              top: centerRect.top + dy,
+              left: centerRect.left,
+              right: screenSize.width - centerRect.right,
+              child: child!,
+            );
+          },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8).r,
+            height: 3,
             decoration: BoxDecoration(
-              color: textWhiteColor,
-              borderRadius: BorderRadius.circular(24).r,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                PrimaryFilledButton(
-                    title: 'Select From Gallery',
-                    onPressed: _selectFromGallery),
-                SizedBox(height: 12.r),
-                PrimaryFilledButton(
-                  title: 'Add Manual',
-                  backgroundColor: backgroundGreyColor,
-                  textColor: textPrimaryColor,
-                  onPressed: () {
-                    routes.pushReplacementNamed(RouteNames.transaction);
-                  },
+              color: primaryColor,
+              boxShadow: [
+                BoxShadow(
+                  color: primaryColor.withOpacity(0.6),
+                  blurRadius: 12,
+                  spreadRadius: 2,
                 ),
               ],
             ),
           ),
-        )
+        ),
+
+        // Text Instruction
+        Positioned(
+          top: centerRect.bottom + 20.r,
+          left: 0,
+          right: 0,
+          child: Text(
+            "Posisikan struk tagihan di dalam kotak",
+            textAlign: TextAlign.center,
+            style: whiteTextStyle.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+
+        // Top Header Base
+        Positioned(
+          top: 50.r,
+          left: 20.r,
+          right: 20.r,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomRoundedButton(
+                onPressed: () => routes.pushReplacementNamed(RouteNames.main),
+                widget: Icon(Icons.close_rounded,
+                    size: 28.r, color: textSecondaryColor),
+                backgroundColor: backgroundWhiteColor,
+              ),
+              Image.asset('assets/ic_seimbangin-logo-logreg.png', height: 62.h),
+            ],
+          ),
+        ),
+
+        // Bottom Controls Container
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: OcrCameraControlsSection(
+            cameraCount: _cameras.length,
+            currentFlashMode: _currentFlashMode,
+            onSwitchCamera: _switchCamera,
+            onTakePicture: takePicture,
+            onToggleFlash: _toggleFlash,
+            onSelectFromGallery: _selectFromGallery,
+          ),
+        ),
       ],
     );
-  }
-}
-
-// Class OverlayPainter tidak perlu diubah
-class OverlayPainter extends CustomPainter {
-  final Rect centerRect;
-  OverlayPainter(this.centerRect);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
-      ..style = PaintingStyle.fill;
-
-    final path = Path()
-      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..addRRect(RRect.fromRectAndRadius(centerRect, const Radius.circular(12)))
-      ..fillType = PathFillType.evenOdd;
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant OverlayPainter oldDelegate) {
-    return oldDelegate.centerRect != centerRect;
   }
 }

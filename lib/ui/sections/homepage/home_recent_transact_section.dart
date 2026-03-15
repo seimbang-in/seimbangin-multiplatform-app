@@ -89,8 +89,8 @@ class LastTransactionsSection extends StatelessWidget {
                     backgroundColor: backgroundGreyColor,
                     icon: Icon(Icons.wallet_outlined,
                         size: 30.r, color: textSecondaryColor),
-                    title: "No transactions yet",
-                    subtitle: "Your recent transactions will appear here",
+                    title: "Belum ada transaksi",
+                    subtitle: "Transaksi terakhir Anda akan muncul di sini",
                     amount: "",
                     amountColor: textSecondaryColor,
                   );
@@ -102,7 +102,7 @@ class LastTransactionsSection extends StatelessWidget {
                       transactionState.recentTransactions.map((transaction) {
                     final createdAt =
                         DateTime.parse(transaction.createdAt!).toLocal();
-                    final timeString = DateFormat('d MMMM y').format(createdAt);
+                    final timeString = DateFormat('dd MMMM yyyy (hh:mm a)', 'id_ID').format(createdAt);
                     final total = int.tryParse(transaction.amount) ?? 0;
                     final prefix = transaction.type == 0 ? '+' : '-';
                     final Color amountColor = transaction.type == 0
@@ -151,7 +151,7 @@ class LastTransactionsSection extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.r),
                     child: Text(
-                      "Cannot load recent transactions.",
+                      "Tidak dapat memuat transaksi.",
                       style: greyTextStyle.copyWith(fontSize: 14.sp),
                     ),
                   ),

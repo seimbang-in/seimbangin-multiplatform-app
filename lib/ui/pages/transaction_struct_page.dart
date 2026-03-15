@@ -9,7 +9,6 @@ import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class TransactionStructPage extends StatefulWidget {
   const TransactionStructPage({super.key});
@@ -94,13 +93,11 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomRoundedButton(
-                      onPressed: () => routes.pop(),
-                      widget: const Icon(Icons.chevron_left, size: 32),
-                      backgroundColor: backgroundWhiteColor,
-                    ),
+                    const SizedBox(
+                        width:
+                            32), // Placeholder untuk menyeimbangkan padding agar title di tengah
                     Text(
-                      'Transaction Details',
+                      'Detail Transaksi',
                       style: whiteTextStyle.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
@@ -132,18 +129,20 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                     children: [
                       Center(
                           child: Text(
-                        'Transaction',
-                        style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
+                        'Konfirmasi Transaksi',
+                        style: greyTextStyle.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12.sp,
                         ),
                       )),
+                      SizedBox(height: 4.h),
                       Center(
                         child: Text(
                           previewData.transactionName,
+                          textAlign: TextAlign.center,
                           style: blackTextStyle.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
                           ),
                         ),
                       ),
@@ -168,7 +167,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           ),
                           SizedBox(width: 5.r),
                           Text(
-                            DateFormat('HH:mm')
+                            DateFormat('hh:mm a')
                                 .format(previewData.transactionDate),
                             style: blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
@@ -201,11 +200,11 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           ),
                           SizedBox(width: 4.r),
                           Text(
-                            isOutcome ? 'Outcome' : 'Income',
+                            isOutcome ? 'Pengeluaran' : 'Pemasukan',
                             style:
                                 (isOutcome ? warningTextStyle : greenTextStyle)
                                     .copyWith(
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
                             ),
                           )
@@ -215,44 +214,47 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                         height: 12.r,
                       ),
                       Container(
-                        height: 32.r,
                         width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.r, vertical: 12.r),
                         decoration: BoxDecoration(
-                          color: buttonColor,
-                          borderRadius: BorderRadius.circular(12).r,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10).r,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                isOutcome ? 'Total Outcome' : 'Total Income',
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.sp,
-                                ),
+                            color: isOutcome
+                                ? const Color(0xffE91E63).withOpacity(0.1)
+                                : primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16).r),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              isOutcome
+                                  ? 'Total Pengeluaran'
+                                  : 'Total Pemasukan',
+                              style: blackTextStyle.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.sp,
                               ),
-                              Text(
-                                NumberFormat.currency(
-                                        locale: 'id',
-                                        symbol: 'Rp ',
-                                        decimalDigits: 0)
-                                    .format(previewData.totalAmount),
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12.sp,
-                                ),
+                            ),
+                            Text(
+                              NumberFormat.currency(
+                                      locale: 'id',
+                                      symbol: 'Rp ',
+                                      decimalDigits: 0)
+                                  .format(previewData.totalAmount),
+                              style:
+                                  (isOutcome ? warningTextStyle : blueTextStyle)
+                                      .copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 18),
                       const Divider(),
                       const SizedBox(height: 18),
                       Text(
-                        'Detail Transactions',
+                        'Rincian Barang',
                         style: blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14.sp,
@@ -317,24 +319,70 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                 state.message); // Perbaikan: state.error
                           }
                         },
-                        child: PrimaryFilledButton(
-                          title: 'Save',
-                          onPressed: _isProcessing
-                              ? null
-                              : () {
-                                  context.read<TransactionBloc>().add(
-                                        TransactionButtonPressed(
-                                          description:
-                                              previewData.transactionName,
-                                          name: previewData.transactionName,
-                                          type: previewData.transactionType,
-                                          items: previewData.items,
-                                        ),
-                                      );
-                                },
-                          backgroundColor: primaryColor,
-                          textColor: textWhiteColor,
+                        child: SizedBox(
                           width: double.infinity,
+                          height: 56.h,
+                          child: ElevatedButton(
+                            onPressed: _isProcessing
+                                ? null
+                                : () {
+                                    context.read<TransactionBloc>().add(
+                                          TransactionButtonPressed(
+                                            description:
+                                                previewData.transactionName,
+                                            name: previewData.transactionName,
+                                            type: previewData.transactionType,
+                                            items: previewData.items,
+                                          ),
+                                        );
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isOutcome
+                                  ? const Color(0xffE91E63)
+                                  : primaryColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.r),
+                              ),
+                            ),
+                            child: Text(
+                              'Simpan Transaksi',
+                              style: whiteTextStyle.copyWith(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56.h,
+                        child: TextButton(
+                          onPressed: () {
+                            routes.pop(false);
+                          },
+                          style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.r),
+                                side: BorderSide(
+                                  color: isOutcome
+                                      ? const Color(0xffE91E63)
+                                      : primaryColor,
+                                  width: 1.5,
+                                )),
+                          ),
+                          child: Text(
+                            'Ubah Data',
+                            style: TextStyle(
+                              color: isOutcome
+                                  ? const Color(0xffE91E63)
+                                  : primaryColor,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       )
                     ],

@@ -12,7 +12,7 @@ class RegisterActionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PrimaryFilledButton(
-      title: 'Create Account',
+      title: 'Daftar Sekarang',
       onPressed: onCreateAccount,
     );
   }

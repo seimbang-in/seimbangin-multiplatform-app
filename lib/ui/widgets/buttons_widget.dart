@@ -9,6 +9,7 @@ class PrimaryFilledButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final Color? backgroundColor;
   final Color? textColor;
+  final IconData? icon;
 
   const PrimaryFilledButton({
     super.key,
@@ -18,10 +19,18 @@ class PrimaryFilledButton extends StatelessWidget {
     this.onPressed,
     this.backgroundColor,
     this.textColor,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget textWidget = Text(title,
+        style: whiteTextStyle.copyWith(
+          color: textColor ?? textWhiteColor,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+        ));
+
     return SizedBox(
       width: width,
       height: height,
@@ -33,12 +42,16 @@ class PrimaryFilledButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(24).r,
           ),
         ),
-        child: Text(title,
-            style: whiteTextStyle.copyWith(
-              color: textColor ?? textWhiteColor,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-            )),
+        child: icon != null
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: textColor ?? textWhiteColor, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  textWidget,
+                ],
+              )
+            : textWidget,
       ),
     );
   }

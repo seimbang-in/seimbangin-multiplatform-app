@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/blocs/login/login_bloc.dart';
 import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
-import 'package:seimbangin_app/services/auth/login/login_service.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/sections/login/login_footer_section.dart';
 import 'package:seimbangin_app/ui/sections/login/login_form_section.dart';
@@ -27,8 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPassValid = true;
   bool _isFormSubmitted = false;
   final TextEditingController identifierController = TextEditingController();
-  final LoginService authService =
-      LoginService(); // Tidak digunakan di contoh ini
   final TextEditingController passwordController = TextEditingController();
 
   // --- LOGIC ---
@@ -118,7 +116,11 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.symmetric(horizontal: 24).r,
               children: [
                 // SECTION 1: HEADER
-                const LoginHeaderSection(),
+                const LoginHeaderSection()
+                    .animate()
+                    .fadeIn(duration: 400.ms)
+                    .slideY(
+                        begin: 0.2, end: 0, duration: 400.ms, curve: Curves.easeOutQuad),
                 SizedBox(height: 45.h),
 
                 // SECTION 2: FORM
@@ -134,17 +136,22 @@ class _LoginPageState extends State<LoginPage> {
                       isObscure = !isObscure;
                     });
                   },
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 100.ms, duration: 400.ms)
+                    .slideY(
+                        begin: 0.2, end: 0, duration: 400.ms, curve: Curves.easeOutQuad),
                 SizedBox(height: 42.h),
 
                 // SECTION 3: FOOTER
                 LoginFooterSection(
                   onLogin: _onLoginPressed,
-                  onGoogleSignIn: () {
-                    // TODO: Implement Google Sign-In logic
-                  },
                   onRegister: _onRegisterPressed,
-                ),
+                )
+                    .animate()
+                    .fadeIn(delay: 200.ms, duration: 400.ms)
+                    .slideY(
+                        begin: 0.2, end: 0, duration: 400.ms, curve: Curves.easeOutQuad),
                 SizedBox(height: 42.h),
               ],
             ),
