@@ -57,9 +57,10 @@ class _MainPageState extends State<MainPage> {
         PersistentTabConfig.noScreen(
           onPressed: (barContext) => routes.pushNamed(RouteNames.ocr),
           item: ItemConfig(
-            icon: SvgPicture.asset(
-              'assets/ic_scan.svg',
-              width: 30.r,
+            icon: Icon(
+              Icons.add,
+              size: 42.r,
+              color: secondaryColor,
             ),
             activeForegroundColor: backgroundWhiteColor,
             inactiveForegroundColor: backgroundWhiteColor,
@@ -103,19 +104,14 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return PersistentTabView(
       navBarOverlap: NavBarOverlap.full(),
-
       backgroundColor: Colors.transparent,
       tabs: _tabs(context), // Kirim context ke _tabs jika diperlukan
       navBarBuilder: (navBarConfig) => Style13BottomNavBar(
-        middleItemSize: 65.r,
+        middleItemSize: 80.r,
         height: 70.r,
         navBarConfig: navBarConfig,
         navBarDecoration: NavBarDecoration(
-          color: buttonColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24.r),
-            topRight: Radius.circular(24.r),
-          ),
+          color: secondaryColor,
         ),
       ),
     );

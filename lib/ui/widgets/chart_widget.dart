@@ -1,56 +1,70 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:seimbangin_app/models/donut_chart_model.dart';
-import 'package:seimbangin_app/services/chart_service.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
 class AnalyticsBarChart extends StatelessWidget {
-  const AnalyticsBarChart({super.key});
+  final double currentIncome;
+  final double currentOutcome;
+
+  const AnalyticsBarChart({
+    super.key,
+    required this.currentIncome,
+    required this.currentOutcome,
+  });
 
   @override
   Widget build(BuildContext context) {
+    double maxY =
+        currentIncome > currentOutcome ? currentIncome : currentOutcome;
+    if (maxY == 0) maxY = 1000;
+    maxY = maxY * 1.25; // Add some headroom
+
     return SizedBox(
       height: 250,
       child: BarChart(
         BarChartData(
+          maxY: maxY,
           gridData: FlGridData(
             show: true,
             drawHorizontalLine: true,
             drawVerticalLine: false,
-            horizontalInterval: 25,
+            horizontalInterval: maxY / 4,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: Colors.grey,
-                strokeWidth: 2,
-                dashArray: [10, 10],
+                color: Colors.grey.withOpacity(0.3),
+                strokeWidth: 1,
+                dashArray: [5, 5],
               );
             },
           ),
           titlesData: FlTitlesData(
             show: true,
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   switch (value.toInt()) {
                     case 0:
-                      return Text('Jan');
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text('Pemasukan',
+                            style: blackTextStyle.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.w600)),
+                      );
                     case 1:
-                      return Text('Feb');
-                    case 2:
-                      return Text('Mar');
-                    case 3:
-                      return Text('Apr');
-                    case 4:
-                      return Text('May');
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text('Pengeluaran',
+                            style: blackTextStyle.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.w600)),
+                      );
                     default:
-                      return Text('');
+                      return const Text('');
                   }
                 },
               ),
@@ -58,14 +72,24 @@ class AnalyticsBarChart extends StatelessWidget {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 30,
+                reservedSize: 45,
                 getTitlesWidget: (value, meta) {
+                  if (value == maxY || value == 0)
+                    return const SizedBox.shrink();
+                  String text;
+                  if (value >= 1000000) {
+                    text = '${(value / 1000000).toStringAsFixed(1)}jt';
+                  } else if (value >= 1000) {
+                    text = '${(value / 1000).toStringAsFixed(0)}k';
+                  } else {
+                    text = value.toStringAsFixed(0);
+                  }
                   return Padding(
-                    padding: EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.only(right: 8),
                     child: Text(
-                      '${value.toInt()}',
+                      text,
                       textAlign: TextAlign.right,
-                      style: blackTextStyle.copyWith(
+                      style: greyTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                       ),
@@ -76,7 +100,30 @@ class AnalyticsBarChart extends StatelessWidget {
             ),
           ),
           borderData: FlBorderData(show: false),
-          barGroups: createBarGroups(),
+          barGroups: [
+            BarChartGroupData(
+              x: 0,
+              barRods: [
+                BarChartRodData(
+                  toY: currentIncome,
+                  color: textGreenColor,
+                  width: 30,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ],
+            ),
+            BarChartGroupData(
+              x: 1,
+              barRods: [
+                BarChartRodData(
+                  toY: currentOutcome,
+                  color: textWarningColor,
+                  width: 30,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -139,7 +186,7 @@ class _AnalyticsDonutChartState extends State<AnalyticsDonutChart> {
         color: widget.sections[i].color,
         value: widget.sections[i].value,
         radius: radius,
-        title: '${widget.sections[i].title}\n${percentage.toStringAsFixed(0)}%',
+        title: percentage > 5 ? '${percentage.toStringAsFixed(0)}%' : '',
         showTitle: true,
         titleStyle: TextStyle(
           fontSize: fontSize,

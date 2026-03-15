@@ -102,9 +102,7 @@ class ArticleCard extends StatelessWidget {
 }
 
 class RecentTransactionCard extends StatelessWidget {
-  // 1. Ganti nama 'backgroundIcon' menjadi 'backgroundColor' agar lebih jelas
   final Color backgroundColor;
-  // 2. Tambahkan parameter 'icon' yang bertipe Widget
   final Widget icon;
   final String title;
   final String subtitle;
@@ -115,7 +113,7 @@ class RecentTransactionCard extends StatelessWidget {
   const RecentTransactionCard({
     super.key,
     required this.backgroundColor,
-    required this.icon, // Jadikan 'icon' sebagai parameter wajib
+    required this.icon,
     required this.title,
     required this.subtitle,
     required this.amount,
@@ -128,58 +126,66 @@ class RecentTransactionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0).r,
-        child: Row(
-          children: [
-            Container(
-              width: 60.r,
-              height: 60.r,
-              decoration: BoxDecoration(
-                // Gunakan parameter backgroundColor
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(25).r,
+        padding: const EdgeInsets.only(bottom: 8.0).r,
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 16.h,
+          ),
+          decoration: BoxDecoration(
+            color: backgroundWhiteColor,
+            borderRadius: BorderRadius.circular(18).r,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 60.r,
+                height: 60.r,
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(18).r,
+                ),
+                child: Center(
+                  child: icon,
+                ),
               ),
-              child: Center(
-                // 3. Gunakan widget 'icon' yang diterima dari parameter
-                child: icon,
-              ),
-            ),
-            SizedBox(width: 16.r),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14.sp,
+              SizedBox(width: 16.r),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: blackTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4.r),
-                  Text(
-                    subtitle,
-                    style: blueTextStyle.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10.sp,
+                    SizedBox(height: 4.r),
+                    Text(
+                      subtitle,
+                      style: blueTextStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10.sp,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(width: 16.r),
-            Text(
-              amount,
-              style: blackTextStyle.copyWith(
-                color: amountColor ?? textGreenColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 14.sp,
+              SizedBox(width: 16.r),
+              Text(
+                amount,
+                style: blackTextStyle.copyWith(
+                  color: amountColor ?? textGreenColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

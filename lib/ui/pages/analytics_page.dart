@@ -9,6 +9,7 @@ import 'package:seimbangin_app/models/transaction/transaction_model.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 import 'package:seimbangin_app/ui/widgets/chart_widget.dart';
+import 'package:seimbangin_app/ui/sections/homepage/home_recent_transact_section.dart';
 
 class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({super.key});
@@ -23,8 +24,13 @@ class _AnalyticsPageState extends State<AnalyticsPage>
   int selectedMainTab = 0;
   int selectedSecondaryTab = 0;
   String selectedDropdown = "Monthly";
-  final List<String> mainTabTitles = ["All", "Income", "Outcome"];
-  final List<String> secondaryTabTitles = ["Day", "Week", "1 Month", "6 Month"];
+  final List<String> mainTabTitles = ["Semua", "Pemasukan", "Pengeluaran"];
+  final List<String> secondaryTabTitles = [
+    "Hari",
+    "Minggu",
+    "1 Bulan",
+    "6 Bulan"
+  ];
 
   final NumberFormat _currencyFormatter = NumberFormat.currency(
     locale: 'id_ID',
@@ -90,27 +96,26 @@ class _AnalyticsPageState extends State<AnalyticsPage>
     final startOfLastMonth = DateTime(now.year, now.month - 1, 1);
 
     for (final transaction in transactions) {
-      final createdAt = DateTime.tryParse(transaction.createdAt ?? '');
-      if (createdAt == null) continue;
+      if (transaction.createdAt == null) continue;
 
+      final date = DateTime.parse(transaction.createdAt!).toLocal();
       final amount = double.tryParse(transaction.amount) ?? 0.0;
 
-      if (createdAt.isAfter(startOfCurrentMonth)) {
+      if (date.isAfter(startOfCurrentMonth) ||
+          date.isAtSameMomentAs(startOfCurrentMonth)) {
         // --- Data Bulan Ini ---
         if (transaction.type == 0) {
-          // 0 = Income
           currentIncome += amount;
         } else if (transaction.type == 1) {
-          // 1 = Outcome
           currentOutcome += amount;
         }
-      } else if (createdAt.isAfter(startOfLastMonth)) {
+      } else if ((date.isAfter(startOfLastMonth) ||
+              date.isAtSameMomentAs(startOfLastMonth)) &&
+          date.isBefore(startOfCurrentMonth)) {
         // --- Data Bulan Lalu ---
         if (transaction.type == 0) {
-          // 0 = Income
           lastMonthIncome += amount;
         } else if (transaction.type == 1) {
-          // 1 = Outcome
           lastMonthOutcome += amount;
         }
       }
@@ -188,7 +193,8 @@ class _AnalyticsPageState extends State<AnalyticsPage>
               }
 
               if (state is TransactionFailure) {
-                return Center(child: Text('Error: ${state.message}'));
+                return Center(
+                    child: Text('Terjadi Kesalahan: ${state.message}'));
               }
 
               List<TransactionData> transactions = [];
@@ -201,13 +207,16 @@ class _AnalyticsPageState extends State<AnalyticsPage>
               final categoryData =
                   _processCategoryData(transactions, selectedMainTab);
               return ListView(
-                padding: EdgeInsets.all(20.r),
+                padding: EdgeInsets.symmetric(vertical: 20.h),
                 children: [
-                  Text(
-                    'Last Month vs Now',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      'Pemasukan vs Pengeluaran',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -215,79 +224,20 @@ class _AnalyticsPageState extends State<AnalyticsPage>
                   ),
 
                   // CARD DATA
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: textWhiteColor,
-                      borderRadius: BorderRadius.circular(24.r),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(20.r),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Now',
-                            style: greyTextStyle.copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 8.h,
-                          ),
-
-                          // --- IMPLEMENT THIS MONTH DATA
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DetailAnalytic(
-                                price: _currencyFormatter
-                                    .format(comparisonData.currentIncome),
-                                isIncome: true,
-                              ),
-                              DetailAnalytic(
-                                price: _currencyFormatter
-                                    .format(comparisonData.currentOutcome),
-                                isIncome: false,
-                              )
-                            ],
-                          ),
-
-                          SizedBox(
-                            height: 12.h,
-                          ),
-
-                          Text(
-                            'Last Month',
-                            style: greyTextStyle.copyWith(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 8.h,
-                          ),
-
-                          // --- IMPLEMENT LAST MONTH DATA
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              DetailAnalytic(
-                                price: _currencyFormatter
-                                    .format(comparisonData.lastMonthIncome),
-                                isIncome: true,
-                              ),
-                              DetailAnalytic(
-                                price: _currencyFormatter
-                                    .format(comparisonData.lastMonthOutcome),
-                                isIncome: false,
-                              )
-                            ],
-                          ),
-                        ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: textWhiteColor,
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(20.r),
+                        child: AnalyticsBarChart(
+                          currentIncome: comparisonData.currentIncome,
+                          currentOutcome: comparisonData.currentOutcome,
+                        ),
                       ),
                     ),
                   ),
@@ -296,48 +246,24 @@ class _AnalyticsPageState extends State<AnalyticsPage>
                     height: 18.h,
                   ),
 
-                  Text(
-                    'Transaction Categories',
-                    style: blackTextStyle.copyWith(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'Number of transactions by category',
-                    style: greyTextStyle.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 12.h,
-                  ),
-
-                  Container(
-                    height: 40.h,
-                    decoration: BoxDecoration(
-                      color: textWhiteColor,
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: TabBar(
-                      controller: _mainTabController,
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        color: primaryColor,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      'Kategori Transaksi',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
                       ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorPadding: EdgeInsets.all(4.r),
-                      labelColor: textWhiteColor,
-                      unselectedLabelColor: textPrimaryColor,
-                      labelStyle: whiteTextStyle.copyWith(
-                          fontSize: 12.sp, fontWeight: FontWeight.bold),
-                      unselectedLabelStyle: blackTextStyle.copyWith(
-                          fontSize: 12.sp, fontWeight: FontWeight.bold),
-                      tabs: mainTabTitles
-                          .map((title) => Tab(text: title))
-                          .toList(),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      'Jumlah transaksi berdasarkan kategori',
+                      style: greyTextStyle.copyWith(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
 
@@ -345,26 +271,67 @@ class _AnalyticsPageState extends State<AnalyticsPage>
                     height: 12.h,
                   ),
 
-                  categoryData.isEmpty
-                      ? StaticNoTransaction(
-                          onTap: () => print(
-                            'You clicked add transaction on static no transact card!',
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: textWhiteColor,
-                            borderRadius: BorderRadius.circular(24.r),
-                          ),
-                          padding: EdgeInsets.all(16.r),
-                          child: Column(
-                            children: [
-                              AnalyticsDonutChart(sections: categoryData),
-                              SizedBox(height: 16.h),
-                              ..._buildLegend(categoryData)
-                            ],
-                          ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Container(
+                      height: 40.h,
+                      decoration: BoxDecoration(
+                        color: textWhiteColor,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: TabBar(
+                        controller: _mainTabController,
+                        indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: primaryColor,
                         ),
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorPadding: EdgeInsets.all(4.r),
+                        labelColor: textWhiteColor,
+                        unselectedLabelColor: textPrimaryColor,
+                        labelStyle: whiteTextStyle.copyWith(
+                            fontSize: 12.sp, fontWeight: FontWeight.bold),
+                        unselectedLabelStyle: blackTextStyle.copyWith(
+                            fontSize: 12.sp, fontWeight: FontWeight.bold),
+                        tabs: mainTabTitles
+                            .map((title) => Tab(text: title))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 12.h,
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: categoryData.isEmpty
+                        ? StaticNoTransaction(
+                            onTap: () => print(
+                              'You clicked add transaction on static no transact card!',
+                            ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: textWhiteColor,
+                              borderRadius: BorderRadius.circular(24.r),
+                            ),
+                            padding: EdgeInsets.all(16.r),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                SizedBox(height: 16.h),
+                                AnalyticsDonutChart(sections: categoryData),
+                                SizedBox(height: 24.h),
+                                ..._buildLegend(categoryData)
+                              ],
+                            ),
+                          ),
+                  ),
+                  SizedBox(height: 24.h),
+                  // MENGHITUNG LAST TRANSACTIONS SEPERTI PADA HOME PAGE (Padding sudah dihandle di section-nya sendiri)
+                  const LastTransactionsSection(),
                 ],
               );
             },

@@ -7,6 +7,7 @@ import 'package:seimbangin_app/models/transaction/transaction_model.dart'
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
+import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 
 // Helper Widget untuk Dotted Divider
 class DottedDivider extends StatelessWidget {
@@ -308,38 +309,59 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 
+  // Helper untuk mendapatkan warna dan ikon berdasarkan kategori transaksi.
+  (Color, String) _getCategoryUIData(String category) {
+    switch (category.toLowerCase()) {
+      case 'salary':
+        return (buttonSalaryColor, 'assets/ic_salary.png');
+      case 'freelance':
+        return (buttonFreelanceColor, 'assets/ic_freelance.png');
+      case 'bonus':
+        return (buttonBonusColor, 'assets/ic_bonus.png');
+      case 'gift':
+        return (buttonBonusColor, 'assets/ic_gift.png');
+      case 'parent':
+        return (buttonParentColor, 'assets/ic_parents.png');
+      case 'food':
+        return (buttonFoodColor, 'assets/ic_food.png');
+      case 'transportation':
+      case 'transport':
+        return (buttonTransportationColor, 'assets/ic_transportation.png');
+      case 'shopping':
+        return (buttonShoppingColor, 'assets/ic_shopping.png');
+      case 'health':
+        return (buttonHealthColor, 'assets/ic_health.png');
+      case 'education':
+        return (buttonEducationColor, 'assets/ic_education.png');
+      case 'housing':
+        return (buttonHousingColor, 'assets/ic_housing.png');
+      case 'internet':
+        return (buttonInternetColor, 'assets/ic_internet.png');
+      default:
+        // Fallback untuk kategori 'others' atau yang tidak dikenal
+        return (buttonInternetColor, 'assets/ic_bonus.png');
+    }
+  }
+
   // Widget helper untuk membangun setiap baris item
   Widget _buildItemTile(model.TransactionItem item) {
+    final String categoryForIcon =
+        item.category.isNotEmpty ? item.category : 'others';
+    final categoryUI = _getCategoryUIData(categoryForIcon);
+    final Color bgColor = categoryUI.$1;
+    final String iconPath = categoryUI.$2;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.itemName,
-                  style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-                Text(
-                  'Qty: ${item.quantity}',
-                  style: greyTextStyle.copyWith(fontSize: 10.sp),
-                ),
-              ],
-            ),
-          ),
-          Text(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: RecentTransactionCard(
+        backgroundColor: bgColor,
+        icon: Image.asset(iconPath, width: 30.r, height: 30.r),
+        title: item.itemName,
+        subtitle: 'Qty: ${item.quantity}',
+        amount:
             NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
                 .format(double.tryParse(item.price) ?? 0),
-            style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.sp,
-                color: buttonColor),
-          ),
-        ],
+        amountColor: buttonColor,
       ),
     );
   }
