@@ -150,7 +150,7 @@ To try the latest version without building from source:
 
 This project is proudly developed by the **BMD Team**. 
 
-### 📱 Mobile Developers
+### 📱 Mobile Team
 | [<img src="https://github.com/shandikadav.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Shandika David Ardiansyah</b></sub>](https://github.com/shandikadav) | [<img src="https://github.com/mkhsnw.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Muhammad Khosyi</b></sub>](https://github.com/mkhsnw) |
 | :---: | :---: |
 
