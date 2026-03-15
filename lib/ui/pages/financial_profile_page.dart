@@ -9,6 +9,8 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
+import 'package:seimbangin_app/ui/sections/profile/financial_profile_header_section.dart';
+import 'package:seimbangin_app/ui/sections/profile/financial_profile_form_section.dart';
 
 class FinancialProfilePage extends StatefulWidget {
   const FinancialProfilePage({super.key});
@@ -177,151 +179,22 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                       Image.asset('assets/ic_seimbangin-logo-logreg.png'),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/img_mascot-login.png', height: 150.h),
-                      SizedBox(height: 20.r),
-                      Text('Financial Profile',
-                          style: blackTextStyle.copyWith(
-                              fontWeight: FontWeight.w600, fontSize: 18.sp)),
-                      SizedBox(height: 4.r),
-                      Text(
-                        'Complete or update your financial profile for AI Advise.',
-                        style: greyTextStyle.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 14.sp),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30.h),
-                  Text("Risk Management Profile",
-                      style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                  SizedBox(height: 8.h),
-                  DropdownButtonFormField<String>(
-                    initialValue: _selectedInterval,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundGreyColor,
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.r, vertical: 14.r),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide:
-                              BorderSide(color: textBlueColor, width: 1.r)),
-                    ),
-                    items: _intervals.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value.toUpperCase(),
-                            style: blackTextStyle.copyWith(
-                                fontSize: 14.sp, fontWeight: FontWeight.w500)),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      if (mounted) setState(() => _selectedInterval = newValue);
+                  const FinancialProfileHeaderSection(),
+                  SizedBox(height: 32.h),
+                  FinancialProfileFormSection(
+                    financialGoalsController: _financialGoalsController,
+                    currentSavingController: _currentSavingController,
+                    totalDebtController: _totalDebtController,
+                    selectedInterval: _selectedInterval,
+                    intervals: _intervals,
+                    onIntervalChanged: (String? newValue) {
+                      if (mounted) {
+                        setState(() => _selectedInterval = newValue);
+                      }
                     },
-                    icon: Icon(Icons.arrow_drop_down,
-                        color: textPrimaryColor, size: 24.r),
-                    dropdownColor: backgroundWhiteColor,
-                    borderRadius: BorderRadius.circular(12.r),
+                    onCurrencyChanged: _formatCurrencyInput,
                   ),
-                  SizedBox(height: 16.h),
-                  Text("Financial Goals",
-                      style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                  SizedBox(height: 8.h),
-                  TextField(
-                    controller: _financialGoalsController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundGreyColor,
-                      hintText: 'e.g., Buy a house, Travel',
-                      hintStyle: greyTextStyle.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: textBlueColor)),
-                    ),
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14.sp, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    "Current Saving (Rp)",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.w600, fontSize: 14.sp),
-                  ),
-                  SizedBox(height: 8.h),
-                  TextField(
-                    controller: _currentSavingController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundGreyColor,
-                      hintText: 'e.g., 5000000',
-                      hintStyle: greyTextStyle.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: textBlueColor)),
-                    ),
-                    onChanged: (value) {
-                      _formatCurrencyInput(value, _currentSavingController);
-                    },
-                    keyboardType: TextInputType.number,
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14.sp, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: 16.h),
-                  Text("Total Debt (Rp)",
-                      style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w600, fontSize: 14.sp)),
-                  SizedBox(height: 8.h),
-                  TextField(
-                    controller: _totalDebtController,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: backgroundGreyColor,
-                      hintText: 'e.g., 1000000',
-                      hintStyle: greyTextStyle.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide.none),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: textBlueColor)),
-                    ),
-                    onChanged: (value) {
-                      _formatCurrencyInput(value, _totalDebtController);
-                    },
-                    keyboardType: TextInputType.number,
-                    style: blackTextStyle.copyWith(
-                        fontSize: 14.sp, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: 42.h),
+                  SizedBox(height: 48.h),
                   PrimaryFilledButton(
                     title: 'Save Profile',
                     onPressed: () {
