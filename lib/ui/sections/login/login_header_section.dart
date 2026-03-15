@@ -21,7 +21,7 @@ class LoginHeaderSection extends StatelessWidget {
           children: [
             Image.asset('assets/img_mascot-login.png'),
             Text(
-              'Welcome',
+              'Selamat Datang',
               style: blackTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 28.sp,
@@ -29,7 +29,7 @@ class LoginHeaderSection extends StatelessWidget {
             ),
             SizedBox(height: 4.h),
             Text(
-              'Let’s get started with Seimbangin',
+              'Mari mulai perjalanan finansialmu',
               style: greyTextStyle.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 12.sp,

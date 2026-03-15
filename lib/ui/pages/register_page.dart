@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:seimbangin_app/blocs/register/register_bloc.dart';
@@ -45,19 +46,18 @@ class _RegisterPageState extends State<RegisterPage> {
     bool isPasswordValid = passwordController.text.length >= 8;
 
     setState(() {
-      _fullNameError = isFullNameValid ? null : '*Full name cannot be empty';
-      _usernameError = isUsernameValid ? null : '*Username cannot be empty';
+      _fullNameError =
+          isFullNameValid ? null : '*Nama lengkap tidak boleh kosong';
+      _usernameError = isUsernameValid ? null : '*Username tidak boleh kosong';
       _emailError = emailController.text.isEmpty
-          ? '*Email cannot be empty'
-          : (isEmailValid ? null : '*Email is invalid');
+          ? '*Email tidak boleh kosong'
+          : (isEmailValid ? null : '*Format email tidak valid');
       _phoneError = phoneNumberController.text.isEmpty
-          ? '*Phone number cannot be empty'
-          : (isPhoneValid ? null : '*Phone must be 11-13 digits');
+          ? '*No. HP tidak boleh kosong'
+          : (isPhoneValid ? null : '*No. HP harus 11-13 digit');
       _passwordError = passwordController.text.isEmpty
-          ? '*Password cannot be empty'
-          : (isPasswordValid
-              ? null
-              : '*Password must be at least 8 characters');
+          ? '*Kata sandi tidak boleh kosong'
+          : (isPasswordValid ? null : '*Kata sandi minimal 8 karakter');
     });
 
     return isFullNameValid &&
@@ -98,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
       listener: (context, state) {
         if (state is RegisterLoading) {
           AlertDialogWidget.showLoading(context,
-              message: 'Registering Account...');
+              message: 'Mendaftarkan Akun...');
         } else if (state is RegisterSuccess) {
           AlertDialogWidget.dismiss(context);
           ScaffoldMessenger.of(context)
@@ -124,7 +124,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 // SECTION 1: HEADER
                 RegisterHeaderSection(
                   onBack: () => routes.replaceNamed(RouteNames.login),
-                ),
+                ).animate().fadeIn(duration: 400.ms).slideY(
+                    begin: 0.2,
+                    end: 0,
+                    duration: 400.ms,
+                    curve: Curves.easeOutQuad),
                 SizedBox(height: 45.r),
 
                 // SECTION 2: FORM
@@ -145,13 +149,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       isObscure = !isObscure;
                     });
                   },
-                ),
+                ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideY(
+                    begin: 0.2,
+                    end: 0,
+                    duration: 400.ms,
+                    curve: Curves.easeOutQuad),
                 SizedBox(height: 42.r),
 
                 // SECTION 3: ACTION
                 RegisterActionSection(
                   onCreateAccount: _onCreateAccountPressed,
-                ),
+                ).animate().fadeIn(delay: 200.ms, duration: 400.ms).slideY(
+                    begin: 0.2,
+                    end: 0,
+                    duration: 400.ms,
+                    curve: Curves.easeOutQuad),
                 SizedBox(height: 62.r),
               ],
             ),

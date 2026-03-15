@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
@@ -111,7 +112,14 @@ class _SplashPageState extends State<SplashPage> {
                     ],
                   )
                 ],
-              ),
+              )
+                  .animate()
+                  .fadeIn(duration: 800.ms)
+                  .scaleXY(
+                      begin: 0.8,
+                      end: 1.0,
+                      duration: 800.ms,
+                      curve: Curves.easeOutBack),
             ),
           ),
         ],

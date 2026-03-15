@@ -36,9 +36,9 @@ class LoginFormSection extends StatelessWidget {
                 ? backgroundPinkColor
                 : backgroundGreyColor,
             prefixIcon: Icon(Icons.person, size: 18.r),
-            hintText: 'Username, Phone Number, Email',
+            hintText: 'Username, No. HP, atau Email',
             errorText: isFormSubmitted && !isPhoneValid
-                ? '*Phone number cannot be empty'
+                ? '*Username tidak boleh kosong'
                 : null,
             hintStyle: isFormSubmitted && !isPhoneValid
                 ? warningTextStyle.copyWith(
@@ -71,9 +71,9 @@ class LoginFormSection extends StatelessWidget {
                 ? backgroundPinkColor
                 : backgroundGreyColor,
             prefixIcon: Icon(Icons.lock_outline_rounded, size: 18.r),
-            hintText: 'Password',
+            hintText: 'Kata Sandi',
             errorText: isFormSubmitted && !isPassValid
-                ? '*Password cannot be empty'
+                ? '*Kata sandi tidak boleh kosong'
                 : null,
             suffixIcon: IconButton(
               onPressed: onToggleObscure,
@@ -112,7 +112,7 @@ class LoginFormSection extends StatelessWidget {
                 // TODO: Implement recovery password logic
               },
               child: Text(
-                'Recovery Password',
+                'Lupa Kata Sandi?',
                 style: blueTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 12.sp,

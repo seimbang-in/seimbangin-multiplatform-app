@@ -36,7 +36,7 @@ class RegisterHeaderSection extends StatelessWidget {
           children: [
             Image.asset('assets/img_mascot-login.png'),
             Text(
-              'Create Account',
+              'Buat Akun Baru',
               style: blackTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 28.sp,

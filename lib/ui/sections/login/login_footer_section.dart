@@ -5,13 +5,11 @@ import 'package:seimbangin_app/ui/widgets/buttons_widget.dart';
 
 class LoginFooterSection extends StatelessWidget {
   final VoidCallback onLogin;
-  final VoidCallback onGoogleSignIn;
   final VoidCallback onRegister;
 
   const LoginFooterSection({
     super.key,
     required this.onLogin,
-    required this.onGoogleSignIn,
     required this.onRegister,
   });
 
@@ -20,36 +18,22 @@ class LoginFooterSection extends StatelessWidget {
     return Column(
       children: [
         PrimaryFilledButton(
-          title: 'Login',
+          title: 'Masuk',
           onPressed: onLogin,
-        ),
-        SizedBox(height: 22.h),
-        Text(
-          'Or Sign Up With',
-          style: greyTextStyle.copyWith(
-              fontSize: 12.sp, fontWeight: FontWeight.w500),
-        ),
-        SizedBox(height: 16.h),
-        Center(
-          child: CustomRoundedButton(
-            onPressed: onGoogleSignIn,
-            widget: Image.asset('assets/ic_google.png'),
-            backgroundColor: backgroundGreyColor,
-          ),
         ),
         SizedBox(height: 31.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Don't have an account?",
+              "Belum punya akun?",
               style: blackTextStyle.copyWith(
                   fontWeight: FontWeight.w600, fontSize: 12.sp),
             ),
             TextButton(
               onPressed: onRegister,
               child: Text(
-                'Register',
+                'Daftar',
                 style: blueTextStyle.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.sp,
