@@ -27,44 +27,58 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // KONTEN CARD
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18.r),
-            gradient: LinearGradient(
-              colors: [secondaryColor, secondaryColor, backgroundWhiteColor],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-          padding: EdgeInsets.all(20.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'AI Advisor',
-                style: whiteTextStyle.copyWith(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 24.h),
-              _buildAdviceContent(context),
-            ],
+        SizedBox(
+          height: 24.h,
+        ),
+        Text(
+          'AI Advisor',
+          style: blackTextStyle.copyWith(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        SizedBox(
+          height: 24.h,
+        ),
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // KONTEN CARD
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18.r),
+                gradient: LinearGradient(
+                  colors: [
+                    secondaryColor,
+                    secondaryColor,
+                    backgroundWhiteColor
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+              ),
+              padding: EdgeInsets.all(20.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildAdviceContent(context),
+                ],
+              ),
+            ),
 
-        Positioned(
-          top: -100.h,
-          right: -10.w,
-          child: Image.asset(
-            "assets/img_onboarding2.png",
-            width: 180.w,
-          ),
+            Positioned(
+              top: -100.h,
+              right: -10.w,
+              child: Image.asset(
+                "assets/img_onboarding2.png",
+                width: 180.w,
+              ),
+            ),
+          ],
         ),
       ],
     );
