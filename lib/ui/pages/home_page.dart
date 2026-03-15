@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage>
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: secondaryColor,
+        backgroundColor: backgroundGreyColor,
         body: BlocListener<TransactionBloc, TransactionState>(
           listenWhen: (previousState, currentState) {
             return currentState is TransactionSuccess &&
@@ -95,103 +95,133 @@ class _HomePageState extends State<HomePage>
               if (homepageState is HomePageSuccess) {
                 final user = homepageState.user;
 
-                return RefreshIndicator(
-                  color: primaryColor,
-                  onRefresh: _onRefresh,
-                  child: CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    slivers: [
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        expandedHeight: 220.r,
-                        pinned: false,
-                        floating: false,
-                        backgroundColor: Colors.transparent,
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: HeaderSection(
-                            name: user.data.username ?? "Guest",
-                            money: user.data.balance.toString() ?? '0',
-                            imageUrl: "assets/img_mascot-login.png",
-                          ),
-                        ),
+                return SafeArea(
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        height: 18.h,
                       ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: backgroundWhiteColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(32.r),
-                              topRight: Radius.circular(32.r),
-                            ),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 24).r,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 24.r),
-                                IncomeOutcomeSection(
-                                  incomeAmount: user
-                                          .data.financeProfile?.totalIncome
-                                          .toString() ??
-                                      '0',
-                                  outcomeAmount: user
-                                          .data.financeProfile?.totalOutcome
-                                          .toString() ??
-                                      '0',
-                                ),
-                                SizedBox(height: 20.r),
-                                Text(
-                                  "AI Advisor",
-                                  style: blackTextStyle.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.sp,
-                                  ),
-                                ),
-                                SizedBox(height: 10.r),
-                                if (homepageState.isAdviceLoading)
-                                  Container(
-                                    height: 100,
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator(
-                                        color: primaryColor),
-                                  )
-                                else if (homepageState.adviceError != null)
-                                  Container(
-                                    height: 100,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      homepageState.adviceError!,
-                                      style: greyTextStyle,
-                                    ),
-                                  )
-                                else if (homepageState.advice != null)
-                                  AiAdvisorSection(
-                                    financialProfileButtonOntap: () => routes
-                                        .pushNamed(RouteNames.financialProfile),
-                                    advice: homepageState.advice!,
-                                    isAdviceExist: homepageState
-                                            .user.data.financeProfile !=
-                                        null,
-                                  )
-                                else
-                                  Container(
-                                    height: 100,
-                                    alignment: Alignment.center,
-                                    child: const Text(
-                                        "Saran AI tidak tersedia saat ini."),
-                                  ),
-                                SizedBox(height: 20.r),
-                                const HomeRecentTransactionsSection(),
-                                SizedBox(height: 100.r),
-                              ],
-                            ),
-                          ),
-                        ),
+                      HeaderSection(
+                        name: user.data.username ?? "Guest",
+                        money: user.data.balance.toString() ?? '0',
+                        imageUrl: "assets/img_mascot-login.png",
+                        isAdviceLoading: homepageState.isAdviceLoading,
+                        adviceError: homepageState.adviceError,
+                        advice: homepageState.advice,
+                        isAdviceExist: user.data.financeProfile != null,
+                        financialProfileButtonOntap: () =>
+                            routes.pushNamed(RouteNames.financialProfile),
                       ),
+                      IncomeOutcomeSection(
+                          balance: user.data.balance.toString(),
+                          incomeAmount: user.data.financeProfile?.totalIncome
+                                  .toString() ??
+                              '0',
+                          outcomeAmount: user.data.financeProfile?.totalOutcome
+                                  .toString() ??
+                              '0'),
+                      LastTransactionsSection(),
                     ],
                   ),
+                  // child: RefreshIndicator(
+                  //   color: primaryColor,
+                  //   onRefresh: _onRefresh,
+                  //   child: CustomScrollView(
+                  //     physics: const AlwaysScrollableScrollPhysics(),
+                  //     slivers: [
+                  //       SliverAppBar(
+                  //         automaticallyImplyLeading: false,
+                  //         expandedHeight: 220.r,
+                  //         pinned: false,
+                  //         floating: false,
+                  //         backgroundColor: Colors.transparent,
+                  //         flexibleSpace: FlexibleSpaceBar(
+                  //           background: HeaderSection(
+                  //             name: user.data.username ?? "Guest",
+                  //             money: user.data.balance.toString() ?? '0',
+                  //             imageUrl: "assets/img_mascot-login.png",
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       SliverToBoxAdapter(
+                  //         child: Container(
+                  //           decoration: BoxDecoration(
+                  //             color: backgroundWhiteColor,
+                  //             borderRadius: BorderRadius.only(
+                  //               topLeft: Radius.circular(32.r),
+                  //               topRight: Radius.circular(32.r),
+                  //             ),
+                  //           ),
+                  //           child: Padding(
+                  //             padding:
+                  //                 const EdgeInsets.symmetric(horizontal: 24).r,
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 SizedBox(height: 24.r),
+                  //                 IncomeOutcomeSection(
+                  //                   incomeAmount: user
+                  //                           .data.financeProfile?.totalIncome
+                  //                           .toString() ??
+                  //                       '0',
+                  //                   outcomeAmount: user
+                  //                           .data.financeProfile?.totalOutcome
+                  //                           .toString() ??
+                  //                       '0',
+                  //                 ),
+                  //                 SizedBox(height: 20.r),
+                  //                 Text(
+                  //                   "AI Advisor",
+                  //                   style: blackTextStyle.copyWith(
+                  //                     fontWeight: FontWeight.bold,
+                  //                     fontSize: 20.sp,
+                  //                   ),
+                  //                 ),
+                  //                 SizedBox(height: 10.r),
+                  //                 if (homepageState.isAdviceLoading)
+                  //                   Container(
+                  //                     height: 100,
+                  //                     alignment: Alignment.center,
+                  //                     child: CircularProgressIndicator(
+                  //                         color: primaryColor),
+                  //                   )
+                  //                 else if (homepageState.adviceError != null)
+                  //                   Container(
+                  //                     height: 100,
+                  //                     alignment: Alignment.center,
+                  //                     child: Text(
+                  //                       homepageState.adviceError!,
+                  //                       style: greyTextStyle,
+                  //                     ),
+                  //                   )
+                  //                 else if (homepageState.advice != null)
+                  //                   AiAdvisorSection(
+                  //                     financialProfileButtonOntap: () =>
+                  //                         routes.pushNamed(
+                  //                             RouteNames.financialProfile),
+                  //                     advice: homepageState.advice!,
+                  //                     isAdviceExist: homepageState
+                  //                             .user.data.financeProfile !=
+                  //                         null,
+                  //                   )
+                  //                 else
+                  //                   Container(
+                  //                     height: 100,
+                  //                     alignment: Alignment.center,
+                  //                     child: const Text(
+                  //                         "Saran AI tidak tersedia saat ini."),
+                  //                   ),
+                  //                 SizedBox(height: 20.r),
+                  //                 const HomeRecentTransactionsSection(),
+                  //                 SizedBox(height: 100.r),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 );
               }
 

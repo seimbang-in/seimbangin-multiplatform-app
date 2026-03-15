@@ -26,7 +26,6 @@ class Token {
 
   static Future<bool> getOnboardingSeen() async {
     final prefs = await SharedPreferences.getInstance();
-
     return prefs.getBool(_onboardingKey) ?? false;
   }
 }

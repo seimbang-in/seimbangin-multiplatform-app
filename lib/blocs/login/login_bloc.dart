@@ -23,8 +23,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         event.identifier,
         event.password,
       );
-      await Token.saveToken(result.data!.token);
-      emit(LoginSuccess(result));
+
+      if (result.data?.token != null) {
+        await Token.saveToken(result.data!.token);
+        emit(LoginSuccess(result));
+
+        await Future.delayed(const Duration(seconds: 1));
+        if (!isClosed) {
+          emit(LoginInitial());
+        }
+      } else {
+        throw Exception("Login successfull but no token received");
+      }
+
       // Reset state setelah 1 detik
       await Future.delayed(Duration(seconds: 1));
       emit(LoginInitial());

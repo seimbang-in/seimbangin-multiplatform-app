@@ -19,7 +19,9 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
   ) async {
     emit(LogoutLoading());
     try {
-      await logoutService.logout();
+      await logoutService.logout().timeout(
+            const Duration(seconds: 15),
+          );
 
       await Token.clearToken();
 

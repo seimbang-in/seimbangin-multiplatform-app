@@ -17,7 +17,9 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       StatisticsEvent event, Emitter<StatisticsState> emit) async {
     try {
       emit(StatisticsMonthlyLoading('Memuat data...'));
-      final response = await statisticsService.getMonthlyStatistics();
+      final response = await statisticsService.getMonthlyStatistics().timeout(
+            const Duration(seconds: 15),
+          );
       emit(StatisticsMonthlySuccess(response.data));
     } catch (e) {
       emit(StatisticsMonthlyFailure('Gagal memuat data: ${e.toString()}'));

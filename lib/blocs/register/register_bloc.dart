@@ -18,13 +18,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   ) async {
     emit(RegisterLoading());
     try {
-      final result = await authService.register(
-        event.fullname,
-        event.username,
-        event.email,
-        event.password,
-        event.phone,
-      );
+      final result = await authService
+          .register(
+            event.fullname,
+            event.username,
+            event.email,
+            event.password,
+            event.phone,
+          )
+          .timeout(
+            const Duration(seconds: 15),
+          );
       emit(RegisterSuccess(result.message));
     } catch (e) {
       emit(RegisterFailure(e.toString()));

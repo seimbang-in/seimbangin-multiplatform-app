@@ -25,7 +25,9 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     try {
       emit(HomePageLoading('Memuat data profil...'));
 
-      final userData = await userService.getUserProfile();
+      final userData = await userService.getUserProfile().timeout(
+            const Duration(seconds: 15),
+          );
 
       emit(HomePageSuccess(
         message: 'Profil berhasil dimuat',
@@ -47,7 +49,9 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
     if (currentState is! HomePageSuccess) return;
 
     try {
-      final adviceData = await userService.getUserAdvice();
+      final adviceData = await userService.getUserAdvice().timeout(
+            const Duration(seconds: 5),
+          );
 
       emit(currentState.copyWith(
         advice: adviceData,
@@ -65,8 +69,12 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       UpdateFinancialProfile event, Emitter<HomepageState> emit) async {
     emit(FinancialProfileLoading("Memperbarui data..."));
     try {
-      await userService.updateUserProfile(event.currentSavings, event.debt,
-          event.financialGoals, event.riskManagement);
+      await userService
+          .updateUserProfile(event.currentSavings, event.debt,
+              event.financialGoals, event.riskManagement)
+          .timeout(
+            const Duration(seconds: 15),
+          );
 
       emit(FinancialProfileSuccess(message: "Data berhasil diperbarui"));
 

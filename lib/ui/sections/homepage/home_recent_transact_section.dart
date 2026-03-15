@@ -7,8 +7,8 @@ import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/widgets/card_widget.dart';
 
-class HomeRecentTransactionsSection extends StatelessWidget {
-  const HomeRecentTransactionsSection({super.key});
+class LastTransactionsSection extends StatelessWidget {
+  const LastTransactionsSection({super.key});
 
   /// Helper untuk mendapatkan warna dan ikon berdasarkan kategori transaksi.
   (Color, String) _getCategoryUIData(String category) {
@@ -46,120 +46,130 @@ class HomeRecentTransactionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Recent Transactions",
-          style: blackTextStyle.copyWith(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 14.r),
-        BlocBuilder<TransactionBloc, TransactionState>(
-          builder: (context, transactionState) {
-            // Kondisi 1: State sukses dan data berhasil dimuat.
-            if (transactionState is TransactionLoadSuccess) {
-              // Jika daftar transaksi terkini kosong, tampilkan kartu informasi.
-              if (transactionState.recentTransactions.isEmpty) {
-                return RecentTransactionCard(
-                  onTap: null, // Tidak ada aksi saat diklik
-                  backgroundColor: backgroundGreyColor,
-                  icon: Icon(Icons.wallet_outlined,
-                      size: 30.r, color: textSecondaryColor),
-                  title: "No transactions yet",
-                  subtitle: "Your recent transactions will appear here",
-                  amount: "",
-                  amountColor: textSecondaryColor,
-                );
-              }
-
-              // Jika ada data, tampilkan dalam bentuk list.
-              return Column(
-                children:
-                    transactionState.recentTransactions.map((transaction) {
-                  final createdAt =
-                      DateTime.parse(transaction.createdAt!).toLocal();
-                  final timeString = DateFormat('d MMMM y').format(createdAt);
-                  final total = int.tryParse(transaction.amount) ?? 0;
-                  final prefix = transaction.type == 0 ? '+' : '-';
-                  final Color amountColor =
-                      transaction.type == 0 ? textGreenColor : textWarningColor;
-
-                  // Logika yang sudah diperbaiki untuk menentukan kategori
-                  String categoryForIcon = 'others'; // Nilai default
-
-                  if (transaction.items.isNotEmpty &&
-                      transaction.items.first.category.isNotEmpty) {
-                    categoryForIcon = transaction.items.first.category;
-                  } else if (transaction.category.isNotEmpty) {
-                    categoryForIcon = transaction.category;
-                  }
-
-                  final categoryUI = _getCategoryUIData(categoryForIcon);
-                  final Color bgColor = categoryUI.$1;
-                  final String iconPath = categoryUI.$2;
-
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 12.r),
-                    child: RecentTransactionCard(
-                      onTap: () {
-                        routes.pushNamed(RouteNames.transactionDetail,
-                            extra: transaction);
-                      },
-                      backgroundColor: bgColor,
-                      icon: Image.asset(iconPath, width: 30.r, height: 30.r),
-                      title: transaction.name,
-                      subtitle: timeString,
-                      amount: "$prefix${NumberFormat.currency(
-                        locale: 'id',
-                        symbol: 'Rp ',
-                        decimalDigits: 0,
-                      ).format(total)}",
-                      amountColor: amountColor,
-                    ),
-                  );
-                }).toList(),
-              );
-            }
-            // Kondisi 2: Gagal memuat data.
-            else if (transactionState is TransactionFailure) {
-              return Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.r),
-                  child: Text(
-                    "Cannot load recent transactions.",
-                    style: greyTextStyle.copyWith(fontSize: 14.sp),
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 20.w,
+        vertical: 32.h,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Transaksi Terakhir",
+                style: blackTextStyle.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextButton(
+                onPressed: () => routes.pushNamed(RouteNames.historyTransact),
+                child: Text(
+                  "Lihat Semua",
+                  style: TextStyle(
+                    color: textBlueColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              );
-            }
-            // Kondisi 3: Sedang memuat atau state awal.
-            else {
-              return Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.r),
-                  child: const CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
-        ),
-        Center(
-          child: TextButton(
-            onPressed: () => routes.pushNamed(RouteNames.historyTransact),
-            child: Text(
-              "See More",
-              style: TextStyle(
-                color: textBlueColor,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
               ),
-            ),
+            ],
           ),
-        ),
-      ],
+          SizedBox(height: 14.r),
+          BlocBuilder<TransactionBloc, TransactionState>(
+            builder: (context, transactionState) {
+              // Kondisi 1: State sukses dan data berhasil dimuat.
+              if (transactionState is TransactionLoadSuccess) {
+                // Jika daftar transaksi terkini kosong, tampilkan kartu informasi.
+                if (transactionState.recentTransactions.isEmpty) {
+                  return RecentTransactionCard(
+                    onTap: null, // Tidak ada aksi saat diklik
+                    backgroundColor: backgroundGreyColor,
+                    icon: Icon(Icons.wallet_outlined,
+                        size: 30.r, color: textSecondaryColor),
+                    title: "No transactions yet",
+                    subtitle: "Your recent transactions will appear here",
+                    amount: "",
+                    amountColor: textSecondaryColor,
+                  );
+                }
+
+                // Jika ada data, tampilkan dalam bentuk list.
+                return Column(
+                  children:
+                      transactionState.recentTransactions.map((transaction) {
+                    final createdAt =
+                        DateTime.parse(transaction.createdAt!).toLocal();
+                    final timeString = DateFormat('d MMMM y').format(createdAt);
+                    final total = int.tryParse(transaction.amount) ?? 0;
+                    final prefix = transaction.type == 0 ? '+' : '-';
+                    final Color amountColor = transaction.type == 0
+                        ? textGreenColor
+                        : textWarningColor;
+
+                    // Logika yang sudah diperbaiki untuk menentukan kategori
+                    String categoryForIcon = 'others'; // Nilai default
+
+                    if (transaction.items.isNotEmpty &&
+                        transaction.items.first.category.isNotEmpty) {
+                      categoryForIcon = transaction.items.first.category;
+                    } else if (transaction.category.isNotEmpty) {
+                      categoryForIcon = transaction.category;
+                    }
+
+                    final categoryUI = _getCategoryUIData(categoryForIcon);
+                    final Color bgColor = categoryUI.$1;
+                    final String iconPath = categoryUI.$2;
+
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 12.r),
+                      child: RecentTransactionCard(
+                        onTap: () {
+                          routes.pushNamed(RouteNames.transactionDetail,
+                              extra: transaction);
+                        },
+                        backgroundColor: bgColor,
+                        icon: Image.asset(iconPath, width: 30.r, height: 30.r),
+                        title: transaction.name,
+                        subtitle: timeString,
+                        amount: "$prefix${NumberFormat.currency(
+                          locale: 'id',
+                          symbol: 'Rp ',
+                          decimalDigits: 0,
+                        ).format(total)}",
+                        amountColor: amountColor,
+                      ),
+                    );
+                  }).toList(),
+                );
+              }
+              // Kondisi 2: Gagal memuat data.
+              else if (transactionState is TransactionFailure) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.r),
+                    child: Text(
+                      "Cannot load recent transactions.",
+                      style: greyTextStyle.copyWith(fontSize: 14.sp),
+                    ),
+                  ),
+                );
+              }
+              // Kondisi 3: Sedang memuat atau state awal.
+              else {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.r),
+                    child: const CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }
