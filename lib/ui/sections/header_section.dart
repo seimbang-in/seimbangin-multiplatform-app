@@ -204,12 +204,40 @@ class HeaderSection extends StatelessWidget {
         child: const CircularProgressIndicator(color: Colors.white),
       );
     } else if (adviceError != null) {
-      return Text(
-        adviceError!,
-        style: whiteTextStyle.copyWith(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.bold,
-        ),
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.cloud_off_rounded,
+            color: Colors.white70,
+            size: 28.r,
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Ups! Layanan AI sedang penuh 🤖",
+                  style: whiteTextStyle.copyWith(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  "Tenang saja, Anda tetap bisa mencatat dan memantau keuangan Anda secara manual sepuasnya!",
+                  style: whiteTextStyle.copyWith(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white.withValues(alpha: 0.9),
+                  ),
+                  softWrap: true,
+                ),
+              ],
+            ),
+          ),
+        ],
       );
     } else if (advice != null) {
       const String placeholderFromApi =

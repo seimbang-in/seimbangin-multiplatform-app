@@ -19,7 +19,7 @@ class TransactionsPage extends StatefulWidget {
 
 class _TransactionsPageState extends State<TransactionsPage> {
   int _selectedIndexTab = 0;
-  final List<String> _tabs = ['Income', 'Outcome'];
+  final List<String> _tabs = ['Pemasukan', 'Pengeluaran'];
 
   final TextEditingController _transactNameController = TextEditingController();
   final TextEditingController _transactPriceController =
@@ -210,6 +210,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     TransactionIncomeFormSection(
                       nameController: _transactNameController,
                       priceController: _transactPriceController,
+                      amountTitle: 'Jumlah Pemasukan',
                       categories: incomeCategories,
                       onCategorySelected: (categoryTitle) {
                         if (mounted) {
@@ -234,6 +235,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             if (MediaQuery.of(context).viewInsets.bottom == 0)
               TransactionFooterSection(
                 totalPrice: totalPrice,
+                isIncome: _selectedIndexTab == 0,
                 onAddTransaction: _prepareAndNavigateToReview,
               )
           ],

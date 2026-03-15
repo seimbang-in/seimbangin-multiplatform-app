@@ -127,13 +127,17 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
             if (mounted) {
               setState(() {
                 _messages.removeWhere((msg) => msg.messageType == "loading");
+
+                // Graceful AI Fallback Message
+                _messages.add(
+                  ChatMessage(
+                    messageContent:
+                        "Ups, mohon maaf! Layanan pemroses bahasa alami saya sedang mengalami gangguan sementara (atau mencapai limit). 🙏\n\nSembari menunggu saya pulih, fitur pencatatan transaksi manual tetap dapat Anda gunakan dengan lancar di menu utama lho!",
+                    messageType: "assistant",
+                    time: DateFormat('HH:mm').format(DateTime.now()),
+                  ),
+                );
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
-              );
               _scrollToBottom();
             }
           }

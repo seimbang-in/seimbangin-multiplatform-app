@@ -9,6 +9,7 @@ class TransactionIncomeFormSection extends StatelessWidget {
   final List<Category> categories;
   final Function(String) onCategorySelected;
   final VoidCallback onFormChanged;
+  final String amountTitle;
 
   const TransactionIncomeFormSection({
     super.key,
@@ -17,6 +18,7 @@ class TransactionIncomeFormSection extends StatelessWidget {
     required this.categories,
     required this.onCategorySelected,
     required this.onFormChanged,
+    this.amountTitle = 'Jumlah Transaksi',
   });
 
   @override
@@ -26,6 +28,7 @@ class TransactionIncomeFormSection extends StatelessWidget {
         AddTransactionIncomeSection(
           transactNameController: nameController,
           transactPriceController: priceController,
+          amountTitle: amountTitle,
           onChangePressed: (total) {
             onFormChanged();
           },
