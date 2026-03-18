@@ -22,12 +22,12 @@ class FinancialProfileFormSection extends StatelessWidget {
     required this.onCurrencyChanged,
   });
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(BuildContext context, String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(
         text,
-        style: blackTextStyle.copyWith(
+        style: context.text.blackTextStyle.copyWith(
           fontWeight: FontWeight.w600,
           fontSize: 14.sp,
         ),
@@ -35,13 +35,13 @@ class FinancialProfileFormSection extends StatelessWidget {
     );
   }
 
-  InputDecoration _buildInputDecoration(String hintText) {
+  InputDecoration _buildInputDecoration(BuildContext context, String hintText) {
     return InputDecoration(
       filled: true,
-      fillColor: backgroundGreySecondaryColor,
+      fillColor: context.color.backgroundGreySecondaryColor,
       hintText: hintText,
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      hintStyle: greyTextStyle.copyWith(
+      hintStyle: context.text.greyTextStyle.copyWith(
         fontSize: 14.sp,
         fontWeight: FontWeight.normal,
       ),
@@ -55,7 +55,7 @@ class FinancialProfileFormSection extends StatelessWidget {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16.r),
-        borderSide: BorderSide(color: primaryColor, width: 1.5),
+        borderSide: BorderSide(color: context.color.primaryColor, width: 1.5),
       ),
     );
   }
@@ -65,16 +65,16 @@ class FinancialProfileFormSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel("Profil Risiko (Risk Management)"),
+        _buildLabel(context, "Profil Risiko (Risk Management)"),
         DropdownButtonFormField<String>(
           initialValue: selectedInterval,
-          decoration: _buildInputDecoration('Pilih profil risiko...'),
+          decoration: _buildInputDecoration(context, 'Pilih profil risiko...'),
           items: intervals.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Text(
                 value.toUpperCase(),
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -83,42 +83,42 @@ class FinancialProfileFormSection extends StatelessWidget {
           }).toList(),
           onChanged: onIntervalChanged,
           icon: Icon(Icons.keyboard_arrow_down_rounded,
-              color: textPrimaryColor, size: 28.r),
-          dropdownColor: backgroundWhiteColor,
+              color: context.color.textPrimaryColor, size: 28.r),
+          dropdownColor: context.color.backgroundWhiteColor,
           borderRadius: BorderRadius.circular(16.r),
         ),
         SizedBox(height: 20.h),
-        _buildLabel("Tujuan Keuangan (Financial Goals)"),
+        _buildLabel(context, "Tujuan Keuangan (Financial Goals)"),
         TextField(
           controller: financialGoalsController,
-          decoration: _buildInputDecoration('Contoh: Beli rumah, Liburan'),
-          style: blackTextStyle.copyWith(
+          decoration: _buildInputDecoration(context, 'Contoh: Beli rumah, Liburan'),
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
           textInputAction: TextInputAction.next,
         ),
         SizedBox(height: 20.h),
-        _buildLabel("Tabungan Saat Ini (Current Saving)"),
+        _buildLabel(context, "Tabungan Saat Ini (Current Saving)"),
         TextField(
           controller: currentSavingController,
-          decoration: _buildInputDecoration('Contoh: Rp 5.000.000'),
+          decoration: _buildInputDecoration(context, 'Contoh: Rp 5.000.000'),
           onChanged: (value) => onCurrencyChanged(value, currentSavingController),
           keyboardType: TextInputType.number,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
           textInputAction: TextInputAction.next,
         ),
         SizedBox(height: 20.h),
-        _buildLabel("Total Hutang (Total Debt)"),
+        _buildLabel(context, "Total Hutang (Total Debt)"),
         TextField(
           controller: totalDebtController,
-          decoration: _buildInputDecoration('Contoh: Rp 1.000.000'),
+          decoration: _buildInputDecoration(context, 'Contoh: Rp 1.000.000'),
           onChanged: (value) => onCurrencyChanged(value, totalDebtController),
           keyboardType: TextInputType.number,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),

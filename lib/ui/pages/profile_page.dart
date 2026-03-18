@@ -5,14 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
-import 'package:seimbangin_app/blocs/logout/logout_bloc.dart';
 import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
-import 'package:seimbangin_app/ui/sections/profile/profile_action_section.dart';
+import 'package:seimbangin_app/blocs/theme/theme_cubit.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_header_section.dart';
 import 'package:seimbangin_app/ui/sections/profile/profile_menu_section.dart';
-import 'package:seimbangin_app/ui/widgets/alert_dialog_widget.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -21,47 +19,19 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: secondaryColor,
+        statusBarColor: context.color.secondaryColor,
         statusBarIconBrightness: Brightness.light,
       ),
-      child: BlocListener<LogoutBloc, LogoutState>(
-        listener: (context, state) {
-          if (state is! LogoutLoading) {
-            AlertDialogWidget.dismiss(context);
-          }
-
-          if (state is LogoutLoading) {
-            AlertDialogWidget.showLoading(context, message: "Logging out...");
-          } else if (state is LogoutSuccess) {
-            routes.goNamed(RouteNames.login);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Logout berhasil!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } else if (state is LogoutFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: backgroundWarningColor,
-              ),
-            );
-
-            routes.goNamed(RouteNames.login);
-          }
-        },
-        child: Scaffold(
-          backgroundColor: backgroundWhiteColor,
-          body: BlocBuilder<HomepageBloc, HomepageState>(
-            builder: (context, state) {
-              if (state is HomePageSuccess) {
-                return _ProfilePageContent(user: state.user);
-              }
-              // Tampilkan loading jika data user belum siap
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
+      child: Scaffold(
+        backgroundColor: context.color.backgroundWhiteColor,
+        body: BlocBuilder<HomepageBloc, HomepageState>(
+          builder: (context, state) {
+            if (state is HomePageSuccess) {
+              return _ProfilePageContent(user: state.user);
+            }
+            // Tampilkan loading jika data user belum siap
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
       ),
     );
@@ -89,8 +59,8 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Crop Your Photo',
-            toolbarColor: backgroundWhiteColor,
-            toolbarWidgetColor: buttonColor,
+            toolbarColor: context.color.backgroundWhiteColor,
+            toolbarWidgetColor: context.color.buttonColor,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
           ),
@@ -105,31 +75,7 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
     }
   }
 
-  Future<void> _showLogoutDialog() async {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text('Logout',
-            style: blackTextStyle.copyWith(fontWeight: FontWeight.bold)),
-        content:
-            Text('Are you sure you want to logout?', style: blackTextStyle),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text('Cancel', style: greyTextStyle),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
 
-              context.read<LogoutBloc>().add(LogoutButtonPressed());
-            },
-            child: Text('Logout', style: warningTextStyle),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,9 +105,50 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
                   routes.pushNamed(RouteNames.financialProfile);
                 },
               ),
+              ProfileMenuSection(
+                title: 'Kategori Transaksi',
+                icon: Icons.category_rounded,
+                onTap: () {
+                  routes.pushNamed(RouteNames.categoryManagement);
+                },
+              ),
               SizedBox(height: 16.r),
-              ProfileActionSection(
-                onLogout: _showLogoutDialog,
+              BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, mode) {
+                  final isDark = mode == ThemeMode.dark;
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 8.r),
+                    decoration: BoxDecoration(
+                      color: context.color.backgroundWhiteColor,
+                      borderRadius: BorderRadius.circular(16).r,
+                      border: Border.all(color: context.color.backgroundGreyColor),
+                    ),
+                    child: SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: isDark,
+                      onChanged: (value) {
+                        context.read<ThemeCubit>().toggleTheme();
+                      },
+                      title: Text(
+                        'Dark Mode',
+                        style: context.text.blackTextStyle.copyWith(fontWeight: FontWeight.w600, fontSize: 14.sp),
+                      ),
+                      secondary: Container(
+                        padding: EdgeInsets.all(8.r),
+                        decoration: BoxDecoration(
+                          color: context.color.backgroundGreyColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                          color: context.color.textPrimaryColor,
+                          size: 24.r,
+                        ),
+                      ),
+                      activeColor: context.color.primaryColor,
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 40.r),
             ],

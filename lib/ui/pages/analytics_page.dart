@@ -127,11 +127,11 @@ class _AnalyticsPageState extends State<AnalyticsPage>
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: statusBarPrimaryColor,
+        statusBarColor: context.color.statusBarPrimaryColor,
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: backgroundGreySecondaryColor,
+        backgroundColor: context.color.backgroundGreySecondaryColor,
         body: SafeArea(
           child: BlocBuilder<TransactionBloc, TransactionState>(
             builder: (context, state) {
@@ -139,7 +139,7 @@ class _AnalyticsPageState extends State<AnalyticsPage>
                   state is! TransactionLoadSuccess) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: primaryColor,
+                    color: context.color.primaryColor,
                   ),
                 );
               }

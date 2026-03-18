@@ -4,18 +4,15 @@ import 'package:seimbangin_app/models/user/user_model.dart';
 import 'package:seimbangin_app/models/transaction/transaction_model.dart'
     as model;
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
+import 'package:seimbangin_app/ui/pages/category_management_page.dart';
 import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
 import 'package:seimbangin_app/ui/pages/financial_profile_page.dart';
 import 'package:seimbangin_app/ui/pages/history_transact_page.dart';
 import 'package:seimbangin_app/ui/pages/home_page.dart';
-import 'package:seimbangin_app/ui/pages/login_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_page.dart';
 import 'package:seimbangin_app/ui/pages/ocr_preview_page.dart';
-import 'package:seimbangin_app/ui/pages/onboarding_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_edit_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
-import 'package:seimbangin_app/ui/pages/register_page.dart';
-import 'package:seimbangin_app/ui/pages/splash_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_detail_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_struct_page.dart';
 import 'package:seimbangin_app/ui/pages/transaction_success.dart';
@@ -28,27 +25,6 @@ final routes = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      name: RouteNames.splash,
-      builder: (context, state) => SplashPage(),
-    ),
-    GoRoute(
-      path: '/onboarding',
-      name: RouteNames.onboarding,
-      builder: (context, state) => const OnBoardingPage(),
-    ),
-    GoRoute(
-      path: '/login',
-      name: RouteNames.login,
-      builder: (context, state) => const LoginPage(),
-    ),
-    GoRoute(
-      path: '/register',
-      name: RouteNames.register,
-      builder: (context, state) => const RegisterPage(),
-      routes: [],
-    ),
-    GoRoute(
-      path: '/main',
       name: RouteNames.main,
       builder: (context, state) => MainPage(),
     ),
@@ -78,6 +54,11 @@ final routes = GoRouter(
             // Kirim userData ke ProfileEditPage
             return ProfileEditPage(userData: userData);
           },
+        ),
+        GoRoute(
+          path: 'categoryManagement',
+          name: RouteNames.categoryManagement,
+          builder: (context, state) => const CategoryManagementPage(),
         ),
       ],
     ),

@@ -21,77 +21,89 @@ class OcrPreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: statusBarPrimaryColor,
+        statusBarColor: context.color.statusBarPrimaryColor,
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: backgroundWhiteColor,
+        backgroundColor: context.color.backgroundWhiteColor,
+        appBar: AppBar(
+          backgroundColor: context.color.backgroundWhiteColor,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.chevron_left,
+              size: 32.r,
+              color: context.color.textPrimaryColor,
+            ),
+            onPressed: () => routes.pushReplacementNamed(RouteNames.ocr),
+          ),
+          centerTitle: true,
+          title: Text(
+            'Pratinjau Struk',
+            style: context.text.blackTextStyle.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 18.sp,
+            ),
+          ),
+        ),
         body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
             children: [
-              SizedBox(height: 21.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomRoundedButton(
-                    onPressed: () =>
-                        routes.pushReplacementNamed(RouteNames.ocr),
-                    widget: Icon(
-                      Icons.chevron_left,
-                      size: 32.r,
-                      color: textSecondaryColor,
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                  decoration: BoxDecoration(
+                    color: context.color.backgroundGreySecondaryColor,
+                    borderRadius: BorderRadius.circular(28.r),
+                    border: Border.all(
+                      color: context.color.backgroundGreyColor,
+                      width: 1.5,
                     ),
-                    backgroundColor: backgroundWhiteColor,
                   ),
-                  Image.asset(
-                    'assets/ic_seimbangin-logo-logreg.png',
-                  ),
-                ],
-              ),
-              SizedBox(height: 24.h),
-              Center(
-                child: Text(
-                  'Image Captured',
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20.sp,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 32.h,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width.w - 48.r,
-                height: 400.h,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(28.r),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(28.r),
-                  child: path.isEmpty
-                      ? Center(
-                          child: Text(
-                            'Image not found',
-                            style: blackTextStyle,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(28.r),
+                    child: path.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.image_not_supported_outlined,
+                                  size: 48.r,
+                                  color: context.color.textSecondaryColor,
+                                ),
+                                SizedBox(height: 12.h),
+                                Text(
+                                  'Gambar tidak ditemukan',
+                                  style: context.text.greyTextStyle.copyWith(
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : InteractiveViewer(
+                            panEnabled: true,
+                            boundaryMargin: const EdgeInsets.all(20),
+                            minScale: 0.5,
+                            maxScale: 4.0,
+                            child: Image.file(
+                              File(path),
+                              fit: BoxFit.contain,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
                           ),
-                        )
-                      : Image.file(
-                          File(path),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
+                  ),
                 ),
               ),
-              SizedBox(height: 48.h),
               BlocListener<OcrBloc, OcrState>(
                 listener: (context, state) {
                   if (state is OcrLoading) {
                     AlertDialogWidget.showLoading(context,
-                        message: 'Processing Image...');
+                        message: 'Memproses Struk...');
                   } else if (state is OcrSuccess) {
                     AlertDialogWidget.dismiss(context);
 
@@ -122,34 +134,58 @@ class OcrPreviewPage extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(state.error),
-                        backgroundColor: Colors.red,
+                        backgroundColor: context.color.backgroundWarningColor,
                       ),
                     );
                   }
                 },
-                child: BlocBuilder<OcrBloc, OcrState>(
-                  builder: (context, state) {
-                    return PrimaryFilledButton(
-                      title: 'Upload Image',
-                      onPressed: () {
-                        context.read<OcrBloc>().add(
-                              OcrButtonPressed(imagePath: path),
-                            );
-                      },
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 12.h),
-              TextButton(
-                onPressed: () {
-                  routes.pushReplacementNamed(RouteNames.transaction);
-                },
-                child: Text(
-                  'Add Manual',
-                  style: blackTextStyle.copyWith(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(24.w, 8.h, 24.w, 24.h),
+                  decoration: BoxDecoration(
+                    color: context.color.backgroundWhiteColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BlocBuilder<OcrBloc, OcrState>(
+                        builder: (context, state) {
+                          return PrimaryFilledButton(
+                            title: 'Proses Struk',
+                            onPressed: () {
+                              context.read<OcrBloc>().add(
+                                    OcrButtonPressed(imagePath: path),
+                                  );
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 12.h),
+                      TextButton(
+                        onPressed: () {
+                          routes.pushReplacementNamed(RouteNames.transaction);
+                        },
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 48.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24.r),
+                          ),
+                        ),
+                        child: Text(
+                          'Isi Manual',
+                          style: context.text.greyTextStyle.copyWith(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

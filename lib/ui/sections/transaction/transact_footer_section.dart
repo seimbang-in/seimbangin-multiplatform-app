@@ -20,7 +20,7 @@ class TransactionFooterSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: backgroundWhiteColor,
+        color: context.color.backgroundWhiteColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -45,17 +45,17 @@ class TransactionFooterSection extends StatelessWidget {
                 children: [
                   Text(
                     'Total:',
-                    style: greyTextStyle.copyWith(
+                    style: context.text.greyTextStyle.copyWith(
                         fontWeight: FontWeight.w600, fontSize: 14.sp),
                   ),
                   Text(
                     NumberFormat.currency(
                             locale: 'id', symbol: 'Rp ', decimalDigits: 0)
                         .format(totalPrice),
-                    style: blackTextStyle.copyWith(
+                    style: context.text.blackTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.sp,
-                        color: isIncome ? primaryColor : const Color(0xffE91E63)),
+                        color: isIncome ? context.color.primaryColor : const Color(0xffE91E63)),
                   ),
                 ],
               ),
@@ -66,7 +66,7 @@ class TransactionFooterSection extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onAddTransaction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isIncome ? primaryColor : const Color(0xffE91E63),
+                    backgroundColor: isIncome ? context.color.primaryColor : const Color(0xffE91E63),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(

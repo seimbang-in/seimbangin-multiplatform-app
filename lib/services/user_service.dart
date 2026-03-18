@@ -1,68 +1,88 @@
-import 'dart:convert';
-import 'package:seimbangin_app/config/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:seimbangin_app/models/advice_model.dart';
 import 'package:seimbangin_app/models/user/user_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:seimbangin_app/utils/token.dart';
+import 'package:seimbangin_app/services/local_database_service.dart';
 
 class UserService {
   Future<UserResponse> getUserProfile() async {
     try {
-      final String? token = await Token.getToken();
-      final response =
-          await http.get(Uri.parse(Constant.getUserProfileEndpoint), headers: {
-        'content-type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      print('response status code : ${response.statusCode}');
-      print('response body : ${response.body}');
-      final Map<String, dynamic> data = json.decode(response.body);
-      return UserResponse.fromJson(data);
+      final prefs = await SharedPreferences.getInstance();
+      final dbService = LocalDatabaseService();
+      
+      final savings = prefs.getInt('current_savings') ?? 5000000;
+      final debt = prefs.getInt('debt') ?? 0;
+      final goals = prefs.getString('financial_goals') ?? 'Berinvestasi untuk masa depan dan menyiapkan rumah impian';
+      final risk = prefs.getString('risk_management') ?? 'Rendah';
+
+      // Hitung total transaksi riil dari SQLite
+      final transactions = await dbService.getTransactions();
+      double totalIncome = 0;
+      double totalOutcome = 0;
+      
+      for (var t in transactions) {
+        final amount = t['amount'] as double? ?? 0.0;
+        if (t['type'] == 'income') {
+          totalIncome += amount;
+        } else if (t['type'] == 'outcome') {
+          totalOutcome += amount;
+        }
+      }
+      
+      final balance = savings + totalIncome - totalOutcome;
+
+      final user = UserData(
+        id: 1,
+        fullName: 'User Offline',
+        email: 'offline@seimbangin.com',
+        username: 'user_offline',
+        balance: balance.toStringAsFixed(0),
+        financeProfile: FinanceProfile(
+          currentSavings: savings.toString(),
+          debt: debt.toString(),
+          financialGoals: goals,
+          riskManagement: risk,
+          monthlyIncome: 10000000,
+          totalIncome: totalIncome.toStringAsFixed(0),
+          totalOutcome: totalOutcome.toStringAsFixed(0),
+        ),
+      );
+
+      return UserResponse(
+        status: 'success',
+        data: user,
+      );
     } catch (e) {
-      print('Error: $e');
-      throw Exception('$e');
+      print('Error offline user: $e');
+      throw Exception('Failed to load local user data: $e');
     }
   }
 
   Future<Advice> getUserAdvice() async {
     try {
-      final String? token = await Token.getToken();
-      final response =
-          await http.get(Uri.parse(Constant.getUserAdviceEndpoint), headers: {
-        'content-type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      final Map<String, dynamic> data = json.decode(response.body);
-      return Advice.fromJson(data);
+      await Future.delayed(const Duration(seconds: 1)); // Simulate AI thinking delay
+      return Advice(
+        status: 'success',
+        code: 200,
+        message: 'OK',
+        data: 'Halo! Saya adalah Penasihat Keuangan Offline Anda. Saat ini aplikasi berjalan tanpa jaringan internet, jadi saya belum bisa memberikan saran yang diperbarui secara real-time. Namun, tetap pertahankan tabungan di atas pengeluaran bulanan Anda, dan selalu perhatikan rasio hutang Anda!',
+      );
     } catch (e) {
-      throw Exception('$e');
+      throw Exception('Failed to mock offline advice: $e');
     }
   }
 
   Future<void> updateUserProfile(int currentSavings, int debt,
       String financialGoals, String riskManagement) async {
     try {
-      final String? token = await Token.getToken();
-      final response = await http.put(
-        Uri.parse(Constant.updateUserProfileEndpoint),
-        headers: {
-          'content-type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode({
-          'current_savings': currentSavings,
-          'debt': debt,
-          'financial_goals': financialGoals,
-          'risk_management': riskManagement,
-        }),
-      );
-      if (response.statusCode != 200) {
-        throw Exception('Failed to update user profile');
-      }
-      print('response status code : ${response.statusCode}');
-      print('response body : ${response.body}');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('current_savings', currentSavings);
+      await prefs.setInt('debt', debt);
+      await prefs.setString('financial_goals', financialGoals);
+      await prefs.setString('risk_management', riskManagement);
+      print('[UserService] OFFLINE Profile Updated Successfully');
     } catch (e) {
-      throw Exception('$e');
+      throw Exception('Failed to update offline user profile settings: $e');
     }
   }
 }
+

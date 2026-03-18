@@ -29,7 +29,7 @@ class TransactionCategorySection extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
             'Kategori Transaksi',
-            style: blackTextStyle.copyWith(
+            style: context.text.blackTextStyle.copyWith(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -39,7 +39,7 @@ class TransactionCategorySection extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
             'Jumlah transaksi berdasarkan kategori',
-            style: greyTextStyle.copyWith(
+            style: context.text.greyTextStyle.copyWith(
               fontSize: 12.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -53,22 +53,22 @@ class TransactionCategorySection extends StatelessWidget {
           child: Container(
             height: 40.h,
             decoration: BoxDecoration(
-              color: textWhiteColor,
+              color: context.color.textWhiteColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: TabBar(
               controller: tabController,
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(12.r),
-                color: primaryColor,
+                color: context.color.primaryColor,
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorPadding: EdgeInsets.all(4.r),
-              labelColor: textWhiteColor,
-              unselectedLabelColor: textPrimaryColor,
-              labelStyle: whiteTextStyle.copyWith(
+              labelColor: context.color.textWhiteColor,
+              unselectedLabelColor: context.color.textPrimaryColor,
+              labelStyle: context.text.whiteTextStyle.copyWith(
                   fontSize: 12.sp, fontWeight: FontWeight.bold),
-              unselectedLabelStyle: blackTextStyle.copyWith(
+              unselectedLabelStyle: context.text.blackTextStyle.copyWith(
                   fontSize: 12.sp, fontWeight: FontWeight.bold),
               tabs: tabTitles.map((title) => Tab(text: title)).toList(),
             ),
@@ -87,7 +87,7 @@ class TransactionCategorySection extends StatelessWidget {
                 )
               : Container(
                   decoration: BoxDecoration(
-                    color: textWhiteColor,
+                    color: context.color.textWhiteColor,
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   padding: EdgeInsets.all(16.r),
@@ -97,7 +97,7 @@ class TransactionCategorySection extends StatelessWidget {
                       SizedBox(height: 16.h),
                       AnalyticsDonutChart(sections: categoryData),
                       SizedBox(height: 24.h),
-                      ..._buildLegend(categoryData)
+                      ..._buildLegend(context, categoryData)
                     ],
                   ),
                 ),
@@ -106,7 +106,7 @@ class TransactionCategorySection extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildLegend(List<ChartSection> data) {
+  List<Widget> _buildLegend(BuildContext context, List<ChartSection> data) {
     return data.map((section) {
       return Padding(
         padding: EdgeInsets.only(bottom: 8.h),
@@ -121,7 +121,7 @@ class TransactionCategorySection extends StatelessWidget {
             Text(
               section.title.substring(0, 1).toUpperCase() +
                   section.title.substring(1),
-              style: blackTextStyle.copyWith(
+              style: context.text.blackTextStyle.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
               ),
@@ -129,7 +129,7 @@ class TransactionCategorySection extends StatelessWidget {
             const Spacer(),
             Text(
               currencyFormatter.format(section.value),
-              style: blackTextStyle.copyWith(
+              style: context.text.blackTextStyle.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
               ),

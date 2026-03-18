@@ -59,6 +59,7 @@ dependencies:
   persistent_bottom_nav_bar_v2: ^6.1.0
   shared_preferences: ^2.5.2
   shimmer: ^3.0.0
+  sqflite: ^2.4.2
   url_launcher: ^6.3.2
 
 dev_dependencies:

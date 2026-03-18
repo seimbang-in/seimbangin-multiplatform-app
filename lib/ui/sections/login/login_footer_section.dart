@@ -27,18 +27,18 @@ class LoginFooterSection extends StatelessWidget {
           children: [
             Text(
               "Belum punya akun?",
-              style: blackTextStyle.copyWith(
+              style: context.text.blackTextStyle.copyWith(
                   fontWeight: FontWeight.w600, fontSize: 12.sp),
             ),
             TextButton(
               onPressed: onRegister,
               child: Text(
                 'Daftar',
-                style: blueTextStyle.copyWith(
+                style: context.text.blueTextStyle.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 12.sp,
                   decoration: TextDecoration.underline,
-                  decorationColor: textBlueColor,
+                  decorationColor: context.color.textBlueColor,
                 ),
               ),
             ),

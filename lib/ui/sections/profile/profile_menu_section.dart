@@ -23,7 +23,7 @@ class ProfileMenuSection extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 20.r, vertical: 16.r),
         margin: EdgeInsets.only(bottom: 16.r),
         decoration: BoxDecoration(
-          color: backgroundWhiteColor,
+          color: context.color.backgroundWhiteColor,
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
@@ -32,30 +32,30 @@ class ProfileMenuSection extends StatelessWidget {
               offset: const Offset(0, 4),
             ),
           ],
-          border: Border.all(color: backgroundGreyColor, width: 1.5),
+          border: Border.all(color: context.color.backgroundGreyColor, width: 1.5),
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(
-                color: backgroundGreyColor,
+                color: context.color.backgroundGreyColor,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: primaryColor, size: 24.r),
+              child: Icon(icon, color: context.color.primaryColor, size: 24.r),
             ),
             SizedBox(width: 16.r),
             Expanded(
               child: Text(
                 title,
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
             Icon(Icons.chevron_right_rounded,
-                color: textSecondaryColor, size: 28.r),
+                color: context.color.textSecondaryColor, size: 28.r),
           ],
         ),
       ),

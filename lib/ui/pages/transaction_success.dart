@@ -22,7 +22,7 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundWhiteColor,
+      backgroundColor: context.color.backgroundWhiteColor,
       body: SafeArea(
         child: ListView(
           children: [
@@ -40,7 +40,7 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
                 const SizedBox(width: 6),
                 Text(
                   'eimbangin',
-                  style: blueTextStyle.copyWith(
+                  style: context.text.blueTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 28,
                   ),
@@ -55,7 +55,7 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
               children: [
                 Text(
                   'Thank You',
-                  style: blueTextStyle.copyWith(
+                  style: context.text.blueTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
@@ -66,7 +66,7 @@ class _TransactionSuccessPageState extends State<TransactionSuccessPage> {
                 Text(
                   textAlign: TextAlign.center,
                   'Your transaction has\nbeen successfully added',
-                  style: buttonTextStyle.copyWith(
+                  style: context.text.buttonTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),

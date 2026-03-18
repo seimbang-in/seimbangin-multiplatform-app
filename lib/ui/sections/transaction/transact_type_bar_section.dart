@@ -18,7 +18,7 @@ class TransactionTypeTabBarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundGreyColor,
+        color: context.color.backgroundGreyColor,
         borderRadius: BorderRadius.circular(24.r),
       ),
       child: Row(
@@ -32,7 +32,7 @@ class TransactionTypeTabBarSection extends StatelessWidget {
                 margin: EdgeInsets.all(4.r),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? (index == 0 ? buttonColor : backgroundWarningColor)
+                      ? (index == 0 ? context.color.buttonColor : context.color.backgroundWarningColor)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(20.r),
                 ),
@@ -40,10 +40,10 @@ class TransactionTypeTabBarSection extends StatelessWidget {
                 child: Center(
                   child: Text(
                     tabs[index],
-                    style: blackTextStyle.copyWith(
+                    style: context.text.blackTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
-                      color: isSelected ? textWhiteColor : textSecondaryColor,
+                      color: isSelected ? context.color.textWhiteColor : context.color.textSecondaryColor,
                     ),
                   ),
                 ),

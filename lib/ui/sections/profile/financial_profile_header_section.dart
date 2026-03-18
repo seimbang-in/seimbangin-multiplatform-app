@@ -14,7 +14,7 @@ class FinancialProfileHeaderSection extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: backgroundGreyColor,
+            color: context.color.backgroundGreyColor,
             shape: BoxShape.circle,
           ),
           child: Image.asset(
@@ -25,7 +25,7 @@ class FinancialProfileHeaderSection extends StatelessWidget {
         SizedBox(height: 24.r),
         Text(
           'Financial Profile',
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 22.sp,
           ),
@@ -35,7 +35,7 @@ class FinancialProfileHeaderSection extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
             'Lengkapi Profil Finansialmu untuk membantu Blu memberikan saran keuangan terbaik!',
-            style: greyTextStyle.copyWith(
+            style: context.text.greyTextStyle.copyWith(
               fontWeight: FontWeight.normal,
               fontSize: 14.sp,
               height: 1.5,

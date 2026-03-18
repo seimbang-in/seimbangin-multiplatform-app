@@ -24,9 +24,9 @@ class RegisterHeaderSection extends StatelessWidget {
               widget: Icon(
                 Icons.chevron_left,
                 size: 32.r,
-                color: textSecondaryColor,
+                color: context.color.textSecondaryColor,
               ),
-              backgroundColor: backgroundWhiteColor,
+              backgroundColor: context.color.backgroundWhiteColor,
             ),
             Image.asset('assets/ic_seimbangin-logo-logreg.png'),
           ],
@@ -37,7 +37,7 @@ class RegisterHeaderSection extends StatelessWidget {
             Image.asset('assets/img_mascot-login.png'),
             Text(
               'Buat Akun Baru',
-              style: blackTextStyle.copyWith(
+              style: context.text.blackTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 28.sp,
               ),

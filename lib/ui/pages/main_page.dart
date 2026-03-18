@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart'; // HomepageBloc mungkin masih dibutuhkan untuk ProfilePage
-// import 'package:seimbangin_app/blocs/transaction/transaction_bloc.dart'; // Tidak perlu dispatch dari sini lagi
+import 'package:seimbangin_app/blocs/homepage/homepage_bloc.dart';
 import 'package:seimbangin_app/routes/routes.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 import 'package:seimbangin_app/ui/pages/analytics_page.dart';
-import 'package:seimbangin_app/ui/pages/chat_advisor_page.dart';
+import 'package:seimbangin_app/ui/pages/history_transact_page.dart';
 import 'package:seimbangin_app/ui/pages/home_page.dart';
 import 'package:seimbangin_app/ui/pages/profile_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -29,73 +27,64 @@ class _MainPageState extends State<MainPage> {
         PersistentTabConfig(
           screen: const HomePage(),
           item: ItemConfig(
-            icon: SvgPicture.asset(
-              'assets/ic_home.svg',
-              width: 24.r,
-            ),
+            icon: Icon(Icons.home_rounded, size: 24.r),
             title: "Home",
-            textStyle: whiteTextStyle.copyWith(
-                fontSize: 12.sp, fontWeight: FontWeight.w600),
-            activeForegroundColor: backgroundWhiteColor,
-            inactiveForegroundColor: backgroundWhiteColor,
+            textStyle: context.text.blackTextStyle
+                .copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
+            activeForegroundColor: context.color.primaryColor,
+            inactiveForegroundColor:
+                context.color.textSecondaryColor.withValues(alpha: 0.5),
           ),
         ),
         PersistentTabConfig(
           screen: const AnalyticsPage(),
           item: ItemConfig(
-            icon: SvgPicture.asset(
-              'assets/ic_analytic.svg',
-              width: 24.r,
-            ),
-            title: "Analytic",
-            textStyle: whiteTextStyle.copyWith(
-                fontSize: 12.sp, fontWeight: FontWeight.w600),
-            activeForegroundColor: backgroundWhiteColor,
-            inactiveForegroundColor: backgroundWhiteColor,
+            icon: Icon(Icons.bar_chart_rounded, size: 24.r),
+            title: "Chart",
+            textStyle: context.text.blackTextStyle
+                .copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
+            activeForegroundColor: context.color.primaryColor,
+            inactiveForegroundColor:
+                context.color.textSecondaryColor.withValues(alpha: 0.5),
           ),
         ),
         PersistentTabConfig.noScreen(
-          onPressed: (barContext) => routes.pushNamed(RouteNames.ocr),
+          onPressed: (barContext) => routes.pushNamed(RouteNames.transaction),
           item: ItemConfig(
             icon: Icon(
-              Icons.add,
-              size: 42.r,
-              color: secondaryColor,
+              Icons.add_rounded,
+              size: 32.r,
+              color: Colors.white,
             ),
-            activeForegroundColor: backgroundWhiteColor,
-            inactiveForegroundColor: backgroundWhiteColor,
+            activeForegroundColor: context.color.primaryColor,
+            inactiveForegroundColor: context.color.primaryColor,
           ),
         ),
         PersistentTabConfig(
-          screen: const ChatAdvisorPage(),
+          screen: const HistoryTransactPage(),
           item: ItemConfig(
-            icon: SvgPicture.asset(
-              'assets/ic_advisor.svg',
-              width: 24.r,
-            ),
-            title: "Advisor",
-            textStyle: whiteTextStyle.copyWith(
-                fontSize: 12.sp, fontWeight: FontWeight.w600),
-            activeForegroundColor: backgroundWhiteColor,
-            inactiveForegroundColor: backgroundWhiteColor,
+            icon: Icon(Icons.receipt_long_rounded, size: 24.r),
+            title: "Reports",
+            textStyle: context.text.blackTextStyle
+                .copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
+            activeForegroundColor: context.color.primaryColor,
+            inactiveForegroundColor:
+                context.color.textSecondaryColor.withValues(alpha: 0.5),
           ),
         ),
         PersistentTabConfig(
           screen: BlocProvider.value(
-            value: BlocProvider.of<HomepageBloc>(
-                context), // Mengambil HomepageBloc dari context MainPage
+            value: BlocProvider.of<HomepageBloc>(context),
             child: const ProfilePage(),
           ),
           item: ItemConfig(
-            icon: SvgPicture.asset(
-              'assets/ic_profile.svg',
-              width: 24.r,
-            ),
-            title: "Profile",
-            textStyle: whiteTextStyle.copyWith(
-                fontSize: 12.sp, fontWeight: FontWeight.w600),
-            activeForegroundColor: backgroundWhiteColor,
-            inactiveForegroundColor: backgroundWhiteColor,
+            icon: Icon(Icons.person_rounded, size: 24.r),
+            title: "Settings",
+            textStyle: context.text.blackTextStyle
+                .copyWith(fontSize: 12.sp, fontWeight: FontWeight.w600),
+            activeForegroundColor: context.color.primaryColor,
+            inactiveForegroundColor:
+                context.color.textSecondaryColor.withValues(alpha: 0.5),
           ),
         ),
       ];
@@ -103,15 +92,22 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
-      navBarOverlap: NavBarOverlap.full(),
+      navBarOverlap: const NavBarOverlap.full(),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       backgroundColor: Colors.transparent,
-      tabs: _tabs(context), // Kirim context ke _tabs jika diperlukan
-      navBarBuilder: (navBarConfig) => Style13BottomNavBar(
-        middleItemSize: 80.r,
-        height: 70.r,
+      tabs: _tabs(context),
+      navBarBuilder: (navBarConfig) => Style15BottomNavBar(
         navBarConfig: navBarConfig,
         navBarDecoration: NavBarDecoration(
-          color: secondaryColor,
+          color: context.color.backgroundWhiteColor,
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            )
+          ],
         ),
       ),
     );

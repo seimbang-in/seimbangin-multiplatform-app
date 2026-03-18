@@ -15,7 +15,7 @@ class ChatWelcomeSection extends StatelessWidget {
           SizedBox(height: 24.h),
           Text(
             "Halo! Salam kenal!",
-            style: blackTextStyle.copyWith(
+            style: context.text.blackTextStyle.copyWith(
               fontSize: 22.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -26,7 +26,7 @@ class ChatWelcomeSection extends StatelessWidget {
             child: Text(
               "Saya Blu, AI penasihat keuangan Anda.\nTanyakan apa saja seputar keuangan Anda!",
               textAlign: TextAlign.center,
-              style: greyTextStyle.copyWith(fontSize: 14.sp, height: 1.5),
+              style: context.text.greyTextStyle.copyWith(fontSize: 14.sp, height: 1.5),
             ),
           ),
         ],

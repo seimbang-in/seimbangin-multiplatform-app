@@ -13,17 +13,23 @@ class TransactionHeaderSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         CustomRoundedButton(
-          onPressed: () => routes.pushReplacementNamed(RouteNames.ocr),
+          onPressed: () {
+            if (routes.canPop()) {
+              routes.pop();
+            } else {
+              routes.pushReplacementNamed(RouteNames.main);
+            }
+          },
           widget: Icon(
             Icons.chevron_left,
             size: 32.r,
-            color: textSecondaryColor,
+            color: context.color.textSecondaryColor,
           ),
-          backgroundColor: backgroundWhiteColor,
+          backgroundColor: context.color.backgroundWhiteColor,
         ),
         Text(
           'Tambah Transaksi',
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 18.sp,
           ),

@@ -81,13 +81,13 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: backgroundWhiteColor,
-        surfaceTintColor: backgroundWhiteColor,
+        backgroundColor: context.color.backgroundWhiteColor,
+        surfaceTintColor: context.color.backgroundWhiteColor,
         centerTitle: true,
         toolbarHeight: 70.r,
         title: Text(
           'Blu: Your AI Advisor',
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.w600,
           ),
@@ -105,7 +105,7 @@ class _ChatAdvisorPageState extends State<ChatAdvisorPage> {
           ),
         ],
       ),
-      backgroundColor: backgroundWhiteColor,
+      backgroundColor: context.color.backgroundWhiteColor,
       body: BlocListener<ChatbotBloc, ChatbotState>(
         listener: (context, state) {
           if (state is ChatbotSuccess) {

@@ -35,7 +35,7 @@ class HeaderSection extends StatelessWidget {
         ),
         Text(
           'AI Advisor',
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -53,9 +53,9 @@ class HeaderSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18.r),
                 gradient: LinearGradient(
                   colors: [
-                    secondaryColor,
-                    secondaryColor,
-                    backgroundWhiteColor
+                    context.color.secondaryColor,
+                    context.color.secondaryColor,
+                    context.color.backgroundWhiteColor
                   ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -86,12 +86,12 @@ class HeaderSection extends StatelessWidget {
     //   height: MediaQuery.of(context).size.height * 0.4,
     //   decoration: BoxDecoration(
     //     gradient: LinearGradient(
-    //         colors: [primaryColor, secondaryColor],
+    //         colors: [context.color.primaryColor, context.color.secondaryColor],
     //         begin: Alignment.topCenter,
     //         end: Alignment.bottomCenter),
     //     boxShadow: [
     //       BoxShadow(
-    //         color: backgroundWhiteColor.withOpacity(0.2),
+    //         color: context.color.backgroundWhiteColor.withOpacity(0.2),
     //         blurRadius: 10,
     //         spreadRadius: 2,
     //         offset: Offset(0, 4),
@@ -116,7 +116,7 @@ class HeaderSection extends StatelessWidget {
     //                 width: 60.r,
     //                 height: 60.r,
     //                 decoration: BoxDecoration(
-    //                   color: backgroundWhiteColor,
+    //                   color: context.color.backgroundWhiteColor,
     //                   borderRadius: BorderRadius.circular(25).r,
     //                 ),
     //                 child: CachedNetworkImage(
@@ -125,7 +125,7 @@ class HeaderSection extends StatelessWidget {
     //                   errorWidget: (context, error, stackTrace) {
     //                     return Icon(
     //                       Icons.person,
-    //                       color: primaryColor,
+    //                       color: context.color.primaryColor,
     //                       size: 36.r,
     //                     );
     //                   },
@@ -139,14 +139,14 @@ class HeaderSection extends StatelessWidget {
     //                 children: [
     //                   Text(
     //                     "Welcome 👋",
-    //                     style: whiteTextStyle.copyWith(
+    //                     style: context.text.whiteTextStyle.copyWith(
     //                       fontSize: 12.sp,
     //                       fontWeight: FontWeight.w500,
     //                     ),
     //                   ),
     //                   Text(
     //                     name,
-    //                     style: whiteTextStyle.copyWith(
+    //                     style: context.text.whiteTextStyle.copyWith(
     //                       fontWeight: FontWeight.bold,
     //                       fontSize: 16.sp,
     //                     ),
@@ -168,7 +168,7 @@ class HeaderSection extends StatelessWidget {
     //     ),
     //     Text(
     //       "Current Balance",
-    //       style: whiteTextStyle.copyWith(
+    //       style: context.text.whiteTextStyle.copyWith(
     //         fontSize: 14.sp,
     //         fontWeight: FontWeight.bold,
     //       ),
@@ -185,7 +185,7 @@ class HeaderSection extends StatelessWidget {
     //               .format(
     //             double.parse(money),
     //           ),
-    //           style: whiteTextStyle.copyWith(
+    //           style: context.text.whiteTextStyle.copyWith(
     //             fontWeight: FontWeight.bold,
     //             fontSize: 20.sp,
     //           ),
@@ -219,7 +219,7 @@ class HeaderSection extends StatelessWidget {
               children: [
                 Text(
                   "Ups! Layanan AI sedang penuh 🤖",
-                  style: whiteTextStyle.copyWith(
+                  style: context.text.whiteTextStyle.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.bold,
                   ),
@@ -227,7 +227,7 @@ class HeaderSection extends StatelessWidget {
                 SizedBox(height: 4.h),
                 Text(
                   "Tenang saja, Anda tetap bisa mencatat dan memantau keuangan Anda secara manual sepuasnya!",
-                  style: whiteTextStyle.copyWith(
+                  style: context.text.whiteTextStyle.copyWith(
                     fontSize: 12.sp,
                     fontWeight: FontWeight.normal,
                     color: Colors.white.withValues(alpha: 0.9),
@@ -249,7 +249,7 @@ class HeaderSection extends StatelessWidget {
       if (hasRealAdvice) {
         return Text(
           advice!.data,
-          style: whiteTextStyle.copyWith(
+          style: context.text.whiteTextStyle.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 14.sp,
           ),
@@ -262,7 +262,7 @@ class HeaderSection extends StatelessWidget {
             Flexible(
               child: Text(
                 "Please fill in your financial profile data here first to get Financial AI Advice",
-                style: whiteTextStyle.copyWith(
+                style: context.text.whiteTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
                   fontSize: 14.sp,
                 ),
@@ -276,7 +276,7 @@ class HeaderSection extends StatelessWidget {
                 width: 50.r,
                 height: 50.r,
                 decoration: BoxDecoration(
-                  color: backgroundWhiteColor,
+                  color: context.color.backgroundWhiteColor,
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Center(
@@ -293,7 +293,7 @@ class HeaderSection extends StatelessWidget {
     } else {
       return Text(
         "Saran AI tidak tersedia saat ini.",
-        style: whiteTextStyle.copyWith(
+        style: context.text.whiteTextStyle.copyWith(
           fontSize: 14.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -315,14 +315,14 @@ class CurrentBalanceSection extends StatelessWidget {
         children: [
           Text(
             "Current Balance",
-            style: blackTextStyle.copyWith(fontWeight: FontWeight.bold),
+            style: context.text.blackTextStyle.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 10,
           ),
           Text(
             balance,
-            style: blackTextStyle.copyWith(
+            style: context.text.blackTextStyle.copyWith(
                 fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ],
@@ -346,12 +346,12 @@ class RecentTransactionSection extends StatelessWidget {
       children: [
         Text(
           "Recent Transaction",
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Text(
           subtitle,
-          style: blueTextStyle.copyWith(fontWeight: FontWeight.bold),
+          style: context.text.blueTextStyle.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );

@@ -22,7 +22,7 @@ class ProfileEditPage extends StatelessWidget {
       children: [
         Text(
           label,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,
           ),
@@ -34,7 +34,7 @@ class ProfileEditPage extends StatelessWidget {
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 18.r, horizontal: 18.r),
             decoration: BoxDecoration(
-              color: backgroundGreyColor,
+              color: context.color.backgroundGreyColor,
               borderRadius: BorderRadius.circular(24.r),
             ),
             child: Row(
@@ -43,7 +43,7 @@ class ProfileEditPage extends StatelessWidget {
                 Expanded(
                   child: Text(
                     value ?? 'Not set',
-                    style: greyTextStyle.copyWith(
+                    style: context.text.greyTextStyle.copyWith(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
                     ),
@@ -51,7 +51,7 @@ class ProfileEditPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 8.r),
-                Icon(Icons.edit_rounded, color: textSecondaryColor, size: 22.r),
+                Icon(Icons.edit_rounded, color: context.color.textSecondaryColor, size: 22.r),
               ],
             ),
           ),
@@ -67,11 +67,11 @@ class ProfileEditPage extends StatelessWidget {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: statusBarPrimaryColor,
+        statusBarColor: context.color.statusBarPrimaryColor,
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: backgroundWhiteColor,
+        backgroundColor: context.color.backgroundWhiteColor,
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 20.r),
@@ -85,13 +85,13 @@ class ProfileEditPage extends StatelessWidget {
                     widget: Icon(
                       Icons.chevron_left,
                       size: 32.r,
-                      color: textSecondaryColor,
+                      color: context.color.textSecondaryColor,
                     ),
-                    backgroundColor: backgroundWhiteColor,
+                    backgroundColor: context.color.backgroundWhiteColor,
                   ),
                   Text(
                     'Edit Profile',
-                    style: blackTextStyle.copyWith(
+                    style: context.text.blackTextStyle.copyWith(
                       fontSize:
                           16.sp, // Ukuran font disesuaikan dengan header lama
                       fontWeight: FontWeight.w600,

@@ -157,11 +157,11 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle(
-            statusBarColor: statusBarPrimaryColor,
+            statusBarColor: context.color.statusBarPrimaryColor,
             statusBarIconBrightness: Brightness.dark,
           ),
           child: Scaffold(
-            backgroundColor: backgroundWhiteColor,
+            backgroundColor: context.color.backgroundWhiteColor,
             body: SafeArea(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 24).r,
@@ -173,8 +173,8 @@ class _FinancialProfilePageState extends State<FinancialProfilePage> {
                       CustomRoundedButton(
                         onPressed: () => routes.pop(),
                         widget: Icon(Icons.chevron_left,
-                            size: 32.r, color: textSecondaryColor),
-                        backgroundColor: backgroundWhiteColor,
+                            size: 32.r, color: context.color.textSecondaryColor),
+                        backgroundColor: context.color.backgroundWhiteColor,
                       ),
                       Image.asset('assets/ic_seimbangin-logo-logreg.png'),
                     ],

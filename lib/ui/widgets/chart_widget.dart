@@ -53,14 +53,14 @@ class AnalyticsBarChart extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Text('Pemasukan',
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                                 fontSize: 12, fontWeight: FontWeight.w600)),
                       );
                     case 1:
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Text('Pengeluaran',
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                                 fontSize: 12, fontWeight: FontWeight.w600)),
                       );
                     default:
@@ -90,7 +90,7 @@ class AnalyticsBarChart extends StatelessWidget {
                     child: Text(
                       text,
                       textAlign: TextAlign.right,
-                      style: greyTextStyle.copyWith(
+                      style: context.text.greyTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                       ),
@@ -107,7 +107,7 @@ class AnalyticsBarChart extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                   toY: currentIncome,
-                  color: textGreenColor,
+                  color: context.color.textGreenColor,
                   width: 30,
                   borderRadius: BorderRadius.circular(6),
                 ),
@@ -118,7 +118,7 @@ class AnalyticsBarChart extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                   toY: currentOutcome,
-                  color: textWarningColor,
+                  color: context.color.textWarningColor,
                   width: 30,
                   borderRadius: BorderRadius.circular(6),
                 ),

@@ -29,7 +29,7 @@ class ArticleCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        color: backgroundGreyColor,
+        color: context.color.backgroundGreyColor,
         elevation: 3,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -59,7 +59,7 @@ class ArticleCard extends StatelessWidget {
                       alignment: Alignment.topRight,
                       child: Text(
                         date,
-                        style: blackTextStyle.copyWith(
+                        style: context.text.blackTextStyle.copyWith(
                           fontSize: 8,
                           fontWeight: FontWeight.w500,
                         ),
@@ -68,7 +68,7 @@ class ArticleCard extends StatelessWidget {
                     // Category
                     Text(
                       category,
-                      style: buttonTextStyle.copyWith(
+                      style: context.text.buttonTextStyle.copyWith(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         overflow: TextOverflow.clip,
@@ -76,7 +76,7 @@ class ArticleCard extends StatelessWidget {
                     ),
                     Text(
                       title,
-                      style: blackTextStyle.copyWith(
+                      style: context.text.blackTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         overflow: TextOverflow.clip,
@@ -84,7 +84,7 @@ class ArticleCard extends StatelessWidget {
                     ),
                     Text(
                       subtitle,
-                      style: blackTextStyle.copyWith(
+                      style: context.text.blackTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                         overflow: TextOverflow.clip,
@@ -133,8 +133,15 @@ class RecentTransactionCard extends StatelessWidget {
             vertical: 16.h,
           ),
           decoration: BoxDecoration(
-            color: backgroundWhiteColor,
-            borderRadius: BorderRadius.circular(18).r,
+            color: context.color.backgroundWhiteColor,
+            borderRadius: BorderRadius.circular(18.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -159,7 +166,7 @@ class RecentTransactionCard extends StatelessWidget {
                       title,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: blackTextStyle.copyWith(
+                      style: context.text.blackTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 14.sp,
                       ),
@@ -167,7 +174,7 @@ class RecentTransactionCard extends StatelessWidget {
                     SizedBox(height: 4.r),
                     Text(
                       subtitle,
-                      style: blueTextStyle.copyWith(
+                      style: context.text.blueTextStyle.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 10.sp,
                       ),
@@ -178,8 +185,8 @@ class RecentTransactionCard extends StatelessWidget {
               SizedBox(width: 16.r),
               Text(
                 amount,
-                style: blackTextStyle.copyWith(
-                  color: amountColor ?? textGreenColor,
+                style: context.text.blackTextStyle.copyWith(
+                  color: amountColor ?? context.color.textGreenColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 14.sp,
                 ),
@@ -227,7 +234,7 @@ class IncomeOutcomeCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 16,
-                  color: backgroundWhiteColor,
+                  color: context.color.backgroundWhiteColor,
                 ),
               ),
               Center(
@@ -247,7 +254,7 @@ class IncomeOutcomeCard extends StatelessWidget {
             children: [
               Text(
                 "Total $incomeOrOutcome",
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 14.sp,
                 ),
@@ -294,18 +301,18 @@ class DateAndPeriodSelector extends StatelessWidget {
           children: [
             Text(
               month,
-              style: blackTextStyle.copyWith(fontWeight: FontWeight.w500),
+              style: context.text.blackTextStyle.copyWith(fontWeight: FontWeight.w500),
             ),
             Text(
               day,
-              style: blackTextStyle.copyWith(fontWeight: FontWeight.w500),
+              style: context.text.blackTextStyle.copyWith(fontWeight: FontWeight.w500),
             ),
           ],
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: backgroundGreyColor,
+            color: context.color.backgroundGreyColor,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
@@ -314,12 +321,12 @@ class DateAndPeriodSelector extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: backgroundGreyColor,
+                  color: context.color.backgroundGreyColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: DropdownButton<String>(
-                  style: blackTextStyle.copyWith(fontSize: 14),
-                  dropdownColor: backgroundGreyColor,
+                  style: context.text.blackTextStyle.copyWith(fontSize: 14),
+                  dropdownColor: context.color.backgroundGreyColor,
                   underline: SizedBox(),
                   iconSize: 16,
                   isDense: true,
@@ -329,7 +336,7 @@ class DateAndPeriodSelector extends StatelessWidget {
                             value: item,
                             child: Text(
                               item,
-                              style: blackTextStyle.copyWith(fontSize: 14),
+                              style: context.text.blackTextStyle.copyWith(fontSize: 14),
                             ),
                           ))
                       .toList(),
@@ -360,7 +367,7 @@ class DetailAnalytic extends StatelessWidget {
         Text(
           price,
           overflow: TextOverflow.ellipsis,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -371,7 +378,7 @@ class DetailAnalytic extends StatelessWidget {
         // CONTAINER TIPE
         Container(
           decoration: BoxDecoration(
-            color: backgroundBlueColor,
+            color: context.color.backgroundBlueColor,
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
@@ -379,12 +386,12 @@ class DetailAnalytic extends StatelessWidget {
               CircleAvatar(
                 radius: 14.r,
                 backgroundColor:
-                    isIncome == true ? textGreenColor : textWarningColor,
+                    isIncome == true ? context.color.textGreenColor : context.color.textWarningColor,
                 child: Icon(
                   isIncome == true
                       ? Icons.keyboard_arrow_up_outlined
                       : Icons.keyboard_arrow_down_outlined,
-                  color: textWhiteColor,
+                  color: context.color.textWhiteColor,
                 ),
               ),
               SizedBox(
@@ -392,7 +399,7 @@ class DetailAnalytic extends StatelessWidget {
               ),
               Text(
                 isIncome == true ? 'My Income' : 'My Expenses',
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 10.sp,
                 ),
@@ -421,7 +428,7 @@ class StaticNoTransaction extends StatelessWidget {
       padding: EdgeInsets.all(12.r),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: textWhiteColor,
+        color: context.color.textWhiteColor,
         borderRadius: BorderRadius.circular(18.r),
       ),
       child: Row(
@@ -432,7 +439,7 @@ class StaticNoTransaction extends StatelessWidget {
             children: [
               Text(
                 'Belum Ada Transaksi',
-                style: blueTextStyle.copyWith(
+                style: context.text.blueTextStyle.copyWith(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
@@ -442,7 +449,7 @@ class StaticNoTransaction extends StatelessWidget {
               ),
               Text(
                 'Anda belum melakukan transaksi sama sekali',
-                style: greyTextStyle.copyWith(
+                style: context.text.greyTextStyle.copyWith(
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -458,8 +465,8 @@ class StaticNoTransaction extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
                 gradient: LinearGradient(
                   colors: [
-                    gradientBlueStartColor,
-                    gradientBlueEndColor,
+                    context.color.gradientBlueStartColor,
+                    context.color.gradientBlueEndColor,
                   ],
                 ),
               ),
@@ -467,7 +474,7 @@ class StaticNoTransaction extends StatelessWidget {
                 child: Icon(
                   Icons.add,
                   size: 24.r,
-                  color: skyBlueColor,
+                  color: context.color.skyBlueColor,
                 ),
               ),
             ),

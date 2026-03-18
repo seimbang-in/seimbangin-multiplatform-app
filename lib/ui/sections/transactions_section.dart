@@ -24,7 +24,7 @@ class AddTransactionIncomeSection extends StatelessWidget {
         SizedBox(height: 10.r),
         Text(
           amountTitle,
-          style: greyTextStyle.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
+          style: context.text.greyTextStyle.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 8.r),
         TextField(
@@ -34,22 +34,22 @@ class AddTransactionIncomeSection extends StatelessWidget {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: '0',
-            hintStyle: greyTextStyle.copyWith(
+            hintStyle: context.text.greyTextStyle.copyWith(
               fontSize: 48.sp,
               fontWeight: FontWeight.bold,
             ),
             prefixText: 'Rp ',
-            prefixStyle: blackTextStyle.copyWith(
+            prefixStyle: context.text.blackTextStyle.copyWith(
               fontSize: 24.sp, 
               fontWeight: FontWeight.bold,
-              color: primaryColor,
+              color: context.color.primaryColor,
             ),
           ),
           keyboardType: TextInputType.number,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 48.sp,
             fontWeight: FontWeight.bold,
-            color: primaryColor,
+            color: context.color.primaryColor,
           ),
         ),
         SizedBox(height: 24.r),
@@ -57,9 +57,9 @@ class AddTransactionIncomeSection extends StatelessWidget {
           controller: transactNameController,
           decoration: InputDecoration(
             filled: true,
-            fillColor: backgroundGreyColor,
+            fillColor: context.color.backgroundGreyColor,
             hintText: 'Nama Transaksi / Catatan',
-            hintStyle: greyTextStyle.copyWith(
+            hintStyle: context.text.greyTextStyle.copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -70,12 +70,12 @@ class AddTransactionIncomeSection extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(24).r,
               borderSide: BorderSide(
-                color: primaryColor,
+                color: context.color.primaryColor,
               ),
             ),
-            prefixIcon: Icon(Icons.edit_note_rounded, color: textSecondaryColor),
+            prefixIcon: Icon(Icons.edit_note_rounded, color: context.color.textSecondaryColor),
           ),
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -86,21 +86,9 @@ class AddTransactionIncomeSection extends StatelessWidget {
   }
 }
 
-// Model untuk kategori
-class Category {
-  final String id;
-  final String title;
-  final String icon;
-
-  Category({
-    required this.id,
-    required this.title,
-    required this.icon,
-  });
-}
-
+// Menerima data dinamis dari map SQLite
 class CategorySelector extends StatefulWidget {
-  final List<Category> categories;
+  final List<Map<String, dynamic>> categories;
   final Function(String)? onCategorySelected;
   final Color activeColor;
 
@@ -131,8 +119,8 @@ class _CategorySelectorState extends State<CategorySelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Item Category',
-          style: blackTextStyle.copyWith(
+          'Kategori',
+          style: context.text.blackTextStyle.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 16.sp,
           ),
@@ -143,25 +131,28 @@ class _CategorySelectorState extends State<CategorySelector> {
           physics: const BouncingScrollPhysics(),
           child: Row(
             children: widget.categories.map((category) {
-              final isSelected = _selectedCategoryTitle == category.title;
+              final String catName = category['name'] as String;
+              final int catIconCode = category['icon_code'] as int;
+              final isSelected = _selectedCategoryTitle == catName;
+
               return GestureDetector(
-                onTap: () => _handleCategoryTap(category.title),
+                onTap: () => _handleCategoryTap(catName),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: EdgeInsets.only(right: 12.r),
                   width: 155.w,
                   height: 64.h,
                   decoration: BoxDecoration(
-                    color: isSelected ? widget.activeColor : backgroundWhiteColor,
+                    color: isSelected ? context.color.primaryColor : context.color.backgroundWhiteColor,
                     borderRadius: BorderRadius.circular(16).r,
                     border: Border.all(
-                      color: isSelected ? Colors.transparent : backgroundGreyColor,
+                      color: isSelected ? Colors.transparent : context.color.backgroundGreyColor,
                       width: 1.5.r,
                     ),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: widget.activeColor.withOpacity(0.35),
+                              color: context.color.primaryColor.withOpacity(0.35),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             )
@@ -174,7 +165,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                         padding: EdgeInsets.symmetric(horizontal: 10.r),
                         child: Row(
                           children: [
-                            // Icon container mapping specifically looking like the design
+                            // Icon container mapping using Material Icons
                             Container(
                               width: 44.w,
                               height: 44.h,
@@ -182,26 +173,25 @@ class _CategorySelectorState extends State<CategorySelector> {
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? Colors.black.withOpacity(0.15)
-                                    : backgroundGreyColor,
+                                    : context.color.backgroundGreyColor,
                                 borderRadius: BorderRadius.circular(12).r,
                               ),
-                              child: Image.asset(
-                                category.icon,
-                                color: isSelected ? Colors.white : textSecondaryColor,
+                              child: Icon(
+                                IconData(catIconCode, fontFamily: 'MaterialIcons'),
+                                color: isSelected ? Colors.white : context.color.textSecondaryColor,
+                                size: 24.r,
                               ),
                             ),
                             SizedBox(width: 10.w),
-                            // Title Text layout matching
+                            // Title Text layout
                             Expanded(
                               child: Text(
-                                category.title.replaceAll(' ', '\n').replaceFirst(
-                                    RegExp(r'^[a-z]'),
-                                    category.title[0].toUpperCase()),
+                                catName,
                                 style: TextStyle(
                                   fontSize: 13.sp,
                                   height: 1.2,
                                   fontWeight: FontWeight.w600,
-                                  color: isSelected ? Colors.white : textSecondaryColor,
+                                  color: isSelected ? Colors.white : context.color.textPrimaryColor,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
