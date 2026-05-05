@@ -27,7 +27,7 @@ class EditableProfileTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 14.sp,
           ),
@@ -39,9 +39,9 @@ class EditableProfileTextField extends StatelessWidget {
               isEditing, // TextField bisa diedit atau tidak tergantung state ini
           decoration: InputDecoration(
             filled: true,
-            fillColor: backgroundGreyColor,
+            fillColor: context.color.backgroundGreyColor,
             hintText: hintText,
-            hintStyle: greyTextStyle.copyWith(
+            hintStyle: context.text.greyTextStyle.copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -56,25 +56,25 @@ class EditableProfileTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(24.r),
-              borderSide: BorderSide(color: textBlueColor),
+              borderSide: BorderSide(color: context.color.textBlueColor),
             ),
             // Suffix icon yang berubah sesuai mode edit
             suffixIcon: IconButton(
               icon: Icon(
                 isEditing ? Icons.check_circle : Icons.edit, // Ganti ikon
                 color: isEditing
-                    ? textGreenColor
-                    : textSecondaryColor, // Ganti warna
+                    ? context.color.textGreenColor
+                    : context.color.textSecondaryColor, // Ganti warna
               ),
               onPressed: onEditToggle, // Panggil callback saat ditekan
             ),
           ),
           keyboardType: keyboardType,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             // Ubah warna teks saat disabled agar terlihat seperti teks biasa
-            color: isEditing ? textPrimaryColor : textSecondaryColor,
+            color: isEditing ? context.color.textPrimaryColor : context.color.textSecondaryColor,
           ),
         ),
       ],

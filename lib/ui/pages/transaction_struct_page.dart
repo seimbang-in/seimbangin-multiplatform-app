@@ -36,20 +36,20 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
           child: Container(
             padding: const EdgeInsets.all(24).r,
             decoration: BoxDecoration(
-              color: backgroundWhiteColor,
+              color: context.color.backgroundWhiteColor,
               borderRadius: BorderRadius.circular(24).r,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircularProgressIndicator(
-                  color: primaryColor,
+                  color: context.color.primaryColor,
                   strokeWidth: 4,
                 ),
                 SizedBox(height: 16.r),
                 Text(
                   'Saving Transaction...',
-                  style: blackTextStyle.copyWith(
+                  style: context.text.blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16.sp,
                   ),
@@ -81,7 +81,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [primaryColor, backgroundWhiteColor],
+            colors: [context.color.primaryColor, context.color.backgroundWhiteColor],
           ),
         ),
         child: SafeArea(
@@ -98,7 +98,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             32), // Placeholder untuk menyeimbangkan padding agar title di tengah
                     Text(
                       'Detail Transaksi',
-                      style: whiteTextStyle.copyWith(
+                      style: context.text.whiteTextStyle.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16.sp,
                       ),
@@ -114,7 +114,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 32)
                           .r,
                   decoration: BoxDecoration(
-                    color: backgroundWhiteColor,
+                    color: context.color.backgroundWhiteColor,
                     boxShadow: [
                       BoxShadow(
                           color: Colors.black12,
@@ -130,7 +130,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       Center(
                           child: Text(
                         'Konfirmasi Transaksi',
-                        style: greyTextStyle.copyWith(
+                        style: context.text.greyTextStyle.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: 12.sp,
                         ),
@@ -140,7 +140,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                         child: Text(
                           previewData.transactionName,
                           textAlign: TextAlign.center,
-                          style: blackTextStyle.copyWith(
+                          style: context.text.blackTextStyle.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 18.sp,
                           ),
@@ -152,7 +152,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           Text(
                             DateFormat('dd/MM/yyyy')
                                 .format(previewData.transactionDate),
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12.sp,
                             ),
@@ -160,7 +160,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           SizedBox(width: 5.r),
                           Text(
                             '•',
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12.sp,
                             ),
@@ -169,7 +169,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           Text(
                             DateFormat('hh:mm a')
                                 .format(previewData.transactionDate),
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12.sp,
                             ),
@@ -187,14 +187,14 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isOutcome
-                                  ? backgroundWarningColor
-                                  : textGreenColor,
+                                  ? context.color.backgroundWarningColor
+                                  : context.color.textGreenColor,
                             ),
                             child: Icon(
                               isOutcome
                                   ? Icons.arrow_upward_rounded
                                   : Icons.arrow_downward_rounded,
-                              color: textWhiteColor,
+                              color: context.color.textWhiteColor,
                               size: 8.sp,
                             ),
                           ),
@@ -202,7 +202,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                           Text(
                             isOutcome ? 'Pengeluaran' : 'Pemasukan',
                             style:
-                                (isOutcome ? warningTextStyle : greenTextStyle)
+                                (isOutcome ? context.text.warningTextStyle : context.text.greenTextStyle)
                                     .copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 14.sp,
@@ -220,7 +220,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                         decoration: BoxDecoration(
                             color: isOutcome
                                 ? const Color(0xffE91E63).withOpacity(0.1)
-                                : primaryColor.withOpacity(0.1),
+                                : context.color.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16).r),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -229,7 +229,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                               isOutcome
                                   ? 'Total Pengeluaran'
                                   : 'Total Pemasukan',
-                              style: blackTextStyle.copyWith(
+                              style: context.text.blackTextStyle.copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
                               ),
@@ -241,7 +241,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                       decimalDigits: 0)
                                   .format(previewData.totalAmount),
                               style:
-                                  (isOutcome ? warningTextStyle : blueTextStyle)
+                                  (isOutcome ? context.text.warningTextStyle : context.text.blueTextStyle)
                                       .copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16.sp,
@@ -255,7 +255,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                       const SizedBox(height: 18),
                       Text(
                         'Rincian Barang',
-                        style: blackTextStyle.copyWith(
+                        style: context.text.blackTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14.sp,
                         ),
@@ -271,7 +271,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                               contentPadding: EdgeInsets.zero,
                               title: Text(
                                 item.itemName,
-                                style: blackTextStyle.copyWith(
+                                style: context.text.blackTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12.sp,
                                 ),
@@ -282,7 +282,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                 children: [
                                   Text(
                                     'Qty: ${item.quantity}',
-                                    style: greyTextStyle.copyWith(
+                                    style: context.text.greyTextStyle.copyWith(
                                       fontSize: 12.sp,
                                     ),
                                   ),
@@ -293,10 +293,10 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                             decimalDigits: 0)
                                         .format(
                                             double.tryParse(item.price) ?? 0),
-                                    style: blackTextStyle.copyWith(
+                                    style: context.text.blackTextStyle.copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12.sp,
-                                        color: buttonColor),
+                                        color: context.color.buttonColor),
                                   ),
                                 ],
                               ),
@@ -339,7 +339,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isOutcome
                                   ? const Color(0xffE91E63)
-                                  : primaryColor,
+                                  : context.color.primaryColor,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.r),
@@ -347,7 +347,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             ),
                             child: Text(
                               'Simpan Transaksi',
-                              style: whiteTextStyle.copyWith(
+                              style: context.text.whiteTextStyle.copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -369,7 +369,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                                 side: BorderSide(
                                   color: isOutcome
                                       ? const Color(0xffE91E63)
-                                      : primaryColor,
+                                      : context.color.primaryColor,
                                   width: 1.5,
                                 )),
                           ),
@@ -378,7 +378,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             style: TextStyle(
                               color: isOutcome
                                   ? const Color(0xffE91E63)
-                                  : primaryColor,
+                                  : context.color.primaryColor,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -424,7 +424,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: backgroundWarningColor,
+        backgroundColor: context.color.backgroundWarningColor,
       ),
     );
   }

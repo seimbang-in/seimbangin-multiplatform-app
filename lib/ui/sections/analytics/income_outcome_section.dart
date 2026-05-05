@@ -17,7 +17,7 @@ class IncomeOutcomeSection extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Text(
             'Pemasukan vs Pengeluaran',
-            style: blackTextStyle.copyWith(
+            style: context.text.blackTextStyle.copyWith(
               fontSize: 20.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -42,7 +42,7 @@ class IncomeOutcomeSection extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: textWhiteColor,
+                  color: context.color.textWhiteColor,
                   borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: Padding(

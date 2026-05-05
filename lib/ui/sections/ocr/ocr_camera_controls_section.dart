@@ -117,8 +117,8 @@ class OcrCameraControlsSection extends StatelessWidget {
                 SizedBox(height: 12.r),
                 PrimaryFilledButton(
                   title: 'Masukan Manual',
-                  backgroundColor: backgroundGreyColor,
-                  textColor: textPrimaryColor,
+                  backgroundColor: context.color.backgroundGreyColor,
+                  textColor: context.color.textPrimaryColor,
                   icon: Icons.edit_note_rounded,
                   onPressed: () {
                     routes.pushReplacementNamed(RouteNames.transaction);

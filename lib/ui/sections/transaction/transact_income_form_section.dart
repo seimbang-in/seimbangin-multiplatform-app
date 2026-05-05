@@ -6,7 +6,7 @@ class TransactionIncomeFormSection extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController priceController;
 
-  final List<Category> categories;
+  final List<Map<String, dynamic>> categories;
   final Function(String) onCategorySelected;
   final VoidCallback onFormChanged;
   final String amountTitle;

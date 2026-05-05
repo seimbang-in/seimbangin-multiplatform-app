@@ -39,25 +39,25 @@ class RegisterFormSection extends StatelessWidget {
         {required String hintText, String? errorText}) {
       return InputDecoration(
         filled: true,
-        fillColor: backgroundGreyColor,
+        fillColor: context.color.backgroundGreyColor,
         hintText: hintText,
         errorText: errorText,
-        errorStyle: warningTextStyle.copyWith(
+        errorStyle: context.text.warningTextStyle.copyWith(
             fontSize: 10.sp, fontWeight: FontWeight.w500),
-        hintStyle: greyTextStyle.copyWith(
+        hintStyle: context.text.greyTextStyle.copyWith(
             fontSize: 14.sp, fontWeight: FontWeight.w500),
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24).r,
             borderSide: BorderSide.none),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24).r,
-            borderSide: BorderSide(color: textBlueColor)),
+            borderSide: BorderSide(color: context.color.textBlueColor)),
         errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24).r,
             borderSide: BorderSide.none),
         focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(24).r,
-            borderSide: BorderSide(color: textBlueColor)),
+            borderSide: BorderSide(color: context.color.textBlueColor)),
       );
     }
 
@@ -67,7 +67,7 @@ class RegisterFormSection extends StatelessWidget {
           controller: fullNameController,
           decoration: buildInputDecoration(
               hintText: 'Nama Lengkap', errorText: fullNameError),
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 16.r),
@@ -75,7 +75,7 @@ class RegisterFormSection extends StatelessWidget {
           controller: usernameController,
           decoration: buildInputDecoration(
               hintText: 'Username', errorText: usernameError),
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 16.r),
@@ -84,7 +84,7 @@ class RegisterFormSection extends StatelessWidget {
           decoration: buildInputDecoration(
               hintText: 'Alamat Email', errorText: emailError),
           keyboardType: TextInputType.emailAddress,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 16.r),
@@ -93,7 +93,7 @@ class RegisterFormSection extends StatelessWidget {
           decoration: buildInputDecoration(
               hintText: 'Nomor Handphone', errorText: phoneError),
           keyboardType: TextInputType.phone,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 16.r),
@@ -111,9 +111,9 @@ class RegisterFormSection extends StatelessWidget {
                       : Icons.remove_red_eye_outlined,
                   size: 18.r),
             ),
-            suffixIconColor: textPrimaryColor,
+            suffixIconColor: context.color.textPrimaryColor,
           ),
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
       ],

@@ -11,36 +11,41 @@ class LastTransactionsSection extends StatelessWidget {
   const LastTransactionsSection({super.key});
 
   /// Helper untuk mendapatkan warna dan ikon berdasarkan kategori transaksi.
-  (Color, String) _getCategoryUIData(String category) {
+  (Color, String) _getCategoryUIData(BuildContext context, String category) {
     switch (category.toLowerCase()) {
       case 'salary':
-        return (buttonSalaryColor, 'assets/ic_salary.png');
+      case 'gaji':
+        return (context.color.buttonSalaryColor, 'assets/ic_salary.png');
       case 'freelance':
-        return (buttonFreelanceColor, 'assets/ic_freelance.png');
+        return (context.color.buttonFreelanceColor, 'assets/ic_freelance.png');
       case 'bonus':
-        return (buttonBonusColor, 'assets/ic_bonus.png');
+      case 'hadiah':
+        return (context.color.buttonBonusColor, 'assets/ic_bonus.png');
       case 'gift':
-        return (buttonBonusColor, 'assets/ic_gift.png');
+        return (context.color.buttonBonusColor, 'assets/ic_gift.png');
       case 'parent':
-        return (buttonParentColor, 'assets/ic_parents.png');
+        return (context.color.buttonParentColor, 'assets/ic_parents.png');
       case 'food':
-        return (buttonFoodColor, 'assets/ic_food.png');
+      case 'makan':
+        return (context.color.buttonFoodColor, 'assets/ic_food.png');
       case 'transportation':
       case 'transport':
-        return (buttonTransportationColor, 'assets/ic_transportation.png');
+      case 'transportasi':
+        return (context.color.buttonTransportationColor, 'assets/ic_transportation.png');
       case 'shopping':
-        return (buttonShoppingColor, 'assets/ic_shopping.png');
+      case 'belanja':
+        return (context.color.buttonShoppingColor, 'assets/ic_shopping.png');
       case 'health':
-        return (buttonHealthColor, 'assets/ic_health.png');
+        return (context.color.buttonHealthColor, 'assets/ic_health.png');
       case 'education':
-        return (buttonEducationColor, 'assets/ic_education.png');
+        return (context.color.buttonEducationColor, 'assets/ic_education.png');
       case 'housing':
-        return (buttonHousingColor, 'assets/ic_housing.png');
+        return (context.color.buttonHousingColor, 'assets/ic_housing.png');
       case 'internet':
-        return (buttonInternetColor, 'assets/ic_internet.png');
+        return (context.color.buttonInternetColor, 'assets/ic_internet.png');
       default:
         // Fallback untuk kategori 'others' atau yang tidak dikenal
-        return (buttonInternetColor, 'assets/ic_bonus.png');
+        return (context.color.buttonInternetColor, 'assets/ic_bonus.png');
     }
   }
 
@@ -59,7 +64,7 @@ class LastTransactionsSection extends StatelessWidget {
             children: [
               Text(
                 "Transaksi Terakhir",
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
                 ),
@@ -69,7 +74,7 @@ class LastTransactionsSection extends StatelessWidget {
                 child: Text(
                   "Lihat Semua",
                   style: TextStyle(
-                    color: textBlueColor,
+                    color: context.color.textBlueColor,
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
@@ -86,13 +91,13 @@ class LastTransactionsSection extends StatelessWidget {
                 if (transactionState.recentTransactions.isEmpty) {
                   return RecentTransactionCard(
                     onTap: null, // Tidak ada aksi saat diklik
-                    backgroundColor: backgroundGreyColor,
+                    backgroundColor: context.color.backgroundGreyColor,
                     icon: Icon(Icons.wallet_outlined,
-                        size: 30.r, color: textSecondaryColor),
+                        size: 30.r, color: context.color.textSecondaryColor),
                     title: "Belum ada transaksi",
                     subtitle: "Transaksi terakhir Anda akan muncul di sini",
                     amount: "",
-                    amountColor: textSecondaryColor,
+                    amountColor: context.color.textSecondaryColor,
                   );
                 }
 
@@ -102,12 +107,12 @@ class LastTransactionsSection extends StatelessWidget {
                       transactionState.recentTransactions.map((transaction) {
                     final createdAt =
                         DateTime.parse(transaction.createdAt!).toLocal();
-                    final timeString = DateFormat('dd MMMM yyyy (hh:mm a)', 'id_ID').format(createdAt);
-                    final total = int.tryParse(transaction.amount) ?? 0;
+                    final timeString = DateFormat('d MMM yyyy • HH:mm', 'id_ID').format(createdAt);
+                    final total = double.tryParse(transaction.amount)?.toInt() ?? 0;
                     final prefix = transaction.type == 0 ? '+' : '-';
                     final Color amountColor = transaction.type == 0
-                        ? textGreenColor
-                        : textWarningColor;
+                        ? context.color.textGreenColor
+                        : context.color.textWarningColor;
 
                     // Logika yang sudah diperbaiki untuk menentukan kategori
                     String categoryForIcon = 'others'; // Nilai default
@@ -119,7 +124,7 @@ class LastTransactionsSection extends StatelessWidget {
                       categoryForIcon = transaction.category;
                     }
 
-                    final categoryUI = _getCategoryUIData(categoryForIcon);
+                    final categoryUI = _getCategoryUIData(context, categoryForIcon);
                     final Color bgColor = categoryUI.$1;
                     final String iconPath = categoryUI.$2;
 
@@ -152,7 +157,7 @@ class LastTransactionsSection extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 20.r),
                     child: Text(
                       "Tidak dapat memuat transaksi.",
-                      style: greyTextStyle.copyWith(fontSize: 14.sp),
+                      style: context.text.greyTextStyle.copyWith(fontSize: 14.sp),
                     ),
                   ),
                 );

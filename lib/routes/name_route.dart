@@ -22,4 +22,5 @@ abstract class RouteNames {
   static const transactionSuccess = 'transactionSuccess';
   static const financialProfile = 'financialProfile';
   static const historyTransact = 'historyTransact';
+  static const categoryManagement = 'categoryManagement';
 }

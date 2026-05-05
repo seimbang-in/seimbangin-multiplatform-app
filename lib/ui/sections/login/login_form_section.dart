@@ -33,32 +33,32 @@ class LoginFormSection extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: isFormSubmitted && !isPhoneValid
-                ? backgroundPinkColor
-                : backgroundGreyColor,
+                ? context.color.backgroundPinkColor
+                : context.color.backgroundGreyColor,
             prefixIcon: Icon(Icons.person, size: 18.r),
             hintText: 'Username, No. HP, atau Email',
             errorText: isFormSubmitted && !isPhoneValid
                 ? '*Username tidak boleh kosong'
                 : null,
             hintStyle: isFormSubmitted && !isPhoneValid
-                ? warningTextStyle.copyWith(
+                ? context.text.warningTextStyle.copyWith(
                     fontSize: 14.sp, fontWeight: FontWeight.w500)
-                : greyTextStyle.copyWith(
+                : context.text.greyTextStyle.copyWith(
                     fontSize: 14.sp, fontWeight: FontWeight.w500),
-            errorStyle: warningTextStyle.copyWith(
+            errorStyle: context.text.warningTextStyle.copyWith(
                 fontSize: 10.sp, fontWeight: FontWeight.w500),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
                 borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
-                borderSide: BorderSide(color: textBlueColor)),
+                borderSide: BorderSide(color: context.color.textBlueColor)),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
                 borderSide: BorderSide.none),
           ),
           keyboardType: TextInputType.text,
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(height: 16.h),
@@ -68,8 +68,8 @@ class LoginFormSection extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: isFormSubmitted && !isPassValid
-                ? backgroundPinkColor
-                : backgroundGreyColor,
+                ? context.color.backgroundPinkColor
+                : context.color.backgroundGreyColor,
             prefixIcon: Icon(Icons.lock_outline_rounded, size: 18.r),
             hintText: 'Kata Sandi',
             errorText: isFormSubmitted && !isPassValid
@@ -85,23 +85,23 @@ class LoginFormSection extends StatelessWidget {
               ),
             ),
             hintStyle: isFormSubmitted && !isPassValid
-                ? warningTextStyle.copyWith(
+                ? context.text.warningTextStyle.copyWith(
                     fontSize: 14.sp, fontWeight: FontWeight.w500)
-                : greyTextStyle.copyWith(
+                : context.text.greyTextStyle.copyWith(
                     fontSize: 14.sp, fontWeight: FontWeight.w500),
-            errorStyle: warningTextStyle.copyWith(
+            errorStyle: context.text.warningTextStyle.copyWith(
                 fontSize: 10.sp, fontWeight: FontWeight.w500),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
                 borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
-                borderSide: BorderSide(color: textBlueColor)),
+                borderSide: BorderSide(color: context.color.textBlueColor)),
             errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24).r,
                 borderSide: BorderSide.none),
           ),
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 14.sp, fontWeight: FontWeight.w500),
         ),
         Row(
@@ -113,11 +113,11 @@ class LoginFormSection extends StatelessWidget {
               },
               child: Text(
                 'Lupa Kata Sandi?',
-                style: blueTextStyle.copyWith(
+                style: context.text.blueTextStyle.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 12.sp,
                   decoration: TextDecoration.underline,
-                  decorationColor: textBlueColor,
+                  decorationColor: context.color.textBlueColor,
                 ),
               ),
             ),

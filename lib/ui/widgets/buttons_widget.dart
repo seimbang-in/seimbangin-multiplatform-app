@@ -25,8 +25,8 @@ class PrimaryFilledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget textWidget = Text(title,
-        style: whiteTextStyle.copyWith(
-          color: textColor ?? textWhiteColor,
+        style: context.text.whiteTextStyle.copyWith(
+          color: textColor ?? context.color.textWhiteColor,
           fontSize: 14.sp,
           fontWeight: FontWeight.w500,
         ));
@@ -37,7 +37,7 @@ class PrimaryFilledButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: backgroundColor ?? buttonColor, // Default color
+          backgroundColor: backgroundColor ?? context.color.buttonColor, // Default color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24).r,
           ),
@@ -46,7 +46,7 @@ class PrimaryFilledButton extends StatelessWidget {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(icon, color: textColor ?? textWhiteColor, size: 20.sp),
+                  Icon(icon, color: textColor ?? context.color.textWhiteColor, size: 20.sp),
                   SizedBox(width: 8.w),
                   textWidget,
                 ],
@@ -88,7 +88,7 @@ class CustomRoundedButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24).r,
                 ),
                 side: BorderSide(
-                  color: backgroundGreyColor,
+                  color: context.color.backgroundGreyColor,
                   width: 2.w,
                 ),
               ),
@@ -102,7 +102,7 @@ class CustomRoundedButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(24).r,
                 ),
                 side: BorderSide(
-                  color: backgroundGreyColor,
+                  color: context.color.backgroundGreyColor,
                   width: 2.w,
                 ),
               ),
@@ -120,7 +120,7 @@ class ScanButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
-            color: buttonColor.withOpacity(0.5),
+            color: context.color.buttonColor.withOpacity(0.5),
             blurRadius: 20,
             spreadRadius: 2,
             offset: Offset(0, 4)),
@@ -145,7 +145,7 @@ class AdvisorButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressedEvent,
       style: OutlinedButton.styleFrom(
-          side: BorderSide(color: backgroundWhiteColor),
+          side: BorderSide(color: context.color.backgroundWhiteColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16).r,
           ),
@@ -153,7 +153,7 @@ class AdvisorButton extends StatelessWidget {
           backgroundColor: Colors.transparent),
       child: Text(
         "Chat Advisor",
-        style: whiteTextStyle.copyWith(
+        style: context.text.whiteTextStyle.copyWith(
           fontWeight: FontWeight.w500,
           fontSize: 14.sp,
         ),
@@ -184,7 +184,7 @@ class AddItemTransactButton extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: backgroundGreyColor,
+          color: context.color.backgroundGreyColor,
           borderRadius: BorderRadius.circular(
             24,
           ).r,
@@ -198,14 +198,14 @@ class AddItemTransactButton extends StatelessWidget {
               width: 48.w,
               height: 48.h,
               decoration: BoxDecoration(
-                color: buttonColor,
+                color: context.color.buttonColor,
                 borderRadius: BorderRadius.circular(
                   18,
                 ).r,
               ),
               child: Icon(
                 Icons.add_box_outlined,
-                color: textWhiteColor,
+                color: context.color.textWhiteColor,
               ),
             ),
             SizedBox(
@@ -213,7 +213,7 @@ class AddItemTransactButton extends StatelessWidget {
             ),
             Text(
               title,
-              style: blackTextStyle.copyWith(
+              style: context.text.blackTextStyle.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 12.sp,
               ),

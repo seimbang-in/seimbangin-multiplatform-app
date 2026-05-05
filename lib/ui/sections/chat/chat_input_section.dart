@@ -17,7 +17,7 @@ class ChatInputSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.r, vertical: 12.r),
       decoration: BoxDecoration(
-        color: backgroundWhiteColor,
+        color: context.color.backgroundWhiteColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -33,7 +33,7 @@ class ChatInputSection extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: backgroundGreySecondaryColor,
+                color: context.color.backgroundGreySecondaryColor,
                 borderRadius: BorderRadius.circular(24.r),
                 border: Border.all(color: Colors.grey.withOpacity(0.2)),
               ),
@@ -48,12 +48,12 @@ class ChatInputSection extends StatelessWidget {
                   border: InputBorder.none,
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 18.w, vertical: 12.h),
-                  hintStyle: greyTextStyle.copyWith(
+                  hintStyle: context.text.greyTextStyle.copyWith(
                     fontWeight: FontWeight.normal,
                     fontSize: 14.sp,
                   ),
                 ),
-                style: blackTextStyle.copyWith(fontSize: 14.sp),
+                style: context.text.blackTextStyle.copyWith(fontSize: 14.sp),
               ),
             ),
           ),
@@ -62,7 +62,7 @@ class ChatInputSection extends StatelessWidget {
             height: 48.r,
             width: 48.r,
             decoration: BoxDecoration(
-              color: primaryColor,
+              color: context.color.primaryColor,
               shape: BoxShape.circle,
             ),
             child: IconButton(
@@ -71,7 +71,7 @@ class ChatInputSection extends StatelessWidget {
                 'assets/pesawat-icon.png',
                 width: 20.r,
                 height: 20.r,
-                color: textWhiteColor,
+                color: context.color.textWhiteColor,
               ),
               iconSize: 20.r,
               visualDensity: VisualDensity.compact,

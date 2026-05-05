@@ -1,85 +1,77 @@
-import 'dart:convert';
-import 'package:seimbangin_app/config/constants.dart';
-import 'package:http/http.dart' as http;
 import 'package:seimbangin_app/models/transaction/transaction_model.dart';
-import 'package:seimbangin_app/utils/token.dart';
+import 'package:seimbangin_app/services/local_database_service.dart';
 
 class TransactionService {
+  final LocalDatabaseService _dbService = LocalDatabaseService();
+
   Future<void> addTransaction(List<TransactionItem> items, int type,
       String description, String name) async {
-    final String? token = await Token.getToken();
-    if (token == null) {
-      print('[TransactionService] ADD TRANSACTION - Error: Token is null.');
-      throw Exception('Error: Authentication token is missing.');
-    }
-
-    final Map<String, dynamic> payloadMap = {
-      'type': type,
-      'description': description,
-      'name': name,
-      'items': items.map((item) => item.toJson()).toList(),
-    };
-    final String jsonPayload = jsonEncode(payloadMap);
-
-    print('---------------------------------------------------');
-    print('[TransactionService] Attempting to Add Transaction');
-    print('[TransactionService] Endpoint: ${Constant.addTransactionEndpoint}');
-    print('[TransactionService] ADD TRANSACTION PAYLOAD: $jsonPayload');
-    print('---------------------------------------------------');
-
     try {
-      final response = await http.post(
-        Uri.parse(Constant.addTransactionEndpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonPayload,
-      );
+      final double totalAmount = items.fold(0.0, (sum, item) {
+        final price = double.tryParse(item.price) ?? 0.0;
+        final qty = item.quantity > 0 ? item.quantity : 1;
+        return sum + (price * qty);
+      });
+      
+      // Save primary transaction summary
+      await _dbService.insertTransaction({
+        'name': name,
+        'amount': totalAmount,
+        'type': type == 1 ? 'outcome' : 'income',
+        'category': items.isNotEmpty ? items.first.category : 'others',
+        'date': DateTime.now().toIso8601String(),
+        'notes': description,
+      });
 
-      print(
-          '[TransactionService] ADD TRANSACTION - Response Status Code: ${response.statusCode}');
-      print(
-          '[TransactionService] ADD TRANSACTION - Response Body: ${response.body}');
-      print('---------------------------------------------------');
-
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw Exception(
-            'Failed to add transaction. Status: ${response.statusCode}, Body: ${response.body}');
-      }
+      print('[TransactionService] OFFLINE ADD TRANSACTION - Success');
     } catch (e) {
-      print(
-          '[TransactionService] ADD TRANSACTION - Error during HTTP call: $e');
-      print('---------------------------------------------------');
-      throw Exception('Error during addTransaction HTTP call: $e');
+      print('[TransactionService] OFFLINE ADD TRANSACTION - Error: $e');
+      throw Exception('Error during offline addTransaction: $e');
     }
   }
 
   Future<TransactionResponse> getTransaction(
       {required int limit, required int page}) async {
-    final String? token = await Token.getToken();
-    if (token == null) {
-      print('[TransactionService] GET TRANSACTION - Error: Token is null.');
-      throw Exception(
-          'Error: Authentication token is missing for getTransaction.');
-    }
-    final url = '${Constant.getTransactionEndpoint}?limit=$limit&page=$page';
-
     try {
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+      final List<Map<String, dynamic>> localData = await _dbService.getTransactions();
+      
+      // Map basic sqlite response to TransactionData models dynamically
+      List<TransactionData> dummyList = localData.map((row) {
+        return TransactionData(
+          id: row['id'] as int,
+          name: row['name'] ?? 'Transaction',
+          type: row['type'] == 'income' ? 0 : 1, // 0 For Income, 1 For Outcome
+          category: row['category'] ?? 'others',
+          description: row['notes'] ?? '',
+          amount: (row['amount'] as num?)?.toString() ?? '0',
+          createdAt: row['date'] ?? DateTime.now().toIso8601String(),
+          updatedAt: row['date'] ?? DateTime.now().toIso8601String(),
+        );
+      }).toList();
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return TransactionResponse.fromJson(data);
-      } else {
-        throw Exception(
-            'Failed to load transaction (GET): ${response.statusCode}, Body: ${response.body}');
+      final int startIndex = (page - 1) * limit;
+      int endIndex = startIndex + limit;
+      
+      List<TransactionData> pagedData = [];
+      if (startIndex < dummyList.length) {
+        if (endIndex > dummyList.length) endIndex = dummyList.length;
+        pagedData = dummyList.sublist(startIndex, endIndex);
       }
+
+      bool hasNextPage = endIndex < dummyList.length;
+
+      return TransactionResponse(
+        success: true,
+        message: 'Success retrieving local data',
+        data: pagedData,
+        meta: Meta(
+          currentPage: page,
+          limit: limit,
+          hasNextPage: hasNextPage,
+        ),
+      );
     } catch (e) {
-      throw Exception('Failed to load transaction (GET): $e');
+      throw Exception('Failed to load offline transaction (GET): $e');
     }
   }
 }

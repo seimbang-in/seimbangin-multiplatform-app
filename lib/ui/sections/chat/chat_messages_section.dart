@@ -36,7 +36,7 @@ class ChatMessagesSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 12.r, horizontal: 16.r),
             margin: EdgeInsets.symmetric(vertical: 4.r),
             decoration: BoxDecoration(
-              color: isUserMessage ? primaryColor : backgroundGreyColor,
+              color: isUserMessage ? context.color.primaryColor : context.color.backgroundGreyColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(18.r),
                 topRight: Radius.circular(18.r),
@@ -61,7 +61,7 @@ class ChatMessagesSection extends StatelessWidget {
               children: [
                 Text(
                   message.messageContent,
-                  style: (isUserMessage ? whiteTextStyle : blackTextStyle)
+                  style: (isUserMessage ? context.text.whiteTextStyle : context.text.blackTextStyle)
                       .copyWith(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.normal,
@@ -73,8 +73,8 @@ class ChatMessagesSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10.sp,
                     color: isUserMessage
-                        ? textWhiteColor.withOpacity(0.7)
-                        : textSecondaryColor.withOpacity(0.7),
+                        ? context.color.textWhiteColor.withOpacity(0.7)
+                        : context.color.textSecondaryColor.withOpacity(0.7),
                   ),
                 ),
               ],
@@ -97,7 +97,7 @@ class ChatTypingIndicator extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 8.r, horizontal: 0.r),
         padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 14.r),
         decoration: BoxDecoration(
-          color: backgroundGreyColor,
+          color: context.color.backgroundGreyColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.r),
             topRight: Radius.circular(18.r),
@@ -112,12 +112,12 @@ class ChatTypingIndicator extends StatelessWidget {
               width: 20.w,
               height: 20.h,
               child: CircularProgressIndicator(
-                  strokeWidth: 2, color: primaryColor),
+                  strokeWidth: 2, color: context.color.primaryColor),
             ),
             SizedBox(width: 8.w),
             Text(
               "Blu sedang mengetik...",
-              style: greyTextStyle.copyWith(
+              style: context.text.greyTextStyle.copyWith(
                 fontSize: 14.sp,
                 fontStyle: FontStyle.italic,
               ),

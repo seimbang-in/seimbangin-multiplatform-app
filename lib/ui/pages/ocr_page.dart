@@ -224,13 +224,13 @@ class _OcrPageState extends State<OcrPage>
               Icon(Icons.error_outline, color: Colors.redAccent, size: 60.r),
               SizedBox(height: 16.h),
               Text('Gagal memuat kamera',
-                  style: whiteTextStyle.copyWith(
+                  style: context.text.whiteTextStyle.copyWith(
                       fontSize: 18.sp, fontWeight: FontWeight.bold)),
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(_errorMessage!,
-                      style: whiteTextStyle.copyWith(
+                      style: context.text.whiteTextStyle.copyWith(
                           fontSize: 12.sp, color: Colors.grey),
                       textAlign: TextAlign.center),
                 ),
@@ -291,10 +291,10 @@ class _OcrPageState extends State<OcrPage>
           child: Container(
             height: 3,
             decoration: BoxDecoration(
-              color: primaryColor,
+              color: context.color.primaryColor,
               boxShadow: [
                 BoxShadow(
-                  color: primaryColor.withOpacity(0.6),
+                  color: context.color.primaryColor.withOpacity(0.6),
                   blurRadius: 12,
                   spreadRadius: 2,
                 ),
@@ -311,7 +311,7 @@ class _OcrPageState extends State<OcrPage>
           child: Text(
             "Posisikan struk tagihan di dalam kotak",
             textAlign: TextAlign.center,
-            style: whiteTextStyle.copyWith(
+            style: context.text.whiteTextStyle.copyWith(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
             ),
@@ -329,8 +329,8 @@ class _OcrPageState extends State<OcrPage>
               CustomRoundedButton(
                 onPressed: () => routes.pushReplacementNamed(RouteNames.main),
                 widget: Icon(Icons.close_rounded,
-                    size: 28.r, color: textSecondaryColor),
-                backgroundColor: backgroundWhiteColor,
+                    size: 28.r, color: context.color.textSecondaryColor),
+                backgroundColor: context.color.backgroundWhiteColor,
               ),
               Image.asset('assets/ic_seimbangin-logo-logreg.png', height: 62.h),
             ],

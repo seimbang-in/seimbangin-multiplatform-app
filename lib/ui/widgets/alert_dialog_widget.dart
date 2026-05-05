@@ -21,13 +21,13 @@ class AlertDialogWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircularProgressIndicator(
-                  color: primaryColor,
+                  color: context.color.primaryColor,
                   strokeWidth: 4,
                 ),
                 SizedBox(height: 16.h),
                 Text(
                   message,
-                  style: blackTextStyle.copyWith(
+                  style: context.text.blackTextStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16.sp,
                   ),

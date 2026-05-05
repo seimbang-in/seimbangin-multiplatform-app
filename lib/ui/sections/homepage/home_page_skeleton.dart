@@ -24,7 +24,7 @@ class HomePageSkeleton extends StatelessWidget {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: Scaffold(
-        backgroundColor: secondaryColor,
+        backgroundColor: context.color.secondaryColor,
         body: CustomScrollView(
           physics: const NeverScrollableScrollPhysics(),
           slivers: [
@@ -36,7 +36,7 @@ class HomePageSkeleton extends StatelessWidget {
                 background: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [primaryColor, secondaryColor],
+                      colors: [context.color.primaryColor, context.color.secondaryColor],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -80,7 +80,7 @@ class HomePageSkeleton extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 decoration: BoxDecoration(
-                  color: backgroundWhiteColor,
+                  color: context.color.backgroundWhiteColor,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(32.r),
                     topRight: Radius.circular(32.r),

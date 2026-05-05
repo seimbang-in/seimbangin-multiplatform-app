@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:seimbangin_app/shared/theme/theme.dart';
 
@@ -47,19 +46,17 @@ class _IncomeOutcomeSectionState extends State<IncomeOutcomeSection> {
             top: 32.h,
             left: 20.w,
             right: 20.w,
-            bottom: 12.h,
+            bottom: 20.h,
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Seimbangin',
-                style: blackTextStyle.copyWith(
+                style: context.text.blackTextStyle.copyWith(
                   fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              SizedBox(
-                width: 8.w,
               ),
               GestureDetector(
                 onTap: () {
@@ -67,10 +64,26 @@ class _IncomeOutcomeSectionState extends State<IncomeOutcomeSection> {
                     _isObscured = !_isObscured;
                   });
                 },
-                child: Icon(
-                  _isObscured ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.black54,
-                  size: 24.sp,
+                child: Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    color: context.color.backgroundWhiteColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    _isObscured
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
+                    color: context.color.textSecondaryColor,
+                    size: 20.sp,
+                  ),
                 ),
               ),
             ],
@@ -81,185 +94,128 @@ class _IncomeOutcomeSectionState extends State<IncomeOutcomeSection> {
           child: Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18.r),
+              borderRadius: BorderRadius.circular(24.r),
               gradient: LinearGradient(
                 colors: [
-                  darkPrimaryColor,
-                  secondaryColor,
-                  buttonColor,
+                  context.color.gradientBlueStartColor,
+                  context.color.gradientBlueEndColor,
                 ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: context.color.gradientBlueStartColor.withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
-            padding: EdgeInsets.all(20.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ==== Shape ===
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 0.55.w,
-                  height: 11.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.r),
-                    gradient: LinearGradient(
-                      colors: [
-                        primaryColor,
-                        secondaryColor,
-                        darkPrimaryColor,
+            child: Padding(
+              padding: EdgeInsets.all(24.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total Saldo',
+                    style: context.text.whiteTextStyle.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    _getDisplayText(widget.balance),
+                    style: context.text.whiteTextStyle.copyWith(
+                      fontSize: 32.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  Container(
+                    padding: EdgeInsets.all(16.r),
+                    decoration: BoxDecoration(
+                      color: context.color.backgroundWhiteColor.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: _buildTrackingItem(
+                          context: context,
+                          title: 'Pemasukan',
+                          amount: widget.incomeAmount,
+                          icon: Icons.arrow_downward_rounded,
+                          iconColor: context.color.textGreenColor,
+                        )),
+                        Container(
+                          width: 1,
+                          height: 40.h,
+                          color: context.color.backgroundWhiteColor.withValues(alpha: 0.3),
+                        ),
+                        SizedBox(width: 16.w),
+                        Expanded(child: _buildTrackingItem(
+                          context: context,
+                          title: 'Pengeluaran',
+                          amount: widget.outcomeAmount,
+                          icon: Icons.arrow_upward_rounded,
+                          iconColor: context.color.textWarningColor,
+                        )),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 8.h,
-                ),
-
-                // === Row Saldo
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _getDisplayText(widget.balance),
-                      style: whiteTextStyle.copyWith(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Image.asset(
-                      'assets/icon_app.png',
-                      width: 48.w,
-                    ),
-                  ],
-                ),
-
-                Row(
-                  children: [
-                    Container(
-                      width: 25.w,
-                      height: 25.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: darkPrimaryColor,
-                      ),
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/ic_updown.svg',
-                          width: 15.w,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 6.w,
-                    ),
-                    Text(
-                      'Saldo saat ini',
-                      style: whiteTextStyle.copyWith(),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 12.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // PENGELUARAN COLUMN
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getDisplayText(widget.outcomeAmount),
-                          style: whiteTextStyle.copyWith(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        // PENGELUARAN CONTAINER
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.h,
-                            vertical: 4.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: darkPrimaryColor,
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 12.r,
-                                backgroundColor: textWarningColor,
-                                child: Icon(Icons.arrow_drop_up_sharp),
-                              ),
-                              SizedBox(
-                                width: 6.h,
-                              ),
-                              Text(
-                                "Pengeluaran",
-                                style: whiteTextStyle,
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    // END OF PENGELUARAN COLUMN
-
-                    // PEMASUKAN COLUMN
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getDisplayText(widget.incomeAmount),
-                          style: whiteTextStyle.copyWith(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        // PENGELUARAN CONTAINER
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.h,
-                            vertical: 4.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: darkPrimaryColor,
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 12.r,
-                                backgroundColor: backgroundOldGreenColor,
-                                child: Icon(Icons.arrow_drop_down_sharp),
-                              ),
-                              SizedBox(
-                                width: 6.h,
-                              ),
-                              Text(
-                                "Pemasukan",
-                                style: whiteTextStyle,
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    // END OF PEMASUKAN COLUMN
-                  ],
-                )
-              ],
+                ],
+              ),
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTrackingItem({
+    required BuildContext context,
+    required String title,
+    required String amount,
+    required IconData icon,
+    required Color iconColor,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(4.r),
+              decoration: BoxDecoration(
+                color: context.color.backgroundWhiteColor,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: iconColor,
+                size: 12.sp,
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              title,
+              style: context.text.whiteTextStyle.copyWith(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 8.h),
+        Text(
+          _getDisplayText(amount),
+          style: context.text.whiteTextStyle.copyWith(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.bold,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

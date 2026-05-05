@@ -81,42 +81,42 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
       case 'salary':
-        return (buttonSalaryColor, 'assets/ic_salary.png');
+        return (context.color.buttonSalaryColor, 'assets/ic_salary.png');
       case 'freelance':
-        return (buttonFreelanceColor, 'assets/ic_freelance.png');
+        return (context.color.buttonFreelanceColor, 'assets/ic_freelance.png');
       case 'bonus':
-        return (buttonBonusColor, 'assets/ic_bonus.png');
+        return (context.color.buttonBonusColor, 'assets/ic_bonus.png');
       case 'gift':
-        return (buttonBonusColor, 'assets/ic_gift.png');
+        return (context.color.buttonBonusColor, 'assets/ic_gift.png');
       case 'parent':
-        return (buttonParentColor, 'assets/ic_parents.png');
+        return (context.color.buttonParentColor, 'assets/ic_parents.png');
       case 'food':
-        return (buttonFoodColor, 'assets/ic_food.png');
+        return (context.color.buttonFoodColor, 'assets/ic_food.png');
       case 'transportation':
       case 'transport':
-        return (buttonTransportationColor, 'assets/ic_transportation.png');
+        return (context.color.buttonTransportationColor, 'assets/ic_transportation.png');
       case 'shopping':
-        return (buttonShoppingColor, 'assets/ic_shopping.png');
+        return (context.color.buttonShoppingColor, 'assets/ic_shopping.png');
       case 'health':
-        return (buttonHealthColor, 'assets/ic_health.png');
+        return (context.color.buttonHealthColor, 'assets/ic_health.png');
       case 'education':
-        return (buttonEducationColor, 'assets/ic_education.png');
+        return (context.color.buttonEducationColor, 'assets/ic_education.png');
       case 'housing':
-        return (buttonHousingColor, 'assets/ic_housing.png');
+        return (context.color.buttonHousingColor, 'assets/ic_housing.png');
       case 'internet':
-        return (buttonInternetColor, 'assets/ic_internet.png');
+        return (context.color.buttonInternetColor, 'assets/ic_internet.png');
       default:
-        return (buttonInternetColor, 'assets/ic_bonus.png');
+        return (context.color.buttonInternetColor, 'assets/ic_bonus.png');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundWhiteColor,
+      backgroundColor: context.color.backgroundWhiteColor,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: backgroundWhiteColor,
+        backgroundColor: context.color.backgroundWhiteColor,
         elevation: 0,
         automaticallyImplyLeading: false,
         leadingWidth: 70.w,
@@ -125,13 +125,13 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
           child: CustomRoundedButton(
             onPressed: () => Navigator.of(context).pop(),
             widget:
-                Icon(Icons.chevron_left, size: 28.r, color: textSecondaryColor),
-            backgroundColor: backgroundWhiteColor,
+                Icon(Icons.chevron_left, size: 28.r, color: context.color.textSecondaryColor),
+            backgroundColor: context.color.backgroundWhiteColor,
           ),
         ),
         title: Text(
           'Histori Transaksi',
-          style: blackTextStyle.copyWith(
+          style: context.text.blackTextStyle.copyWith(
               fontSize: 18.sp, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
@@ -159,16 +159,16 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                           Container(
                             padding: const EdgeInsets.all(24).r,
                             decoration: BoxDecoration(
-                              color: backgroundGreyColor,
+                              color: context.color.backgroundGreyColor,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(Icons.receipt_long_rounded,
-                                size: 64.r, color: textSecondaryColor),
+                                size: 64.r, color: context.color.textSecondaryColor),
                           ),
                           SizedBox(height: 24.h),
                           Text(
                             'Belum Ada Transaksi',
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -177,7 +177,7 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                           Text(
                             'Transaksi yang Anda buat\nakan muncul di sini.',
                             textAlign: TextAlign.center,
-                            style: greyTextStyle.copyWith(
+                            style: context.text.greyTextStyle.copyWith(
                               fontSize: 14.sp,
                               height: 1.5,
                             ),
@@ -224,7 +224,7 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                           bottom: 16.h, top: index == 0 ? 0 : 24.h),
                       child: Text(
                         monthKey,
-                        style: blackTextStyle.copyWith(
+                        style: context.text.blackTextStyle.copyWith(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -234,8 +234,8 @@ class _HistoryTransactPageState extends State<HistoryTransactPage> {
                       final total = int.tryParse(transaction.amount) ?? 0;
                       final prefix = transaction.type == 0 ? '+' : '-';
                       final amountColor = transaction.type == 0
-                          ? textGreenColor
-                          : textWarningColor;
+                          ? context.color.textGreenColor
+                          : context.color.textWarningColor;
                       final date = DateFormat('dd MMMM yyyy (hh:mm a)', 'id_ID')
                           .format(
                               DateTime.parse(transaction.createdAt!).toLocal());

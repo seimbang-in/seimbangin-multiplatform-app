@@ -27,7 +27,7 @@ class AiAdvisorSection extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            colors: [primaryColor, secondaryColor],
+            colors: [context.color.primaryColor, context.color.secondaryColor],
             begin: Alignment.bottomRight,
             end: Alignment.topLeft),
         borderRadius: BorderRadius.circular(24).r,
@@ -45,7 +45,7 @@ class AiAdvisorSection extends StatelessWidget {
       children: [
         Text(
           advice.data,
-          style: whiteTextStyle.copyWith(
+          style: context.text.whiteTextStyle.copyWith(
             fontWeight: FontWeight.w500,
             fontSize: 14.sp,
           ),
@@ -62,7 +62,7 @@ class AiAdvisorSection extends StatelessWidget {
         Flexible(
           child: Text(
             "Please fill in your financial profile data here first to get Financial AI Advice",
-            style: whiteTextStyle.copyWith(
+            style: context.text.whiteTextStyle.copyWith(
               fontWeight: FontWeight.w500,
               fontSize: 14.sp,
             ),
@@ -76,7 +76,7 @@ class AiAdvisorSection extends StatelessWidget {
             width: 50.r,
             height: 50.r,
             decoration: BoxDecoration(
-              color: backgroundWhiteColor,
+              color: context.color.backgroundWhiteColor,
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Image.asset(

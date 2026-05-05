@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage>
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: backgroundGreyColor,
+        backgroundColor: context.color.backgroundGreyColor,
         body: BlocListener<TransactionBloc, TransactionState>(
           listenWhen: (previousState, currentState) {
             return currentState is TransactionSuccess &&
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage>
                     ],
                   ),
                   // child: RefreshIndicator(
-                  //   color: primaryColor,
+                  //   color: context.color.primaryColor,
                   //   onRefresh: _onRefresh,
                   //   child: CustomScrollView(
                   //     physics: const AlwaysScrollableScrollPhysics(),
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage>
                   //       SliverToBoxAdapter(
                   //         child: Container(
                   //           decoration: BoxDecoration(
-                  //             color: backgroundWhiteColor,
+                  //             color: context.color.backgroundWhiteColor,
                   //             borderRadius: BorderRadius.only(
                   //               topLeft: Radius.circular(32.r),
                   //               topRight: Radius.circular(32.r),
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage>
                   //                 SizedBox(height: 20.r),
                   //                 Text(
                   //                   "AI Advisor",
-                  //                   style: blackTextStyle.copyWith(
+                  //                   style: context.text.blackTextStyle.copyWith(
                   //                     fontWeight: FontWeight.bold,
                   //                     fontSize: 20.sp,
                   //                   ),
@@ -166,7 +166,7 @@ class _HomePageState extends State<HomePage>
                   //                     height: 100,
                   //                     alignment: Alignment.center,
                   //                     child: CircularProgressIndicator(
-                  //                         color: primaryColor),
+                  //                         color: context.color.primaryColor),
                   //                   )
                   //                 else if (homepageState.adviceError != null)
                   //                   Container(
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage>
                   //                     alignment: Alignment.center,
                   //                     child: Text(
                   //                       homepageState.adviceError!,
-                  //                       style: greyTextStyle,
+                  //                       style: context.text.greyTextStyle,
                   //                     ),
                   //                   )
                   //                 else if (homepageState.advice != null)
@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage>
                         Text(
                           'Gagal memuat data: ${homepageState.error}',
                           textAlign: TextAlign.center,
-                          style: blackTextStyle.copyWith(fontSize: 16.sp),
+                          style: context.text.blackTextStyle.copyWith(fontSize: 16.sp),
                         ),
                         SizedBox(height: 20.h),
                         ElevatedButton(

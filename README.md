@@ -1,125 +1,150 @@
+# 📱 Seimbang.in — AI-Powered Financial Management App
+
 <div align="center">
-  <img src="./assets/img_mascot-login.png" width="200" alt="Seimbang.in Logo"/>
+  <img src="./assets/img_mascot-login.png" width="160" alt="Seimbang.in Logo"/>
 </div>
 
-<h1 align="center">
-  Seimbang.in: AI-Powered Financial Management App
-</h1>
+<h3 align="center">
+  Build better financial habits — one decision at a time.
+</h3>
 
 <p align="center">
-  A mobile financial management application designed to improve the financial literacy and habits of students and Gen Z in Indonesia through easy expense tracking, AI-powered advice, and other innovative features.
+  A mobile financial management app designed for students and Gen Z in Indonesia, combining <b>expense tracking</b>, <b>AI-driven insights</b>, and <b>visual analytics</b> to improve financial literacy and daily money habits.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/platform-Android-brightgreen.svg" alt="Platform">
-  <img src="https://img.shields.io/badge/license-MIT%20%26%20Apache-blue.svg" alt="License">
-  <img src="https://img.shields.io/badge/status-active-success.svg" alt="Status">
-  <img src="https://img.shields.io/badge/Made%20with-Flutter-blue.svg?logo=flutter" alt="Made with Flutter">
+  <img src="https://img.shields.io/badge/platform-Android-brightgreen.svg" />
+  <img src="https://img.shields.io/badge/status-active-success.svg" />
+  <img src="https://img.shields.io/badge/license-MIT%20%26%20Apache-blue.svg" />
+  <img src="https://img.shields.io/badge/Made%20with-Flutter-blue.svg?logo=flutter" />
 </p>
 
 ---
 
-## 📱 About This Project
+## 🎯 Why Seimbang.in?
 
-Indonesia faces a significant challenge in financial literacy. According to the Financial Services Authority (OJK) in 2022, the national financial literacy rate was only 49.68%. 
+Financial literacy in Indonesia is still a real challenge.
 
-**Seimbang.in** is developed as a mobile app to address this issue by providing features that help students and Gen Z manage their finances effectively with a focus on:
+- 📊 Only **49.68%** of Indonesians are financially literate (OJK, 2022)  
+- 💸 **56.6% of Gen Z** rarely or never save (Katadata, 2021)
 
-- Ease of use,
-- AI-assisted financial advice,
-- Visual analytics.
+Most tools are either:
+- too complex, or  
+- not relevant to daily habits of young users  
 
-🎥 Demo video: [Watch here](https://drive.google.com/file/d/1wq2J7nDgCxOz-992rJpdLu2MGPT3u6Tw/view?usp=sharing)
+👉 **Seimbang.in exists to fix that.**
 
----
-
-## ✨ Key Features
-
-| Feature                | Description                                                                                     |
-|------------------------|-------------------------------------------------------------------------------------------------|
-| Transaction Tracking   | Track your income and expenses in real-time through an intuitive interface.                    |
-| Receipt Scanning (OCR) | Extract data automatically from receipts using image scanning and OCR.                          |
-| AI Financial Advisor   | Get personalized insights and recommendations based on your transaction history.               |
-| Financial Analytics    | Visualize your income and spending using dynamic, easy-to-read charts.                         |
-
-### 🛠️ Tech Stack
-- **State Management:** `flutter_bloc`
-- **Routing:** `go_router`
-- **Networking:** `http`
-- **Local Storage:** `shared_preferences`
-- **Charts:** `fl_chart`
-- **UI Components:** `carousel_slider`, `persistent_bottom_nav_bar_v2`, `flutter_animate`
+We focus on:
+- simplicity  
+- actionable insights  
+- habit-building, not just tracking  
 
 ---
 
-## 📂 Project Architecture
+## ✨ Core Features
 
-This project follows a feature-first and layered architecture to maintain clean and scalable code:
+| Feature | Description |
+|--------|------------|
+| 💸 **Transaction Tracking** | Log income & expenses with a clean, intuitive interface. |
+| 📷 **Receipt Scanning (OCR)** | Automatically extract transaction data from receipts. |
+| 🤖 **AI Financial Advisor** | Get personalized insights & recommendations based on your spending habits. |
+| 📊 **Financial Analytics** | Understand your money through simple, visual charts (daily / weekly / monthly). |
+| 💬 **AI Chat Advisor** | Ask financial questions and get contextual advice instantly. |
+
+---
+
+## 🎥 Demo
+
+👉 [Watch Demo Video](https://drive.google.com/file/d/1wq2J7nDgCxOz-992rJpdLu2MGPT3u6Tw/view?usp=sharing)
+
+---
+
+## 🧱 Tech Stack
+
+### 📱 Mobile
+- Flutter (Dart)
+- `flutter_bloc`
+- `go_router`
+- `fl_chart`
+
+### ⚙️ Backend
+- Node.js + Express  
+- MySQL + Redis  
+- Drizzle ORM  
+- PassportJS  
+
+### 🤖 AI
+- OpenAI API  
+
+### ☁️ Infrastructure
+- Google Cloud Platform  
+
+---
+
+## 🏗️ Project Architecture
 
 ```text
 lib/
-├── blocs/        # Business logic and state management (BLoC)
-├── models/       # Data entities and structured models
-├── routes/       # Application routing configuration (GoRouter)
-├── services/     # External API integrations and network calls
-├── shared/       # Shared themes, constants, and utilities
-├── ui/           # Presentation layer
-│   ├── pages/    # Main screen layouts
-│   ├── sections/ # Reusable page sections
-│   └── widgets/  # Atomic UI components
-└── main.dart     # Application entry point
+├── blocs/        
+├── models/       
+├── routes/       
+├── services/     
+├── shared/       
+├── ui/           
+│   ├── pages/    
+│   ├── sections/ 
+│   └── widgets/  
+└── main.dart
 ```
 
 ---
 
-## 🚀 Getting Started with Flutter
+## 🚀 Getting Started
 
-Follow these steps to run this Flutter project locally:
+### 1. Requirements
 
-### 1. 🔧 Requirements
+- Flutter SDK (latest stable)
+- Dart >= 3.6.0  
+- Android Studio / VSCode  
+- Emulator or physical device  
+- Git  
 
-Make sure the following tools are installed on your system:
+---
 
-- Flutter SDK (latest stable release)
-- Dart SDK (>= 3.6.0)
-- Android Studio / VSCode with Flutter extension
-- Android device or emulator
-- Git
-
-### 2. 📦 Clone the Repository
+### 2. Clone Repo
 
 ```bash
 git clone https://github.com/seimbang-in/seimbangin-multiplatform-app.git
 cd seimbangin-multiplatform-app
 ```
 
-### 3. 🛠️ Setup `.env` File
+---
 
-This project uses `flutter_dotenv` to manage environment variables.
-
-1. Copy the example environment file:
+### 3. Setup Environment
 
 ```bash
 cp .env.example .env
 ```
 
-2. Open `.env` and **replace values** according to your backend and API configuration:
+Edit `.env`:
 
 ```
 BASE_URL=https://your-backend-url.com
 ```
 
-> ⚠️ **Note**: Do not commit your `.env` file to version control. It is excluded via `.gitignore`.
+⚠️ Do not commit `.env`
 
-### 4. 📥 Install Dependencies
+---
+
+### 4. Install Dependencies
 
 ```bash
 flutter pub get
 ```
 
-### 5. ▶️ Run the App
+---
 
-Make sure an emulator or device is connected, then run:
+### 5. Run App
 
 ```bash
 flutter run
@@ -127,45 +152,53 @@ flutter run
 
 ---
 
-## 📦 APK Installation (Optional)
+## 📦 APK (Quick Try)
 
-To try the latest version without building from source:
+👉 https://github.com/seimbang-in/seimbangin-multiplatform-app/releases/tag/v.0.2-alpha.2
 
-1. Download the latest APK from [Releases Page](https://github.com/seimbang-in/seimbangin-multiplatform-app/releases/tag/v.0.2-alpha.2)
-2. Enable **Install from Unknown Sources** on your Android device
-3. Open the APK file and install
-
----
-
-## 🚧 Current Limitations
-
-- Only available for **Android** (iOS not yet fully tested)
-- Requires internet connection for AI Advisor and Syncing (no offline mode)
-- Limited transaction category customization
-- Not a digital wallet (no direct fund transfers)
+Steps:
+1. Enable **Install from Unknown Sources**
+2. Install APK
+3. Done 🚀
 
 ---
 
-## 👥 Meet the BMD Team
+## ⚠️ Current Limitations
 
-This project is proudly developed by the **BMD Team**. 
+- Android only  
+- Requires internet connection  
+- No custom transaction categories yet  
+- Not an e-wallet  
+- English only  
 
-### 📱 Mobile Team
-| [<img src="https://github.com/shandikadav.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Shandika David Ardiansyah</b></sub>](https://github.com/shandikadav) | [<img src="https://github.com/mkhsnw.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Muhammad Khosyi</b></sub>](https://github.com/mkhsnw) |
-| :---: | :---: |
+---
 
-### ⚙️ Backend Team
-| [<img src="https://github.com/MasDewaa.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Rama Syailana Dewa</b></sub>](https://github.com/MasDewaa) | [<img src="https://github.com/hansfigo.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Claudio Hans Figo</b></sub>](https://github.com/hansfigo) |
-| :---: | :---: |
+## 🏆 Awards & Recognition
 
-### 🎨 Designer Team
-| [<img src="https://github.com/fawwazhumam.png" width="100px;" style="border-radius: 50%;"/><br /><sub><b>Muhammad Fawwaz Humam</b></sub>](https://github.com/fawwazhumam) |
-| :---: |
+- 🥇 1st Place — GENETIC 2025  
+- 🥉 3rd Place — ITFest Vol. 5  
+- 🥉 3rd Runner Up — Unity #13  
+- 🏆 Top 50 Capstone — Bangkit Academy 2024  
+
+---
+
+## 👥 Team
+
+- Rama Syailana Dewa — Project Lead  
+- Muhammad Khosyi Nawwari — Flutter Dev  
+- Shandika David Ardiansyah — Flutter Dev  
+- Claudio Hans Figo — Backend Dev  
+- Muhammad Fawwaz Humam — Designer  
 
 ---
 
 ## 📜 License
 
-This project is dual-licensed under the **MIT** and **Apache 2.0** licenses.
+MIT & Apache 2.0  
 
 ---
+
+## 💡 Closing
+
+Seimbang.in is not just about tracking money —  
+it’s about building better financial habits over time.

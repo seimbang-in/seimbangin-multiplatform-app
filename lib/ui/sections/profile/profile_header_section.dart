@@ -26,7 +26,7 @@ class ProfileHeaderSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [secondaryColor, backgroundWhiteColor],
+          colors: [context.color.secondaryColor, context.color.backgroundWhiteColor],
         ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
@@ -36,11 +36,11 @@ class ProfileHeaderSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildAvatar(),
+          _buildAvatar(context),
           SizedBox(height: 10.r),
           Text(
             user.data.fullName,
-            style: blackTextStyle.copyWith(
+            style: context.text.blackTextStyle.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 18.sp,
             ),
@@ -48,7 +48,7 @@ class ProfileHeaderSection extends StatelessWidget {
           SizedBox(height: 4.r),
           Text(
             user.data.email,
-            style: greyTextStyle.copyWith(
+            style: context.text.greyTextStyle.copyWith(
               fontWeight: FontWeight.w500,
               fontSize: 12.sp,
             ),
@@ -59,7 +59,7 @@ class ProfileHeaderSection extends StatelessWidget {
   }
 
   // Helper untuk avatar dipindahkan ke dalam section ini
-  Widget _buildAvatar() {
+  Widget _buildAvatar(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
@@ -68,7 +68,7 @@ class ProfileHeaderSection extends StatelessWidget {
           width: 112,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: backgroundGreyColor,
+            color: context.color.backgroundGreyColor,
             border: Border.all(color: Colors.white, width: 4),
             image: imageFile != null
                 ? DecorationImage(
@@ -93,7 +93,7 @@ class ProfileHeaderSection extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: backgroundWhiteColor,
+                color: context.color.backgroundWhiteColor,
                 shape: BoxShape.circle,
               ),
               child: Image.asset(

@@ -79,8 +79,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                textButtonColor,
-                textWhiteColor,
+                context.color.textButtonColor,
+                context.color.textWhiteColor,
               ],
             ),
           ),
@@ -99,13 +99,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         widget: Icon(
                           Icons.chevron_left,
                           size: 32.r,
-                          color: textSecondaryColor,
+                          color: context.color.textSecondaryColor,
                         ),
-                        backgroundColor: backgroundWhiteColor,
+                        backgroundColor: context.color.backgroundWhiteColor,
                       ),
                       Text(
                         'Detail Transaksi',
-                        style: whiteTextStyle.copyWith(
+                        style: context.text.whiteTextStyle.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 16.sp,
                         ),
@@ -121,7 +121,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         const EdgeInsets.symmetric(horizontal: 24, vertical: 32)
                             .r,
                     decoration: BoxDecoration(
-                      color: backgroundWhiteColor,
+                      color: context.color.backgroundWhiteColor,
                       boxShadow: [
                         BoxShadow(
                             color: Colors.black.withOpacity(0.05),
@@ -136,7 +136,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         Center(
                           child: Text(
                             'Konfirmasi Transaksi',
-                            style: greyTextStyle.copyWith(
+                            style: context.text.greyTextStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 12.sp,
                             ),
@@ -147,7 +147,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           child: Text(
                             widget.transactionData.name,
                             textAlign: TextAlign.center,
-                            style: blackTextStyle.copyWith(
+                            style: context.text.blackTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 18.sp,
                             ),
@@ -160,17 +160,17 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             Text(
                               DateFormat('dd MMMM yyyy')
                                   .format(transactionDate),
-                              style: greyTextStyle.copyWith(fontSize: 12.sp),
+                              style: context.text.greyTextStyle.copyWith(fontSize: 12.sp),
                             ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Icon(Icons.circle,
-                                  size: 4, color: textSecondaryColor),
+                                  size: 4, color: context.color.textSecondaryColor),
                             ),
                             Text(
                               DateFormat('hh:mm a').format(transactionDate),
-                              style: greyTextStyle.copyWith(fontSize: 12.sp),
+                              style: context.text.greyTextStyle.copyWith(fontSize: 12.sp),
                             ),
                           ],
                         ),
@@ -185,14 +185,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: isOutcome
-                                    ? backgroundWarningColor
-                                    : textGreenColor,
+                                    ? context.color.backgroundWarningColor
+                                    : context.color.textGreenColor,
                               ),
                               child: Icon(
                                 isOutcome
                                     ? Icons.arrow_upward_rounded
                                     : Icons.arrow_downward_rounded,
-                                color: textWhiteColor,
+                                color: context.color.textWhiteColor,
                                 size: 8.sp,
                               ),
                             ),
@@ -200,8 +200,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             Text(
                               isOutcome ? 'Pengeluaran' : 'Pemasukan',
                               style: (isOutcome
-                                      ? warningTextStyle
-                                      : greenTextStyle)
+                                      ? context.text.warningTextStyle
+                                      : context.text.greenTextStyle)
                                   .copyWith(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14.sp,
@@ -217,7 +217,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           decoration: BoxDecoration(
                               color: isOutcome
                                   ? const Color(0xffE91E63).withOpacity(0.1)
-                                  : primaryColor.withOpacity(0.1),
+                                  : context.color.primaryColor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(16).r),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -226,7 +226,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 isOutcome
                                     ? 'Total Pengeluaran'
                                     : 'Total Pemasukan',
-                                style: blackTextStyle.copyWith(
+                                style: context.text.blackTextStyle.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14.sp),
                               ),
@@ -237,8 +237,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                         decimalDigits: 0)
                                     .format(totalAmount),
                                 style: (isOutcome
-                                        ? warningTextStyle
-                                        : blueTextStyle)
+                                        ? context.text.warningTextStyle
+                                        : context.text.blueTextStyle)
                                     .copyWith(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16.sp),
@@ -259,14 +259,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Rincian Barang',
-                                    style: blackTextStyle.copyWith(
+                                    style: context.text.blackTextStyle.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14.sp)),
                                 AnimatedRotation(
                                   turns: _isDetailsExpanded ? 0.5 : 0,
                                   duration: const Duration(milliseconds: 300),
                                   child: Icon(Icons.expand_more,
-                                      color: textSecondaryColor),
+                                      color: context.color.textSecondaryColor),
                                 ),
                               ],
                             ),
@@ -319,33 +319,33 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   (Color, String) _getCategoryUIData(String category) {
     switch (category.toLowerCase()) {
       case 'salary':
-        return (buttonSalaryColor, 'assets/ic_salary.png');
+        return (context.color.buttonSalaryColor, 'assets/ic_salary.png');
       case 'freelance':
-        return (buttonFreelanceColor, 'assets/ic_freelance.png');
+        return (context.color.buttonFreelanceColor, 'assets/ic_freelance.png');
       case 'bonus':
-        return (buttonBonusColor, 'assets/ic_bonus.png');
+        return (context.color.buttonBonusColor, 'assets/ic_bonus.png');
       case 'gift':
-        return (buttonBonusColor, 'assets/ic_gift.png');
+        return (context.color.buttonBonusColor, 'assets/ic_gift.png');
       case 'parent':
-        return (buttonParentColor, 'assets/ic_parents.png');
+        return (context.color.buttonParentColor, 'assets/ic_parents.png');
       case 'food':
-        return (buttonFoodColor, 'assets/ic_food.png');
+        return (context.color.buttonFoodColor, 'assets/ic_food.png');
       case 'transportation':
       case 'transport':
-        return (buttonTransportationColor, 'assets/ic_transportation.png');
+        return (context.color.buttonTransportationColor, 'assets/ic_transportation.png');
       case 'shopping':
-        return (buttonShoppingColor, 'assets/ic_shopping.png');
+        return (context.color.buttonShoppingColor, 'assets/ic_shopping.png');
       case 'health':
-        return (buttonHealthColor, 'assets/ic_health.png');
+        return (context.color.buttonHealthColor, 'assets/ic_health.png');
       case 'education':
-        return (buttonEducationColor, 'assets/ic_education.png');
+        return (context.color.buttonEducationColor, 'assets/ic_education.png');
       case 'housing':
-        return (buttonHousingColor, 'assets/ic_housing.png');
+        return (context.color.buttonHousingColor, 'assets/ic_housing.png');
       case 'internet':
-        return (buttonInternetColor, 'assets/ic_internet.png');
+        return (context.color.buttonInternetColor, 'assets/ic_internet.png');
       default:
         // Fallback untuk kategori 'others' atau yang tidak dikenal
-        return (buttonInternetColor, 'assets/ic_bonus.png');
+        return (context.color.buttonInternetColor, 'assets/ic_bonus.png');
     }
   }
 
@@ -367,7 +367,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
         amount:
             NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
                 .format(double.tryParse(item.price) ?? 0),
-        amountColor: buttonColor,
+        amountColor: context.color.buttonColor,
       ),
     );
   }

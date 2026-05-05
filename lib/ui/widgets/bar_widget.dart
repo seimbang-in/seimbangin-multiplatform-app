@@ -16,7 +16,7 @@ class AnalyticsTabBar extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       decoration: BoxDecoration(
-        color: backgroundGreyColor,
+        color: context.color.backgroundGreyColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: TabBar(
@@ -25,13 +25,13 @@ class AnalyticsTabBar extends StatelessWidget {
         controller: tabController,
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: buttonColor,
+          color: context.color.buttonColor,
         ),
-        labelColor: textWhiteColor,
-        labelStyle: whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
-        unselectedLabelColor: blackTextStyle.color,
+        labelColor: context.color.textWhiteColor,
+        labelStyle: context.text.whiteTextStyle.copyWith(fontWeight: FontWeight.w500),
+        unselectedLabelColor: context.text.blackTextStyle.color,
         unselectedLabelStyle:
-            blackTextStyle.copyWith(fontWeight: FontWeight.w500),
+            context.text.blackTextStyle.copyWith(fontWeight: FontWeight.w500),
         dividerColor: Colors.transparent,
         tabs: tabTitles.map((title) => Tab(text: title)).toList(),
       ),
