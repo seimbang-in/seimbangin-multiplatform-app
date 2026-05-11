@@ -219,8 +219,8 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
                             horizontal: 16.r, vertical: 12.r),
                         decoration: BoxDecoration(
                             color: isOutcome
-                                ? const Color(0xffE91E63).withOpacity(0.1)
-                                : context.color.primaryColor.withOpacity(0.1),
+                                ? const Color(0xffE91E63).withValues(alpha: 0.1)
+                                : context.color.primaryColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16).r),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -399,7 +399,7 @@ class _TransactionStructPageState extends State<TransactionStructPage> {
   void _handleTransactionSuccess() async {
     if (!mounted) return;
 
-    print(
+    debugPrint(
         '[TransactionStructPage] TransactionSuccess received by UI. Removing overlay and navigating.');
 
     _removeLoadingOverlay();

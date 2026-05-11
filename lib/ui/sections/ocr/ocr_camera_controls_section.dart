@@ -31,8 +31,8 @@ class OcrCameraControlsSection extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.black.withOpacity(0.0),
-            Colors.black.withOpacity(0.85)
+            Colors.black.withValues(alpha: 0.0),
+            Colors.black.withValues(alpha: 0.85)
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -50,7 +50,7 @@ class OcrCameraControlsSection extends StatelessWidget {
                   onTap: onSwitchCamera,
                   child: CircleAvatar(
                     radius: 28.r,
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
                     child: Icon(Icons.flip_camera_ios_rounded,
                         color: Colors.white, size: 28.r),
                   ),
@@ -85,7 +85,7 @@ class OcrCameraControlsSection extends StatelessWidget {
                   radius: 28.r,
                   backgroundColor: currentFlashMode == FlashMode.torch
                       ? Colors.white
-                      : Colors.white.withOpacity(0.2),
+                      : Colors.white.withValues(alpha: 0.2),
                   child: Icon(
                     currentFlashMode == FlashMode.torch
                         ? Icons.flash_on_rounded

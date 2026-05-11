@@ -20,7 +20,7 @@ class ChatInputSection extends StatelessWidget {
         color: context.color.backgroundWhiteColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             spreadRadius: 0,
             blurRadius: 10,
             offset: const Offset(0, -4),
@@ -35,7 +35,7 @@ class ChatInputSection extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.color.backgroundGreySecondaryColor,
                 borderRadius: BorderRadius.circular(24.r),
-                border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
               ),
               child: TextField(
                 controller: messageController,

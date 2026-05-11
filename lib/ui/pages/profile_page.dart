@@ -53,25 +53,25 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
     final picker = ImagePicker();
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-    if (pickedFile != null) {
-      final CroppedFile? croppedFile = await ImageCropper().cropImage(
-        sourcePath: pickedFile.path,
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Crop Your Photo',
-            toolbarColor: context.color.backgroundWhiteColor,
-            toolbarWidgetColor: context.color.buttonColor,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false,
-          ),
-          IOSUiSettings(
-              title: 'Crop Your Photo', aspectRatioLockEnabled: false),
-        ],
-      );
-      if (croppedFile != null) {
-        setState(() => _imageFile = XFile(croppedFile.path));
-        // TODO: logic add image to backend
-      }
+    if (pickedFile == null || !mounted) return;
+
+    final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Your Photo',
+          toolbarColor: context.color.backgroundWhiteColor,
+          toolbarWidgetColor: context.color.buttonColor,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+        IOSUiSettings(
+            title: 'Crop Your Photo', aspectRatioLockEnabled: false),
+      ],
+    );
+    if (croppedFile != null && mounted) {
+      setState(() => _imageFile = XFile(croppedFile.path));
+      // TODO: logic add image to backend
     }
   }
 
@@ -145,7 +145,7 @@ class __ProfilePageContentState extends State<_ProfilePageContent> {
                           size: 24.r,
                         ),
                       ),
-                      activeColor: context.color.primaryColor,
+                      activeThumbColor: context.color.primaryColor,
                     ),
                   );
                 },

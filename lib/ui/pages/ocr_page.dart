@@ -152,7 +152,7 @@ class _OcrPageState extends State<OcrPage>
         });
       }
     } catch (e) {
-      print("Error setting flash mode: $e");
+      debugPrint("Error setting flash mode: $e");
     }
   }
 
@@ -180,7 +180,7 @@ class _OcrPageState extends State<OcrPage>
         );
       }
     } catch (e) {
-      print('Error taking picture: $e');
+      debugPrint('Error taking picture: $e');
     }
   }
 
@@ -198,7 +198,7 @@ class _OcrPageState extends State<OcrPage>
         );
       }
     } catch (e) {
-      print('Error picking image: $e');
+      debugPrint('Error picking image: $e');
     }
   }
 
@@ -294,7 +294,7 @@ class _OcrPageState extends State<OcrPage>
               color: context.color.primaryColor,
               boxShadow: [
                 BoxShadow(
-                  color: context.color.primaryColor.withOpacity(0.6),
+                  color: context.color.primaryColor.withValues(alpha: 0.6),
                   blurRadius: 12,
                   spreadRadius: 2,
                 ),

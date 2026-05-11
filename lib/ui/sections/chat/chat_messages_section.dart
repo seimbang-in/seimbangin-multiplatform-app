@@ -47,7 +47,7 @@ class ChatMessagesSection extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -73,8 +73,8 @@ class ChatMessagesSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10.sp,
                     color: isUserMessage
-                        ? context.color.textWhiteColor.withOpacity(0.7)
-                        : context.color.textSecondaryColor.withOpacity(0.7),
+                        ? context.color.textWhiteColor.withValues(alpha: 0.7)
+                        : context.color.textSecondaryColor.withValues(alpha: 0.7),
                   ),
                 ),
               ],

@@ -175,17 +175,17 @@ class _CategoryManagementPageState extends State<CategoryManagementPage>
                     ),
                     onPressed: () async {
                       if (nameController.text.trim().isEmpty) return;
-                      
+                      // Capture the pop action before the async gap
+                      final popModal = context.pop;
+
                       await _dbService.insertCategory({
                         'name': nameController.text.trim(),
                         'type': type,
                         'icon_code': selectedIconCode,
                       });
-                      
-                      if (mounted) {
-                        context.pop();
-                        _loadCategories();
-                      }
+
+                      popModal();
+                      _loadCategories();
                     },
                     child: Text(
                       'Simpan',

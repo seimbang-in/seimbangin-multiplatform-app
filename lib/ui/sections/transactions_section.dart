@@ -152,7 +152,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: context.color.primaryColor.withOpacity(0.35),
+                              color: context.color.primaryColor.withValues(alpha: 0.35),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             )
@@ -172,7 +172,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                               padding: EdgeInsets.all(10.r),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? Colors.black.withOpacity(0.15)
+                                    ? Colors.black.withValues(alpha: 0.15)
                                     : context.color.backgroundGreyColor,
                                 borderRadius: BorderRadius.circular(12).r,
                               ),

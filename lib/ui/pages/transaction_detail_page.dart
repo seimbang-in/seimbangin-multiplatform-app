@@ -124,7 +124,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       color: context.color.backgroundWhiteColor,
                       boxShadow: [
                         BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 20,
                             spreadRadius: 5)
                       ],
@@ -216,8 +216,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               horizontal: 16.r, vertical: 12.r),
                           decoration: BoxDecoration(
                               color: isOutcome
-                                  ? const Color(0xffE91E63).withOpacity(0.1)
-                                  : context.color.primaryColor.withOpacity(0.1),
+                                  ? const Color(0xffE91E63).withValues(alpha: 0.1)
+                                  : context.color.primaryColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16).r),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
